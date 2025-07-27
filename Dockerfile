@@ -1,6 +1,13 @@
 # Usa una imagen oficial con PHP y Apache
 FROM php:8.2-apache
 
+
+# Instala GD con soporte para PNG y JPEG
+RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libwebp-dev libfreetype6-dev && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp && \
+    docker-php-ext-install gd
+
+
 # Instala extensiones necesarias para Laravel + PostgreSQL
 RUN apt-get update && apt-get install -y \
     libzip-dev unzip libpq-dev git curl libonig-dev \
