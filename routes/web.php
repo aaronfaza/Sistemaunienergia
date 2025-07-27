@@ -9,7 +9,6 @@ Route::get('/', function () {
 Route::get('/dashboard', [ReporteMantenimientoController::class, 'index'])->middleware(['auth'])->name('dashboard');
 
 Route::resource('reportes', ReporteMantenimientoController::class);
-Route::get('/reportes/{id}', [ReporteMantenimientoController::class, 'show'])->name('reportes.show');
 Route::get('/reportes/{id}/pdf', [ReporteMantenimientoController::class, 'pdf'])->name('reportes.pdf');
 Route::post('/reportes', [ReporteMantenimientoController::class, 'store'])->name('reportes.store');
 
