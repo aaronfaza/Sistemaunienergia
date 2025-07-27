@@ -9,31 +9,31 @@ RUN apt-get update && apt-get install -y \
 # Habilita mod_rewrite para Laravel routing
 RUN a2enmod rewrite
 
-# Define tu carpeta de trabajo (donde vive Laravel)
+# Instala Composer desde la imagen oficial
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Define carpeta de trabajo
 WORKDIR /app
 
-# Copia todos los archivos del proyecto al contenedor
+# Copia los archivos del proyecto
 COPY . /app
+
+# Instala dependencias Laravel (genera vendor/autoload.php)
+RUN composer install --no-dev --optimize-autoloader
 
 # Asigna permisos correctos
 RUN chown -R www-data:www-data /app \
     && chmod -R 755 /app
 
-# Configura Apache para servir el contenido desde /app/public
-RUN cat <<EOF > /etc/apache2/sites-available/000-default.conf
-<VirtualHost *:80>
-    DocumentRoot /app/public
-    <Directory /app/public>
-        AllowOverride All
-        Require all granted
-    </Directory>
-</VirtualHost>
-EOF
+# Configura Apache para servir Laravel desde /public
+RUN printf '%s\n' \
+    '<VirtualHost *:80>' \
+    '    DocumentRoot /app/public' \
+    '    <Directory /app/public>' \
+    '        AllowOverride All' \
+    '        Require all granted' \
+    '    </Directory>' \
+    '</VirtualHost>' \
+    > /etc/apache2/sites-available/000-default.conf
 
-
-
-
-
-# Añade esto si usas postgres
-RUN docker-php-ext-install pdo_pgsql
 
