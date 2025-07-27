@@ -36,4 +36,4 @@ RUN printf '%s\n' \
     '</VirtualHost>' \
     > /etc/apache2/sites-available/000-default.conf
 
-
+RUN docker-php-ext-install pdo pdo_pgsql
