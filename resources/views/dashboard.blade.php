@@ -209,10 +209,46 @@
           @endforelse
         </tbody>
       </table>
+      <div class="d-flex justify-content-end mt-4">
+  <nav class="shadow-sm border rounded-pill bg-white px-3 py-1">
+    <ul class="pagination pagination-sm mb-0">
+      {{-- Flecha izquierda --}}
+      @if ($reportes->onFirstPage())
+        <li class="page-item disabled">
+          <span class="page-link bg-transparent border-0 text-muted">
+            <i class="fas fa-chevron-left"></i>
+          </span>
+        </li>
+      @else
+        <li class="page-item">
+          <a class="page-link bg-transparent border-0 text-primary" href="{{ $reportes->previousPageUrl() }}">
+            <i class="fas fa-chevron-left"></i>
+          </a>
+        </li>
+      @endif
+
+      {{-- Flecha derecha --}}
+      @if ($reportes->hasMorePages())
+        <li class="page-item">
+          <a class="page-link bg-transparent border-0 text-primary" href="{{ $reportes->nextPageUrl() }}">
+            <i class="fas fa-chevron-right"></i>
+          </a>
+        </li>
+      @else
+        <li class="page-item disabled">
+          <span class="page-link bg-transparent border-0 text-muted">
+            <i class="fas fa-chevron-right"></i>
+          </span>
+        </li>
+      @endif
+    </ul>
+  </nav>
+</div>
 
       <div class="px-3 py-2 text-end">
         <span class="text-muted">Total de reportes: <strong>{{ $reportes->count() }}</strong></span>
       </div>
+       
     </div>
   </div>
 </div>
@@ -291,17 +327,17 @@
 
   
 </div>
- 
+   <!-- Footer -->
+  <footer class="main-footer text-center">
+    <strong>Unienergia ABC © 2025 <a href="#">Unienergia ABC</a>.</strong> Todos los derechos reservados.
+  </footer>
 </div>
 
 
 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
     @csrf
 </form>
-   <!-- Footer -->
-  <footer class="main-footer text-center">
-    <strong>Unienergia ABC © 2025 <a href="#">Unienergia ABC</a>.</strong> Todos los derechos reservados.
-  </footer>
+ 
 </div>
 
   

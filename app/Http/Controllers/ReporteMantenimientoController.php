@@ -10,23 +10,25 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReporteMantenimientoController extends Controller
 {
-    // Mostrar todos los reportes
-   public function index(Request $request)
-{
-    $query = ReporteMantenimiento::query();
+  
+   // Mostrar todos los reportes con filtros y paginación
+    public function index(Request $request)
+    {
+        $query = ReporteMantenimiento::query();
 
-    if ($request->filled('nombre')) {
-        $query->where('nombre', 'like', '%' . $request->nombre . '%');
+        if ($request->filled('nombre')) {
+            $query->where('nombre', 'like', '%' . $request->nombre . '%');
+        }
+
+        if ($request->filled('fecha')) {
+            $query->whereDate('fecha_inicio', $request->fecha);
+        }
+
+        // Solo 6 resultados por página
+        $reportes = $query->orderByDesc('id')->paginate(6);
+
+        return view('dashboard', compact('reportes'));
     }
-
-    if ($request->filled('fecha')) {
-        $query->whereDate('fecha_inicio', $request->fecha);
-    }
-
-    $reportes = $query->orderByDesc('id')->get();
-
-    return view('dashboard', compact('reportes'));
-}
 
     // Formulario de creación
     public function create()
