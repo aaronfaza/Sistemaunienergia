@@ -5,6 +5,7 @@
   <title>SISTEMA INTEGRADO DE GESTION</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- AdminLTE -->
+  <link rel="icon" href="{{ asset('img/logo.png.png') }}" type="image/png">
   <link rel="stylesheet" href="{{ asset('adminlte/plugins/fontawesome-free/css/all.min.css') }}">
   <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
@@ -69,7 +70,7 @@
   <!-- Logo y título institucional -->
   <div class="brand-link d-flex align-items-center justify-content-center py-3" style="background-color: #121212; text-decoration: none;">
     <img src="{{ asset('img/logo.png.png') }}" alt="Logo" style="width: 25px; height: 25px; margin-right: 8px;">
-    <span class="brand-text fw-bold text-white" style="font-size: 1.2rem;">Sistema Integrado</span>
+    <span class="brand-text fw-bold text-white" style="font-size: 1.2rem;">Unienergia ABC</span>
   </div>
 
   <!-- Menú lateral -->
@@ -131,16 +132,22 @@
 
 
 
-    <div class="card shadow-sm border-0">
-      <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
+  <div class="card shadow-sm border-0">
+  <div class="card-header bg-white border-bottom">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="flex-grow-1 text-center">
         <h3 class="card-title m-0 fw-semibold" style="color: #333; font-family: 'Montserrat', sans-serif;">
           Registrar nuevo reporte.
         </h3>
+      </div>
+      <div class="ms-3">
         <button class="btn btn-success" data-toggle="modal" data-target="#modalAgregar">
           <i class="fas fa-plus me-1"></i> Agregar Registro
         </button>
-      </div>         
+      </div>
     </div>
+  </div>
+</div>
 
       <div class="d-flex justify-content-between align-items-center mb-3">
         <!-- Formulario de búsqueda -->
@@ -158,11 +165,11 @@
 
     <!-- Reportes registrados arriba -->
 <div class="card shadow-sm border-0">
-  <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
-    <h3 class="card-title mb-0 fw-semibold" style="color: #333; font-family: 'Montserrat', sans-serif;">
-      📋 Reportes registrados
-    </h3>
-  </div>
+  <div class="card-header bg-white border-bottom d-flex justify-content-center align-items-center">
+  <h3 class="card-title mb-0 fw-semibold" style="color: #333; font-family: 'Montserrat', sans-serif;">
+    📋 Reportes registrados
+  </h3>
+</div>
 
   <div class="card-body">
     <div class="table-responsive">
@@ -186,21 +193,33 @@
               <td>{{ $reporte->ubicacion }}</td>
               <td>{{ $reporte->tipo_equipo }}</td>
               <td>
-                <a href="{{ route('reportes.show', $reporte->id) }}" class="btn btn-sm btn-outline-info" title="Ver" target="_blank">
-                  <i class="fas fa-eye"></i>
+                {{-- Ver Reporte --}}
+                <a href="{{ route('reportes.show', $reporte->id) }}" 
+                  class="btn btn-sm btn-outline-info shadow-sm fw-semibold me-1" 
+                  title="Ver Reporte" target="_blank">
+                  <i class="fas fa-eye me-1"></i> Ver
                 </a>
-                <a href="{{ route('reportes.edit', $reporte->id) }}" class="btn btn-sm btn-outline-warning" title="Editar">
-                  <i class="fas fa-edit"></i>
-                </a>
+
+                {{-- Editar --}}
+                <button type="button" 
+                        class="btn btn-sm btn-outline-warning shadow-sm fw-semibold me-1" 
+                        data-bs-toggle="modal" data-bs-target="#editarModal{{ $reporte->id }}">
+                  <i class="fas fa-edit me-1"></i> Editar
+                </button>
+
+                {{-- Eliminar --}}
                 <form action="{{ route('reportes.destroy', $reporte->id) }}" method="POST" class="d-inline"
-                  onsubmit="return confirm('¿Estás seguro de eliminar este reporte?');">
+                      onsubmit="return confirm('¿Estás seguro de eliminar este reporte?');">
                   @csrf
                   @method('DELETE')
-                  <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
-                    <i class="fas fa-trash"></i>
+                  <button type="submit" 
+                          class="btn btn-sm btn-outline-danger shadow-sm fw-semibold" 
+                          title="Eliminar">
+                    <i class="fas fa-trash me-1"></i> Eliminar
                   </button>
                 </form>
               </td>
+
             </tr>
           @empty
             <tr>
@@ -252,6 +271,109 @@
     </div>
   </div>
 </div>
+
+
+
+
+@foreach($reportes as $reporte)
+<div class="modal fade" id="editarModal{{ $reporte->id }}" tabindex="-1" aria-labelledby="editarLabel{{ $reporte->id }}" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <form method="POST" action="{{ route('reportes.update', $reporte->id) }}">
+      @csrf
+      @method('PUT')
+      <div class="modal-content shadow-sm border-0">
+        <div class="modal-header bg-white border-bottom">
+          <h5 class="modal-title fw-semibold" id="editarLabel{{ $reporte->id }}" style="color: #333;">
+            ✏️ Editar Reporte de Mantenimiento
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label>Nombre</label>
+              <input type="text" name="nombre" class="form-control shadow-sm" value="{{ $reporte->nombre }}" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label>Fecha de inicio</label>
+              <input type="date" name="fecha_inicio" class="form-control shadow-sm" value="{{ $reporte->fecha_inicio }}" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label>Fecha de término</label>
+              <input type="date" name="fecha_termino" class="form-control shadow-sm" value="{{ $reporte->fecha_termino }}" required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="tipo_equipo">Tipo de equipo</label>
+              <select name="tipo_equipo" id="tipo_equipo" class="form-select shadow-sm" required>
+                <option value="">Seleccione una opción</option>
+                <option value="Motor" {{ $reporte->tipo_equipo == 'Motor' ? 'selected' : '' }}>Motor</option>
+                <option value="Unidad de Bombeo Mecánico" {{ $reporte->tipo_equipo == 'Unidad de Bombeo Mecánico' ? 'selected' : '' }}>Unidad de Bombeo Mecánico</option>
+                <option value="Bomba de Transferencia" {{ $reporte->tipo_equipo == 'Bomba de Transferencia' ? 'selected' : '' }}>Bomba de Transferencia</option>
+                <option value="Caja Reductora" {{ $reporte->tipo_equipo == 'Caja Reductora' ? 'selected' : '' }}>Caja Reductora</option>
+              </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Ubicación</label>
+              <input type="text" name="ubicacion" class="form-control shadow-sm" value="{{ $reporte->ubicacion }}" required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Rotulado</label>
+              <input type="text" name="rotulado" class="form-control shadow-sm" value="{{ $reporte->rotulado }}">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Herramientas <small>(separadas por coma)</small></label>
+              <input type="text" name="herramientas[]" class="form-control shadow-sm"
+                value="{{ is_array($reporte->herramientas) ? implode(', ', $reporte->herramientas) : $reporte->herramientas }}">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Materiales <small>(separados por coma)</small></label>
+              <input type="text" name="materiales[]" class="form-control shadow-sm"
+                value="{{ is_array($reporte->materiales) ? implode(', ', $reporte->materiales) : $reporte->materiales }}">
+            </div>
+
+            <div class="col-md-12 mb-3">
+              <label>Descripción de la actividad</label>
+              <textarea name="descripcion_actividad" class="form-control shadow-sm" rows="3">{{ $reporte->descripcion_actividad }}</textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer justify-content-end bg-light">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-success">
+            <i class="fas fa-save me-1"></i> Guardar cambios
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+@endforeach
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   <!-- Modal Agregar Registro -->
@@ -360,6 +482,8 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+
+
 
 <!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">

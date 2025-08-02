@@ -124,8 +124,8 @@
             <td><strong>Fecha de Término:</strong> {{ $reporte->fecha_termino }}</td>
         </tr>
        
-         <tr>
-    <td colspan="3" style="padding-top: -10px; padding-buttom: 34px;">
+<tr>
+    <td colspan="3" style="padding-top: -80px; padding-buttom: 34px;">
         <table style="width: 100%; border: none;">
             <tr style="border: none;">
                 <td style="border: none; vertical-align: top;"><strong>Tipo de Equipo:</strong></td>
@@ -178,27 +178,36 @@
     </table>
 
     <div class="section-title">Descripción de la actividad</div>
-    <table>
-        <tr>
-            <td style="height: 120px;">
-                {{ $reporte->descripcion_actividad }}
-            </td>
-        </tr>
-    </table>
+        <table>
+            @foreach(explode(',', $reporte->descripcion_actividad) as $linea)
+                <tr>
+                    <td style="height: 20px;">
+                        {{ trim($linea) }}
+                    </td>
+                </tr>
+            @endforeach
+        </table>
 
-    <table class="no-border" style="margin-top: 40px;">
-        <tr>
-            <td class="signature" style="width: 45%; text-align: center;">
-                <br><br>
-                Firma del responsable
-            </td>
-            <td class="no-border" style="width: 10%;"></td>
-            <td class="signature" style="width: 45%; text-align: center;">
-                <br><br>
-                Firma de verificación
-            </td>
-        </tr>
-    </table>
+   <table class="no-border" style="margin-top: 160px; width: 100%;">
+    <tr>
+        <!-- Firma del Supervisor Responsable (izquierda) -->
+        <td style="text-align: left; border: none;">
+            <div>
+                <div style="border-bottom: 1px solid #000; width: 180px; height: 30px; display: inline-block;"></div>
+                <div style="margin-top: 5px;">Firma del Personal Responsable</div>
+            </div>
+        </td>
+
+        <!-- Firma del Personal Responsable (derecha) -->
+        <td style="text-align: right; border: none;">
+            <div>
+                <div style="border-bottom: 1px solid #000; width: 180px; height: 30px; display: inline-block;"></div>
+                <div style="margin-top: 5px;">Firma del Supervisor Responsable</div>
+            </div>
+        </td>
+    </tr>
+</table>
+
 
 </body>
 </html>

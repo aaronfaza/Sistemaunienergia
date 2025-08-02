@@ -39,6 +39,7 @@ class ReporteMantenimientoController extends Controller
     // Guardar nuevo reporte
     public function store(Request $request)
     {
+        
         $request->validate([
         'nombre' => 'required',
         'fecha_inicio' => 'required|date',
@@ -75,6 +76,7 @@ class ReporteMantenimientoController extends Controller
     // Actualizar un reporte existente
     public function update(Request $request, ReporteMantenimiento $reporte)
     {
+       
         $request->validate([
             'nombre' => 'required|string|max:255',
             'fecha_inicio' => 'required|date',
@@ -86,7 +88,6 @@ class ReporteMantenimientoController extends Controller
             'materiales' => 'nullable|array',
             'descripcion_actividad' => 'required|string',
         ]);
-
         $reporte->update([
             'nombre' => $request->nombre,
             'fecha_inicio' => $request->fecha_inicio,
