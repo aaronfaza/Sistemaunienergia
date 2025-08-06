@@ -1,7 +1,12 @@
 # Usa una imagen oficial con PHP y Apache
 FROM php:8.2-apache
 
+FROM php:8.2-fpm
 
+# Instala dependencias necesarias
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    && docker-php-ext-install pdo_pgsql pgsql
 # Instala GD con soporte para PNG y JPEG
 RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libwebp-dev libfreetype6-dev && \
     docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp && \
