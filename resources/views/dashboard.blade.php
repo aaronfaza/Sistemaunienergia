@@ -70,7 +70,7 @@
   <!-- Logo y título institucional -->
   <div class="brand-link d-flex align-items-center justify-content-center py-3" style="background-color: #121212; text-decoration: none;">
     <img src="{{ asset('img/logo.png.png') }}" alt="Logo" style="width: 25px; height: 25px; margin-right: 8px;">
-    <span class="brand-text fw-bold text-white" style="font-size: 1.2rem;">Unienergia ABC</span>
+    <span class="brand-text fw-bold text-white" style="font-size: 1.2rem;">UNIENERGIA ABC</span>
   </div>
 
   <!-- Menú lateral -->
