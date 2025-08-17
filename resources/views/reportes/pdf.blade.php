@@ -105,7 +105,7 @@
 
         <!-- Lado derecho: logo + texto alineado a la derecha -->
         <div style="display: flex; align-items: center; text-align: right;">
-            <img src="{{ asset('img/Logo1.png') }}" alt="Logo Empresa" style="height: 40px; margin-top: -50px;">
+            <img src="{{ public_path('img/logo1.png') }}" alt="Logo Empresa" style="height: 40px; margin-top: -50px;">
         </div>
         </div>
     </div>
