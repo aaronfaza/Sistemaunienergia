@@ -109,9 +109,6 @@
 
 
 
-
-
-
 <!-- Contenido principal -->
 <div class="content-wrapper" style="background-color: #f8f9fa;">
   <div class="content-header py-3" style="border-bottom: 1px solid #dee2e6;">
@@ -364,18 +361,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
   <!-- Modal Agregar Registro -->
 <div class="modal fade" id="modalAgregar" tabindex="-1" aria-labelledby="modalAgregarLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -393,7 +378,8 @@
           <div class="row">
             <div class="col-md-4 mb-3">
               <label>Nombre</label>
-              <input type="text" name="nombre" class="form-control shadow-sm" required>
+              <input type="text" name="nombre" class="form-control shadow-sm" 
+                    value="{{ Auth::user()->name }}" readonly>
             </div>
             <div class="col-md-4 mb-3">
               <label>Fecha de inicio</label>
