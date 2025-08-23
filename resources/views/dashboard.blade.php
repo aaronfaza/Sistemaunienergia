@@ -164,7 +164,7 @@
 <div class="card shadow-sm border-0">
   <div class="card-header bg-white border-bottom d-flex justify-content-center align-items-center">
   <h3 class="card-title mb-0 fw-semibold" style="color: #333; font-family: 'Montserrat', sans-serif;">
-    📋 Reportes registrados
+    📋 REPORTES DE MANTENIMIENTO MECANICO 
   </h3>
 </div>
 
