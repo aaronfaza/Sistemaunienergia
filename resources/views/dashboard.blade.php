@@ -127,6 +127,23 @@
     </div>
   </div>
 
+  <div class="row mb-2">
+    <div class="col-sm-3 ms-3"> {{-- 👈 margen izquierdo --}}
+        <div class="card text-white bg-primary shadow-sm">
+            <div class="card-body py-2 px-3 d-flex align-items-center justify-content-between">
+                <div>
+                    <small class="text-white-50">Total de Reportes</small>
+                    <h4 class="mb-0">{{ $totalReportes }}</h4>
+                </div>
+                <i class="fas fa-wrench fa-lg"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 
 
   <div class="card shadow-sm border-0">
@@ -432,6 +449,9 @@
     </form>
   </div>
 </div>
+
+
+
 
   
 </div>

@@ -14,20 +14,22 @@ class ReporteMantenimientoController extends Controller
    // Mostrar todos los reportes con filtros y paginación
     public function index(Request $request)
     {
-        $query = ReporteMantenimiento::query();
+         $query = ReporteMantenimiento::query();
 
-        if ($request->filled('nombre')) {
-            $query->where('nombre', 'like', '%' . $request->nombre . '%');
-        }
+    if ($request->filled('nombre')) {
+        $query->where('nombre', 'like', '%' . $request->nombre . '%');
+    }
 
-        if ($request->filled('fecha')) {
-            $query->whereDate('fecha_inicio', $request->fecha);
-        }
+    if ($request->filled('fecha')) {
+        $query->whereDate('fecha_inicio', $request->fecha);
+    }
 
-        // Solo 6 resultados por página
-        $reportes = $query->orderByDesc('id')->paginate(6);
+    $totalReportes = $query->count(); 
 
-        return view('dashboard', compact('reportes'));
+    $reportes = $query->orderByDesc('id')->paginate(6);
+
+    return view('dashboard', compact('reportes', 'totalReportes'));
+        
     }
 
     // Formulario de creación
