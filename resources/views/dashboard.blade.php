@@ -178,6 +178,7 @@
         <thead class="table-light">
           <tr class="text-muted">
             <th>Nombre</th>
+            <th>Titulo</th>
             <th>Fecha Inicio</th>
             <th>Fecha Término</th>
             <th>Ubicación</th>
@@ -189,6 +190,7 @@
           @forelse ($reportes as $reporte)
             <tr>
               <td>{{ $reporte->nombre }}</td>
+              <td>{{ $reporte->titulo }}</td>
               <td>{{ $reporte->fecha_inicio }}</td>
               <td>{{ $reporte->fecha_termino }}</td>
               <td>{{ $reporte->ubicacion }}</td>
@@ -296,6 +298,11 @@
               <label>Nombre</label>
               <input type="text" name="nombre" class="form-control shadow-sm" value="{{ $reporte->nombre }}" required>
             </div>
+            <div class="col-md-8 mb-3">
+              <label>Título del reporte</label>
+              <input type="text" name="titulo" class="form-control shadow-sm" value="{{ $reporte->titulo }}" required>
+            </div>
+
             <div class="col-md-4 mb-3">
               <label>Fecha de inicio</label>
               <input type="date" name="fecha_inicio" class="form-control shadow-sm" value="{{ $reporte->fecha_inicio }}" required>
@@ -385,6 +392,11 @@
               <input type="text" name="nombre" class="form-control shadow-sm" 
                     value="{{ Auth::user()->name }}" readonly>
             </div>
+            <div class="col-md-6 mb-3">
+              <label>Titulo</label>
+              <input type="text" name="titulo" class="form-control shadow-sm" required>
+            </div>
+
             <div class="col-md-4 mb-3">
               <label>Fecha de inicio</label>
               <input type="date" name="fecha_inicio" class="form-control shadow-sm" required>

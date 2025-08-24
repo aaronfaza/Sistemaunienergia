@@ -154,13 +154,13 @@
     
         <tr>
             <td style="width: 50%;"><strong>Ubicación:</strong> {{ $reporte->ubicacion }}</td>
-           <td colspan="2"><strong>Rotulado / Marca / Serie:</strong> {{ $reporte->rotulado }}</td>
+           <td colspan="2"><strong >Rotulado / Marca / Serie:</strong> {{ $reporte->rotulado }}</td>
          </tr>
 
 
     </table>
 
-    <div class="section-title">Herramientas y Materiales/Insumos</div>
+    <div class="section-title"><strong style="font-size: 0.8rem;"> {{ $reporte->titulo }} </strong></div>
     <table>
         <tr>
             <th class="section-title" style="width: 50%;">Herramientas</th>

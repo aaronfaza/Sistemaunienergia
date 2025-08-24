@@ -15,6 +15,7 @@ class ReporteMantenimiento extends Model
     // Campos que pueden ser asignados masivamente
     protected $fillable = [
         'nombre',
+        'titulo',
         'fecha_inicio',
         'fecha_termino',
         'tipo_equipo',
