@@ -22,6 +22,11 @@ class ReporteMantenimientoController extends Controller
 
         $totalReportes = $query->count(); 
         $reportes = $query->orderByDesc('id')->paginate(6);
+        $notificaciones = ReporteMantenimiento::latest()->take(5)->get();
+
+        
+        return view('dashboard', compact('reportes', 'totalReportes', 'notificaciones'));
+
 
         return view('dashboard', compact('reportes', 'totalReportes'));
     }

@@ -20,51 +20,84 @@
 
 <div class="wrapper">
 
-  <!-- Navbar estilizado -->
-  <nav class="main-header navbar navbar-expand" style="background-color: #003366; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-    <div class="container-fluid d-flex justify-content-between align-items-center">
-
-      <!-- Botón de menú lateral + logo -->
-      <ul class="navbar-nav d-flex align-items-center gap-3">
-        <li class="nav-item">
-          <a class="nav-link text-white" data-widget="pushmenu" href="#" role="button">
-            <i class="fas fa-bars fa-lg"></i>
-          </a>
-        </li>
-        <li>
-           <img src="{{ asset('img/logo.png.png') }}" alt="Logo" style="width: 25px; height: 25px; margin-right: 8px;">
-        </li>
-      </ul>
 
 
-     <!-- Perfil de usuario -->
-      
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 px-3 py-2 rounded-pill shadow-sm text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #002b5c;">
-              <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=32" alt="Avatar" class="rounded-circle" width="32" height="32">
-              <span class="d-none d-md-inline fw-semibold">{{ Auth::user()->name }}</span>
+<!-- Navbar estilizado -->
+<nav class="main-header navbar navbar-expand" style="background-color: #003366; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+
+    <!-- Botón de menú lateral + logo -->
+    <ul class="navbar-nav d-flex align-items-center gap-3">
+      <li class="nav-item">
+        <a class="nav-link text-white" data-widget="pushmenu" href="#" role="button">
+          <i class="fas fa-bars fa-lg"></i>
+        </a>
+      </li>
+      <li>
+        <img src="{{ asset('img/logo.png.png') }}" alt="Logo" style="width: 25px; height: 25px; margin-right: 8px;">
+      </li>
+    </ul>
+
+    <!-- Notificaciones + Perfil de usuario -->
+    <ul class="navbar-nav ms-auto d-flex align-items-center gap-3">
+
+      <!-- 🔔 Notificaciones -->
+      <li class="nav-item dropdown">
+        <a class="nav-link position-relative" href="#" id="notificacionesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fas fa-bell fa-lg text-white"></i>
+          @if($notificaciones->count() > 0)
+            <span id="notiBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger px-1 py-0" style="font-size: 0.65rem;">
+              {{ $notificaciones->count() }}
+            </span>
+          @endif
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="notificacionesDropdown" style="min-width: 300px; max-height: 400px; overflow-y: auto;">
+          <li class="dropdown-header fw-semibold text-dark">🔔 Últimos registros</li>
+          <li><hr class="dropdown-divider"></li>
+
+          @forelse($notificaciones as $notificacion)
+            <li class="dropdown-item">
+              <div class="d-flex flex-column">
+                <span class="fw-semibold text-primary">{{ $notificacion->titulo }}</span>
+                <small class="text-muted">{{ \Carbon\Carbon::parse($notificacion->created_at)->format('d/m/Y H:i') }}</small>
+              </div>
+            </li>
+          @empty
+            <li class="dropdown-item text-muted text-center">Sin registros recientes</li>
+          @endforelse
+        </ul>
+      </li>
+
+      <!-- 👤 Perfil de usuario -->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 px-3 py-2 rounded-pill shadow-sm text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #002b5c;">
+          <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=32" alt="Avatar" class="rounded-circle" width="32" height="32">
+          <span class="d-none d-md-inline fw-semibold">{{ Auth::user()->name }}</span>
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="userDropdown" style="border-radius: 12px; min-width: 240px;">
+          <li class="dropdown-item text-center bg-light py-3">
+            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=64" alt="Avatar" class="rounded-circle mb-2">
+            <strong class="text-dark">{{ Auth::user()->name }}</strong>
+            <p class="text-muted small mb-0">Usuario activo</p>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <a class="dropdown-item d-flex align-items-center gap-2 px-3 py-2 text-danger" href="{{ route('logout') }}"
+              onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+              <i class="fas fa-sign-out-alt"></i> <span>Cerrar sesión</span>
             </a>
-
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="userDropdown" style="border-radius: 12px; min-width: 240px;">
-              <li class="dropdown-item text-center bg-light py-3">
-                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=64" alt="Avatar" class="rounded-circle mb-2">
-                <strong class="text-dark">{{ Auth::user()->name }}</strong>
-                <p class="text-muted small mb-0">Usuario activo</p>
-              </li>
-              <li><hr class="dropdown-divider"></li>
-              <li>
-                <a class="dropdown-item d-flex align-items-center gap-2 px-3 py-2 text-danger" href="{{ route('logout') }}"
-                  onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                  <i class="fas fa-sign-out-alt"></i> <span>Cerrar sesión</span>
-                </a>
-              </li>
-            </ul>
           </li>
         </ul>
-
+      </li>
+    </ul>
   </div>
 </nav>
+
+
+
+
 
 
 <aside class="main-sidebar elevation-4" style="background-color: #1F1F1F;">
@@ -498,7 +531,18 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const bell = document.getElementById('notificacionesDropdown');
+    const badge = document.getElementById('notiBadge');
 
+    bell.addEventListener('click', function () {
+      if (badge) {
+        badge.style.display = 'none';
+      }
+    });
+  });
+</script>
 
 
 </body>
