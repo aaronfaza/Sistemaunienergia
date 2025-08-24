@@ -127,54 +127,39 @@
     </div>
   </div>
 
-  <div class="row mb-2">
-    <div class="col-sm-3 ms-3"> {{-- 👈 margen izquierdo --}}
-        <div class="card text-white shadow-sm" style="background-color: #004080;">
-            <div class="card-body py-2 px-3 d-flex align-items-center justify-content-between">
-                <div>
-                    <small class="text-white-50">Total de Reportes</small>
-                    <h4 class="mb-0">{{ $totalReportes }}</h4>
-                </div>
-                <i class="fas fa-wrench fa-lg"></i>
+
+
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-white border-bottom">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="flex-grow-1 text-center">
+                <h3 class="card-title m-0 fw-semibold" style="color: #333; font-family: 'Montserrat', sans-serif;">
+                  Registrar nuevo reporte.
+                </h3>
+              </div>
+              <div class="ms-3">
+                <button class="btn btn-success" data-toggle="modal" data-target="#modalAgregar">
+                  <i class="fas fa-plus me-1"></i> Agregar Registro
+                </button>
+              </div>
             </div>
-        </div>
-    </div>
-</div>
-
-
-
-
-
-
-  <div class="card shadow-sm border-0">
-  <div class="card-header bg-white border-bottom">
-    <div class="d-flex justify-content-between align-items-center">
-      <div class="flex-grow-1 text-center">
-        <h3 class="card-title m-0 fw-semibold" style="color: #333; font-family: 'Montserrat', sans-serif;">
-          Registrar nuevo reporte.
-        </h3>
+          </div>
       </div>
-      <div class="ms-3">
-        <button class="btn btn-success" data-toggle="modal" data-target="#modalAgregar">
-          <i class="fas fa-plus me-1"></i> Agregar Registro
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
 
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <!-- Formulario de búsqueda -->
+
+
+     <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="px-3 w-100">
         <form action="{{ route('reportes.index') }}" method="GET" class="d-flex align-items-center" style="gap: 0.5rem;">
-          <input type="text" name="nombre" class="form-control" placeholder="Buscar por nombre" value="{{ request('nombre') }}" style="max-width: 200px;">
-          
-          <input type="date" name="fecha" class="form-control" value="{{ request('fecha') }}" style="max-width: 180px;">
-          
-          <button type="submit" class="btn btn-success d-flex align-items-center px-3">
-            <i class="fas fa-search me-1"></i> Buscar
-          </button>
+            <input type="text" name="nombre" class="form-control" placeholder="Buscar por nombre" value="{{ request('nombre') }}" style="max-width: 200px;">
+            <input type="date" name="fecha" class="form-control" value="{{ request('fecha') }}" style="max-width: 180px;">
+            <button type="submit" class="btn btn-success d-flex align-items-center px-3">
+                <i class="fas fa-search me-1"></i> Buscar
+            </button>
         </form>
-      </div>
+    </div>
+</div>
+
 
 
     <!-- Reportes registrados arriba -->
