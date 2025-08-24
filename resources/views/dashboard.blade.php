@@ -41,26 +41,28 @@
       
         <ul class="navbar-nav ms-auto">
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle d-flex align-items-center text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #003366; padding: 6px 12px; border-radius: 6px;">
-              <i class="fas fa-user-circle fa-lg me-2 text-success"></i>
+            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 px-3 py-2 rounded-pill shadow-sm text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #002b5c;">
+              <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=32" alt="Avatar" class="rounded-circle" width="32" height="32">
               <span class="d-none d-md-inline fw-semibold">{{ Auth::user()->name }}</span>
             </a>
 
-            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown" style="border-radius: 8px; overflow: hidden;">
-              <li class="dropdown-item text-center bg-light">
-                <i class="fas fa-user-circle fa-2x text-primary mb-2"></i><br>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="userDropdown" style="border-radius: 12px; min-width: 240px;">
+              <li class="dropdown-item text-center bg-light py-3">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=64" alt="Avatar" class="rounded-circle mb-2">
                 <strong class="text-dark">{{ Auth::user()->name }}</strong>
+                <p class="text-muted small mb-0">Usuario activo</p>
               </li>
               <li><hr class="dropdown-divider"></li>
               <li>
-                <a class="dropdown-item text-white" style="background-color: #990000;" href="{{ route('logout') }}"
+                <a class="dropdown-item d-flex align-items-center gap-2 px-3 py-2 text-danger" href="{{ route('logout') }}"
                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                  <i class="fas fa-sign-out-alt me-2"></i> Cerrar sesión
+                  <i class="fas fa-sign-out-alt"></i> <span>Cerrar sesión</span>
                 </a>
               </li>
             </ul>
           </li>
         </ul>
+
   </div>
 </nav>
 
