@@ -125,13 +125,19 @@
           </a>
         </li>
 
-        <!-- Indicadores (activo simulado) -->
-        <li class="nav-item">
-          <a href="#" class="nav-link" style="background-color: #009933; color: white;">
-            <i class="nav-icon fas fa-chart-bar text-white"></i>
-            <p class="ms-2">Indicadores</p>
-          </a>
-        </li>
+       <!-- Requerimientos -->
+      <li class="nav-item">
+        <a href="{{ route('requerimientos.index') }}"
+           class="nav-link {{ request()->routeIs('requerimientos.*') ? 'active' : 'text-white' }}"
+           style="transition: background-color 0.3s;"
+           onmouseover="if(!this.classList.contains('active')) this.style.backgroundColor='#006400'"
+           onmouseout="if(!this.classList.contains('active')) this.style.backgroundColor='transparent'">
+          
+          <i class="nav-icon fas fa-file-alt text-info"></i>
+          <p class="ms-2">Requerimientos</p>
+        </a>
+      </li>
+
 
       </ul>
     </nav>
@@ -183,7 +189,7 @@
 
 
 
-     <div class="d-flex justify-content-between align-items-center mb-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
     <div class="px-3 w-100">
         <form action="{{ route('reportes.index') }}" method="GET" class="d-flex align-items-center" style="gap: 0.5rem;">
             <input type="text" name="nombre" class="form-control" placeholder="Buscar por nombre" value="{{ request('nombre') }}" style="max-width: 200px;">
