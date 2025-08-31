@@ -402,7 +402,7 @@
         <div class="modal-footer bg-light">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
           <button type="submit" class="btn btn-success">
-            <i class="fas fa-save me-1"></i> Guardar
+            <i class="fas fa-save me-1"></i> GUARDAR
           </button>
         </div>
       </div>
