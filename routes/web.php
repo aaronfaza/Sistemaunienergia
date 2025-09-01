@@ -33,6 +33,7 @@ Route::middleware(['auth'])->group(function () {
         ->parameters(['inspecciones' => 'inspeccione']); // para el model binding
 
     Route::resource('requerimientos', RequerimientoController::class);
+    
 
 });
 

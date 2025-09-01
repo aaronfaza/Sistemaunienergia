@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Formato de Requerimiento</title>
 
+
   <style>
   /* Solo cambio de fuente (sin modificar tamaños) */
   .sign-table,
@@ -250,12 +251,12 @@
       <tr>
       <td class="box">
         <div class="sign-placeholder"></div>
-        <div class="name">{{ $req->nombre_solicitante }}</div>
+        <div class="destino-title">{{ $req->nombre_solicitante }}</div>
         <div class="role">{{ $req->cargo_solicitante }}</div>
       </td>
       <td class="box">
         <div class="sign-placeholder"></div>
-        <div class="name">{{ $req->aprobador_nombre ?? 'Persi Llamocca Gutierrez' }}</div>
+        <div class="destino-title">{{ $req->aprobador_nombre ?? 'Persi Llamocca Gutierrez' }}</div>
         <div class="role">{{ $req->aprobador_cargo ?? 'Jefe de Operaciones del Lote IX' }}</div>
       </td>
     </tr>
