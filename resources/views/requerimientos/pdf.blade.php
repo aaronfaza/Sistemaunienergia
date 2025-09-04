@@ -256,7 +256,7 @@
       </td>
       <td class="box">
         <div class="sign-placeholder"></div>
-        <div class="destino-title">{{ $req->aprobador_nombre ?? 'Persi Llamocca Gutierrez' }}</div>
+        <div class="destino-title">{{ $req->aprobador_nombre ?? 'Juan Ticlla Enciso' }}</div>
         <div class="role">{{ $req->aprobador_cargo ?? 'Jefe de Operaciones del Lote IX' }}</div>
       </td>
     </tr>
