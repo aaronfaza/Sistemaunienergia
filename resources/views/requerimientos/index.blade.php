@@ -391,10 +391,15 @@
               <div class="col-12 col-md-6 mb-3">
                 <label for="cargo_solicitante" class="mb-1">Cargo</label>
                 <div class="input-group">
-                  <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-id-badge"></i></span></div>
-                  <input type="text" id="cargo_solicitante" name="cargo_solicitante" class="form-control" value="{{ old('cargo_solicitante') }}" required>
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
+                  </div>
+                  <input type="text" id="cargo_solicitante" name="cargo_solicitante" class="form-control"
+                        value="{{ Auth::user()->cargo ?? '' }}" readonly required>
                 </div>
-                @error('cargo_solicitante') <small class="text-danger d-block">{{ $message }}</small> @enderror
+                @error('cargo_solicitante')
+                  <small class="text-danger d-block">{{ $message }}</small>
+                @enderror
               </div>
 
               <div class="col-12 col-md-6 mb-3">
