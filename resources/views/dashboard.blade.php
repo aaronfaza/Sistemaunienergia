@@ -91,11 +91,10 @@
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
 
-  <!-- Navbar -->
+ <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-uni">
     <div class="container-fluid d-flex justify-content-between align-items-center">
-      <!-- Menú lateral + logo -->
-      <ul class="navbar-nav align-items-center">
+      <ul class="navbar-nav d-flex align-items-center">
         <li class="nav-item">
           <a class="nav-link" data-widget="pushmenu" href="#" role="button" aria-label="Abrir menú">
             <i class="fas fa-bars fa-lg"></i>
@@ -106,25 +105,25 @@
         </li>
       </ul>
 
-      <!-- Notificaciones + Usuario -->
-      <ul class="navbar-nav ml-auto align-items-center">
+      <!-- Notificaciones + Perfil -->
+      <ul class="navbar-nav ml-auto d-flex align-items-center">
         <!-- Notificaciones -->
         <li class="nav-item dropdown mr-3">
-          <a class="nav-link position-relative" href="#" id="notificacionesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-bell fa-lg"></i>
+          <a class="nav-link position-relative" href="#" id="notificacionesDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-bell fa-lg text-white"></i>
             @if($notificaciones->count() > 0)
-              <span id="notiBadge" class="badge badge-danger badge-narrow position-absolute" style="top:-4px; right:-8px;">
+              <span id="notiBadge" class="badge badge-danger position-absolute" style="top:-4px;right:-8px;font-size:.65rem;">
                 {{ $notificaciones->count() }}
               </span>
             @endif
           </a>
-          <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" aria-labelledby="notificacionesDropdown" style="min-width:300px; max-height:400px; overflow-y:auto;">
-            <h6 class="dropdown-header text-dark">🔔 Últimos registros</h6>
+          <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" aria-labelledby="notificacionesDropdown" style="min-width:300px;max-height:400px;overflow-y:auto;">
+            <h6 class="dropdown-header font-weight-bold text-dark">🔔 Últimos registros</h6>
             <div class="dropdown-divider"></div>
             @forelse($notificaciones as $notificacion)
               <div class="dropdown-item">
                 <div class="d-flex flex-column">
-                  <span class="font-weight-bold text-primary">{{ $notificacion->titulo }}</span>
+                  <span class="font-weight-bold text-primary">{{ $notificacion->titulo ?? ('Requerimiento '.$notificacion->codigo) }}</span>
                   <small class="text-muted">{{ \Carbon\Carbon::parse($notificacion->created_at)->format('d/m/Y H:i') }}</small>
                 </div>
               </div>
@@ -136,25 +135,22 @@
 
         <!-- Usuario -->
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle d-flex align-items-center px-3 py-2 rounded-pill shadow-sm"
-             href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-             style="background-color: var(--brand-primary-dark); color:#fff;">
-            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=32"
-                 alt="Avatar" class="rounded-circle" width="32" height="32">
+          <a class="nav-link dropdown-toggle d-flex align-items-center px-3 py-2 rounded-pill shadow-sm text-white"
+             href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-expanded="false"
+             style="background-color: var(--brand-primary-dark);">
+            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=32" alt="Avatar" class="rounded-circle" width="32" height="32">
             <span class="d-none d-md-inline font-weight-semibold ml-2">{{ Auth::user()->name }}</span>
           </a>
-          <div class="dropdown-menu dropdown-menu-right shadow-sm border-0">
+          <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" style="border-radius:12px;min-width:240px;">
             <div class="dropdown-item text-center bg-light py-3">
-              <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=64"
-                   alt="Avatar" class="rounded-circle mb-2">
+              <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=64" alt="Avatar" class="rounded-circle mb-2">
               <strong class="text-dark d-block">{{ Auth::user()->name }}</strong>
               <p class="text-muted small mb-0">Usuario activo</p>
             </div>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item d-flex align-items-center px-3 py-2 text-danger"
-               href="{{ route('logout') }}"
+            <a class="dropdown-item d-flex align-items-center px-3 py-2 text-danger" href="{{ route('logout') }}"
                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-              <i class="fas fa-sign-out-alt mr-2"></i> Cerrar sesión
+              <i class="fas fa-sign-out-alt mr-2"></i> <span>Cerrar sesión</span>
             </a>
           </div>
         </li>
@@ -164,13 +160,13 @@
 
   <!-- Sidebar -->
   <aside class="main-sidebar elevation-4">
-    <a href="#" class="brand-link d-flex align-items-center justify-content-center py-3 brand-area">
-      <img src="{{ asset('img/logo.png.png') }}" alt="Logo" style="width:25px;height:25px;margin-right:8px;">
-      <span class="brand-text font-weight-bold brand-text">UNIENERGIA ABC</span>
+    <a href="#" class="brand-link text-center brand-area">
+      <img src="{{ asset('img/logo.png.png') }}" style="width:25px;height:25px;margin-right:8px;">
+      <span class="brand-text font-weight-bold">UNIENERGIA ABC</span>
     </a>
     <div class="sidebar">
       <nav class="mt-3">
-        <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
+        <ul class="nav nav-pills nav-sidebar flex-column">
           <li class="nav-item">
             <a href="{{ route('reportes.index') }}" class="nav-link {{ request()->routeIs('reportes.*') ? 'active' : '' }}">
               <i class="nav-icon fas fa-tools" style="color: var(--brand-accent);"></i>
