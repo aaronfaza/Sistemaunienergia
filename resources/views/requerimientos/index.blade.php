@@ -109,7 +109,87 @@
     #wrapTablaDetalles{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
     @media (max-width:576px){ #modalAgregar .table-items{ font-size:.92rem; } }
 
+    /* === ESTILOS PARA TARJETAS KPI === */
+
+.dashboard-safe-container{
+  padding-left: clamp(16px, 4vw, 36px);
+  padding-right: clamp(16px, 4vw, 36px);
+}
+
+.stat-row{
+  margin-left: -8px;
+  margin-right: -8px;
+}
+.stat-row > [class*="col-"]{
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+/* En pantallas grandes (>=992px), fuerza 3 tarjetas en una sola fila */
+@media (min-width: 992px){
+  .stat-row-lg-nowrap{
+    flex-wrap: nowrap !important;
+  }
+}
+
+.stat-card{
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fff, #fbfcff);
+  box-shadow: 0 6px 16px rgba(20,30,58,0.1);
+  border: 1px solid #eef2f7;
+  transition: transform .2s ease, box-shadow .2s ease;
+  min-height: 96px;
+}
+.stat-card:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(20,30,58,0.12);
+}
+
+.stat-icon{
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: #eef4ff;
+}
+.stat-icon i{
+  font-size: 20px;
+}
+
+/* Colores corporativos */
+.is-primary .stat-icon{ background: rgba(13,110,253,.12); color: #0d6efd; }
+.is-info .stat-icon{ background: rgba(43,183,246,.12); color: #2bb7f6; }
+.is-success .stat-icon{ background: rgba(24,181,143,.12); color: #18b58f; }
+
+.stat-meta{
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: #25334a;
+}
+.stat-kpi span{
+  font-weight: 700;
+  font-size: clamp(20px, 3.5vw, 28px);
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+.stat-label{
+  font-size: .85rem;
+  opacity: .8;
+}
+
+
+
   </style>
+   
+
 </head>
 <body class="hold-transition sidebar-mini">
 
@@ -221,45 +301,54 @@
       </div>
     </div>
 
-    {{-- Filtros --}}
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <div class="px-3 w-100">
-        <form action="{{ route('requerimientos.index') }}" method="GET" class="form-row align-items-end">
-          <div class="col-12 col-sm-6 col-md-3 mb-2">
-            <label for="filtro_codigo" class="mb-0 small text-muted">Código</label>
-            <input type="text" id="filtro_codigo" name="codigo" class="form-control" placeholder="Ej: REQ-2025-001" value="{{ request('codigo') }}">
-          </div>
-          <div class="col-6 col-md-2 mb-2">
-            <label for="fecha_filtro" class="mb-0 small text-muted">Fecha</label>
-            <input type="date" id="fecha_filtro" name="fecha" class="form-control" value="{{ request('fecha') }}">
-          </div>
-          <div class="col-12 col-sm-6 col-md-3 mb-2">
-            <label for="area_solicitante" class="mb-0 small text-muted">Área</label>
-            @php
-              $areas = ['Ingenieria de Produccion y Facilidades','HSE','Administracion','Logistica','Mantenimiento','Produccion'];
-            @endphp
-            <select name="area_solicitante" id="area_solicitante" class="form-control">
-              <option value="">Todas</option>
-              @foreach($areas as $area)
-                <option value="{{ $area }}" {{ request('area_solicitante')===$area ? 'selected' : '' }}>{{ $area }}</option>
-              @endforeach
-            </select>
-          </div>
-          <div class="col-12 col-sm-6 col-md-3 mb-2">
-            <label for="nombre_solicitante" class="mb-0 small text-muted">Solicitante</label>
-            <input type="text" id="nombre_solicitante" name="nombre_solicitante" class="form-control" placeholder="Nombre solicitante" value="{{ request('nombre_solicitante') }}">
-          </div>
-          <div class="col-6 col-md-1 mb-2">
-            <button type="submit" class="btn btn-primary btn-block">
-              <i class="fas fa-search mr-1"></i> Buscar
-            </button>
-          </div>
-          <div class="col-6 col-md-1 mb-2">
-            <a href="{{ route('requerimientos.index') }}" class="btn btn-outline-secondary btn-block">Limpiar</a>
-          </div>
-        </form>
+   
+<div class="dashboard-safe-container kpi-block">
+  <div class="row stat-row stat-row-lg-nowrap">
+    {{-- TOTAL --}}
+    <div class="col-12 col-sm-6 col-md-4">
+      <div class="stat-card is-primary">
+        <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+        <div class="stat-meta">
+          <div class="stat-kpi"><span>{{ $total }}</span></div>
+          <div class="stat-label">Total de requerimientos</div>
+        </div>
       </div>
     </div>
+
+    {{-- ESTE MES --}}
+    <div class="col-12 col-sm-6 col-md-4">
+      <div class="stat-card is-info">
+        <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+        <div class="stat-meta">
+          <div class="stat-kpi"><span>{{ $esteMes }}</span></div>
+          <div class="stat-label">Registrados este mes</div>
+        </div>
+      </div>
+    </div>
+
+    {{-- HOY --}}
+    <div class="col-12 col-sm-6 col-md-4">
+      <div class="stat-card is-success">
+        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+        <div class="stat-meta">
+          <div class="stat-kpi"><span>{{ $hoy }}</span></div>
+          <div class="stat-label">Registrados hoy</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
 
     <!-- Tabla -->
     <div class="card card-clean mt-3">

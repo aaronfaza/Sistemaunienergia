@@ -17,44 +17,71 @@ class RequerimientoController extends Controller
      */
     public function index(Request $request)
     {
-        $codigo  = trim((string) $request->get('codigo', ''));
-        $fecha   = trim((string) $request->get('fecha', ''));
-        $area    = trim((string) $request->get('area_solicitante', ''));
-        $nombre  = trim((string) $request->get('nombre_solicitante', ''));
+       
+         $codigo  = trim((string) $request->get('codigo', ''));
+    $fecha   = trim((string) $request->get('fecha', ''));
+    $area    = trim((string) $request->get('area_solicitante', ''));
+    $nombre  = trim((string) $request->get('nombre_solicitante', ''));
 
-        $query = Requerimiento::query();
+    $query = Requerimiento::query();
 
-        if ($codigo !== '') {
-            $query->where('codigo', 'like', "%{$codigo}%");
-        }
+    if ($codigo !== '') {
+        $query->where('codigo', 'like', "%{$codigo}%");
+    }
 
-        if ($fecha !== '') {
-            $query->whereDate('fecha', $fecha);
-        }
+    if ($fecha !== '') {
+        $query->whereDate('fecha', $fecha);
+    }
 
-        if ($area !== '') {
-            $query->where('area_solicitante', 'like', "%{$area}%");
-        }
+    if ($area !== '') {
+        $query->where('area_solicitante', 'like', "%{$area}%");
+    }
 
-        if ($nombre !== '') {
-            $query->where('nombre_solicitante', 'like', "%{$nombre}%");
-        }
+    if ($nombre !== '') {
+        $query->where('nombre_solicitante', 'like', "%{$nombre}%");
+    }
 
-        $totalRequerimientos = $query->count();
+    $totalRequerimientos = $query->count();
 
-        $requerimientos = $query
-            ->orderByDesc('id')
-            ->paginate(10)
-            ->withQueryString();
+    $requerimientos = $query
+        ->orderByDesc('id')
+        ->paginate(10)
+        ->withQueryString();
 
-        // para tu dropdown de notificaciones
-        $notificaciones = Requerimiento::latest()->take(5)->get();
+    // para tu dropdown de notificaciones
+    $notificaciones = Requerimiento::latest()->take(5)->get();
 
-        return view('requerimientos.index', compact(
-            'requerimientos',
-            'totalRequerimientos',
-            'notificaciones'
-        ));
+    // ====== KPI / DASHBOARD (globales, sin filtros) ======
+    $total    = Requerimiento::count();
+    $hoy      = Requerimiento::whereDate('created_at', now()->toDateString())->count();
+    $esteMes  = Requerimiento::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count();
+
+    // Top de áreas con más requerimientos
+    $porArea = Requerimiento::select('area_solicitante as area', DB::raw('COUNT(*) as total'))
+        ->groupBy('area')
+        ->orderByDesc('total')
+        ->limit(5)
+        ->get();
+
+    // Últimos requerimientos
+    $recientes = Requerimiento::select('id','codigo','area_solicitante','nombre_solicitante','created_at')
+        ->orderByDesc('created_at')
+        ->limit(8)
+        ->get();
+
+    return view('requerimientos.index', compact(
+        // Listado + filtros
+        'requerimientos',
+        'totalRequerimientos',
+        'notificaciones',
+        // Dashboard
+        'total',
+        'hoy',
+        'esteMes',
+        'porArea',
+        'recientes'
+    ));
+
     }
 
     /** Vista de creación (si la usas). */
@@ -77,7 +104,7 @@ class RequerimientoController extends Controller
         ]);
 
         $request->validate([
-            'codigo'             => 'required|string', // sin unique (puedes poner unique si lo deseas)
+            'codigo'             => 'required|string', // sin unique 
             'fecha'              => 'required|date',
             'area_solicitante'   => 'required|string',
             'nombre_solicitante' => 'required|string',

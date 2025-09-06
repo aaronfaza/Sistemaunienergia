@@ -189,7 +189,9 @@
     <div class="content-header py-3 border-bottom">
       <div class="container-fluid">
         <h1 class="m-0 heading-font" style="color:#333;">Bienvenido, {{ Auth::user()->name }}</h1>
-
+         <h5 class="text-muted" style="margin-top:4px;">
+        {{ Auth::user()->cargo ?? 'Cargo no asignado' }}
+        </h5>
         @if(session('success'))
           <div class="alert alert-success alert-dismissible fade show mt-3 shadow-sm" role="alert" style="border-left:4px solid var(--brand-accent);">
             <i class="fas fa-check-circle mr-2" style="color: var(--brand-accent);"></i>
