@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -33,15 +31,28 @@
       --sidebar-bg: #121212;      /* fondo cabecera sidebar */
       --sidebar-main: #1F1F1F;    /* fondo cuerpo sidebar */
       --text-on-brand: #ffffff;
+
+      /* Alturas para layout sticky */
+      --header-h: 56px;  /* ajusta si tu navbar es más alto */
+      --footer-h: 44px;  /* pon 0 si no quieres footer fijo */
     }
 
-    /* Tipografía de títulos */
-    .heading-font { font-family: 'Montserrat', sans-serif; }
-
-    /* Navbar estilizado */
+    /* ========== LAYOUT: navbar/sidebar fijos y scroll SOLO en el contenido ========== */
+    html, body{
+      height: 100%;
+      overflow: hidden; /* bloquea scroll global */
+    }
+    .wrapper{
+      height: 100vh;
+      overflow: hidden;
+    }
+    /* Navbar */
     .navbar-uni { background-color: var(--brand-primary); box-shadow: 0 2px 4px rgba(0,0,0,.2); }
     .navbar-uni .nav-link, .navbar-uni .navbar-brand { color: var(--text-on-brand); }
     .navbar-uni .nav-link:hover { opacity: .9; }
+    .main-header{
+      position: sticky; top: 0; z-index: 1035; height: var(--header-h);
+    }
 
     /* Sidebar */
     .main-sidebar { background-color: var(--sidebar-main) !important; }
@@ -56,6 +67,26 @@
     .nav-icon.text-info { color: var(--brand-info) !important; }
     .nav-icon.text-success { color: var(--brand-accent) !important; }
 
+    /* Contenido: ÚNICO que scrollea */
+    .content-wrapper{
+      background-color:#f8f9fa;
+      height: calc(100vh - var(--header-h) - var(--footer-h));
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Footer fijo abajo (quítalo si no lo quieres fijo) */
+    .main-footer{
+      position: sticky; bottom: 0; z-index: 1020; background:#fff;
+    }
+
+    @media (min-width: 992px){
+      :root{ --header-h: 64px; } /* header un poco más alto en desktop */
+    }
+
+    /* Tipografía de títulos */
+    .heading-font { font-family: 'Montserrat', sans-serif; }
+
     /* Cards */
     .card-clean { border: 1px solid rgba(0,0,0,.06); box-shadow: 0 2px 10px rgba(0,0,0,.04); }
 
@@ -64,13 +95,10 @@
     .btn-brand:hover { background-color: var(--brand-accent-dark); border-color: var(--brand-accent-dark); color:#fff; }
     .btn-outline-brand { border-color: var(--brand-accent); color: var(--brand-accent); }
     .btn-outline-brand:hover { background-color: var(--brand-accent); color:#fff; }
-
     .btn-primary { background-color: var(--brand-primary); border-color: var(--brand-primary); }
     .btn-primary:hover { background-color: var(--brand-primary-dark); border-color: var(--brand-primary-dark); }
-
     .btn-info { background-color: var(--brand-info); border-color: var(--brand-info); }
     .btn-danger { background-color: var(--brand-danger); border-color: var(--brand-danger); }
-
     .btn-fw { font-weight: 600; }
 
     /* Badges noti */
@@ -88,7 +116,8 @@
   </style>
 </head>
 
-<body class="hold-transition sidebar-mini">
+<!-- body fijo para que solo scrollee el content -->
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
 <div class="wrapper">
 
  <!-- Navbar -->
@@ -167,6 +196,15 @@
     <div class="sidebar">
       <nav class="mt-3">
         <ul class="nav nav-pills nav-sidebar flex-column">
+
+           <li class="nav-item">
+          <a href="{{ route('bienvenida') }}" 
+             class="nav-link {{ request()->routeIs('bienvenida') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-home" style="color: var(--brand-secondary);"></i>
+            <p class="ml-2 mb-0">Bienvenida</p>
+          </a>
+        </li>
+
           <li class="nav-item">
             <a href="{{ route('reportes.index') }}" class="nav-link {{ request()->routeIs('reportes.*') ? 'active' : '' }}">
               <i class="nav-icon fas fa-tools" style="color: var(--brand-accent);"></i>
@@ -184,14 +222,13 @@
     </div>
   </aside>
 
-  <!-- Contenido principal -->
-  <div class="content-wrapper" style="background-color:#f8f9fa;">
+  <!-- Contenido principal (SCROLL AQUÍ) -->
+  <div class="content-wrapper">
     <div class="content-header py-3 border-bottom">
       <div class="container-fluid">
-        <h1 class="m-0 heading-font" style="color:#333;">Bienvenido, {{ Auth::user()->name }}</h1>
-         <h5 class="text-muted" style="margin-top:4px;">
-        {{ Auth::user()->cargo ?? 'Cargo no asignado' }}
-        </h5>
+        <h1 class="m-0 heading-font" style="color:#333;">Registro de Mantenimiento</h1>
+        <h5 class="text-muted" style="margin-top:4px;">Servicios Mecanicos</h5>
+
         @if(session('success'))
           <div class="alert alert-success alert-dismissible fade show mt-3 shadow-sm" role="alert" style="border-left:4px solid var(--brand-accent);">
             <i class="fas fa-check-circle mr-2" style="color: var(--brand-accent);"></i>
@@ -291,15 +328,13 @@
             </table>
           </div>
 
-          <!-- SIN paginador manual Bootstrap (lo removimos) -->
-
           <div class="px-3 py-2 text-right">
             <span class="text-muted">Total de reportes: <strong>{{ $reportes->count() }}</strong></span>
           </div>
         </div>
       </div>
-    </div>
-  </div>
+    </div> <!-- /.container-fluid -->
+  </div> <!-- /.content-wrapper -->
 
   <!-- Footer -->
   <footer class="main-footer text-center">
@@ -312,7 +347,6 @@
 </form>
 
 <!-- ========== Modales ========== -->
-
 @foreach($reportes as $reporte)
 <div class="modal fade" id="editarModal{{ $reporte->id }}" tabindex="-1" role="dialog" aria-labelledby="editarLabel{{ $reporte->id }}" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
@@ -495,7 +529,7 @@
     // Ocultar badge de notificaciones al abrir
     $('#notificacionesDropdown').on('click', function () { $('#notiBadge').hide(); });
 
-    // DataTables para reportes (sin fila colspan y sin paginador custom)
+    // DataTables para reportes
     $('#tablaReportes').DataTable({
       responsive: true,
       autoWidth: false,

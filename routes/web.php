@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReporteMantenimientoController;
 use App\Http\Controllers\InspeccionVehicularController;
 use App\Http\Controllers\RequerimientoController;
+use App\Http\Controllers\DashboardWelcomeController;
 
 // Redirect al login por defecto
 Route::get('/', function () {
@@ -33,6 +34,12 @@ Route::middleware(['auth'])->group(function () {
         ->parameters(['inspecciones' => 'inspeccione']); // para el model binding
 
     Route::resource('requerimientos', RequerimientoController::class);
+    
+
+    Route::get('/bienvenida', [DashboardWelcomeController::class, 'index'])
+        ->middleware(['auth']) // opcional
+        ->name('bienvenida');
+
     
 
 });

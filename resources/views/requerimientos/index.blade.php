@@ -7,7 +7,7 @@
 
   <link rel="icon" href="{{ asset('img/logo.png.png') }}" type="image/png">
 
-  <!-- AdminLTE 3 + Bootstrap 4 coherentes -->
+  <!-- AdminLTE 3 + Bootstrap 4 -->
   <link rel="stylesheet" href="{{ asset('adminlte/plugins/fontawesome-free/css/all.min.css') }}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
@@ -22,26 +22,44 @@
   <style>
     /* ===== Paleta corporativa ===== */
     :root{
-      --brand-primary: #003366;      /* azul corporativo */
+      --brand-primary: #003366;
       --brand-primary-dark: #002B5C;
-      --brand-accent: #00A86B;       /* verde acento */
+      --brand-accent: #00A86B;
       --brand-accent-dark: #038b5a;
       --brand-info: #17a2b8;
       --sidebar-bg: #121212;
       --sidebar-main: #1F1F1F;
       --text-on-brand: #ffffff;
+
+      /* Alturas para layout sticky */
+      --header-h: 56px;   /* ajusta si tu navbar es más alto */
+      --footer-h: 44px;   /* pon 0 si no quieres footer fijo */
     }
 
     .heading-font { font-family:'Montserrat',sans-serif; }
-        /* Evitar que el usuario cambie el tamaño del textarea */
     .no-resize { resize: none !important; }
-
-    /* Un poco más alto de lo usual (mejor lectura/escritura) */
     .tall-textarea { min-height: 70px; }
-    /* Navbar */
+
+    /* ====== LAYOUT: navbar/sidebar fijos y scroll SOLO en el contenido ====== */
+    html, body{
+      height: 100%;
+      overflow: hidden; /* El documento no scrollea */
+    }
+    .wrapper{
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Navbar fijo */
     .navbar-uni { background: var(--brand-primary); box-shadow:0 2px 4px rgba(0,0,0,.2); }
     .navbar-uni .nav-link { color:#fff; }
     .navbar-uni .nav-link:hover { opacity:.9; }
+    .main-header{
+      position: sticky;
+      top: 0;
+      z-index: 1035;
+      height: var(--header-h);
+    }
 
     /* Sidebar */
     .main-sidebar { background-color: var(--sidebar-main)!important; }
@@ -56,6 +74,26 @@
     .nav-icon.text-info{ color: var(--brand-info)!important; }
     .nav-icon.text-success{ color: var(--brand-accent)!important; }
 
+    /* El área que SÍ scrollea */
+    .content-wrapper{
+      background-color:#f8f9fa;
+      height: calc(100vh - var(--header-h) - var(--footer-h));
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Footer fijo abajo (opcional) */
+    .main-footer{
+      position: sticky;
+      bottom: 0;
+      z-index: 1020;
+      background:#fff;
+    }
+
+    @media (min-width: 992px){
+      :root{ --header-h: 64px; }
+    }
+
     /* Botones corporativos */
     .btn-brand { background: var(--brand-accent); border-color: var(--brand-accent); color:#fff; }
     .btn-brand:hover { background: var(--brand-accent-dark); border-color: var(--brand-accent-dark); color:#fff; }
@@ -64,17 +102,11 @@
     .btn-primary { background: var(--brand-primary); border-color: var(--brand-primary); }
     .btn-primary:hover { background: var(--brand-primary-dark); border-color: var(--brand-primary-dark); }
 
-    /* Cards */
+    /* Cards y tablas */
     .card-clean { border:1px solid rgba(0,0,0,.06); box-shadow: 0 2px 10px rgba(0,0,0,.04); }
-
-    /* DataTable */
     table.dataTable thead th{ white-space: nowrap; }
     .table thead th{ font-weight:600; }
-
-    /* Acciones wrap */
     .actions-wrap { display:inline-flex; gap:.25rem; flex-wrap:wrap; justify-content:center; }
-
-    /* Ajustes tabla principal */
     #tablaRequerimientos td, #tablaRequerimientos th { white-space: nowrap; }
     @media (max-width:576px){
       #tablaRequerimientos td:nth-child(3),
@@ -110,89 +142,65 @@
     @media (max-width:576px){ #modalAgregar .table-items{ font-size:.92rem; } }
 
     /* === ESTILOS PARA TARJETAS KPI === */
-
-.dashboard-safe-container{
-  padding-left: clamp(16px, 4vw, 36px);
-  padding-right: clamp(16px, 4vw, 36px);
-}
-
-.stat-row{
-  margin-left: -8px;
-  margin-right: -8px;
-}
-.stat-row > [class*="col-"]{
-  padding-left: 8px;
-  padding-right: 8px;
-}
-
-/* En pantallas grandes (>=992px), fuerza 3 tarjetas en una sola fila */
-@media (min-width: 992px){
-  .stat-row-lg-nowrap{
-    flex-wrap: nowrap !important;
-  }
-}
-
-.stat-card{
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
-  border-radius: 14px;
-  background: linear-gradient(180deg, #fff, #fbfcff);
-  box-shadow: 0 6px 16px rgba(20,30,58,0.1);
-  border: 1px solid #eef2f7;
-  transition: transform .2s ease, box-shadow .2s ease;
-  min-height: 96px;
-}
-.stat-card:hover{
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(20,30,58,0.12);
-}
-
-.stat-icon{
-  flex: 0 0 auto;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  background: #eef4ff;
-}
-.stat-icon i{
-  font-size: 20px;
-}
-
-/* Colores corporativos */
-.is-primary .stat-icon{ background: rgba(13,110,253,.12); color: #0d6efd; }
-.is-info .stat-icon{ background: rgba(43,183,246,.12); color: #2bb7f6; }
-.is-success .stat-icon{ background: rgba(24,181,143,.12); color: #18b58f; }
-
-.stat-meta{
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  color: #25334a;
-}
-.stat-kpi span{
-  font-weight: 700;
-  font-size: clamp(20px, 3.5vw, 28px);
-  letter-spacing: -0.5px;
-  line-height: 1;
-}
-.stat-label{
-  font-size: .85rem;
-  opacity: .8;
-}
-
-
-
+    .dashboard-safe-container{
+      padding-left: clamp(16px, 4vw, 36px);
+      padding-right: clamp(16px, 4vw, 36px);
+    }
+    .stat-row{
+      margin-left: -8px;
+      margin-right: -8px;
+    }
+    .stat-row > [class*="col-"]{
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+    /* En desktop: 3 tarjetas en una sola fila */
+    @media (min-width: 992px){
+      .stat-row-lg-nowrap{ flex-wrap: nowrap !important; }
+    }
+    .stat-card{
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #fff, #fbfcff);
+      box-shadow: 0 6px 16px rgba(20,30,58,0.1);
+      border: 1px solid #eef2f7;
+      transition: transform .2s ease, box-shadow .2s ease;
+      min-height: 96px;
+    }
+    .stat-card:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(20,30,58,0.12);
+    }
+    .stat-icon{
+      flex: 0 0 auto;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: #eef4ff;
+    }
+    .stat-icon i{ font-size: 20px; }
+    .is-primary .stat-icon{ background: rgba(13,110,253,.12); color: #0d6efd; }
+    .is-info .stat-icon{ background: rgba(43,183,246,.12); color: #2bb7f6; }
+    .is-success .stat-icon{ background: rgba(24,181,143,.12); color: #18b58f; }
+    .stat-meta{ display: flex; flex-direction: column; gap: 2px; color: #25334a; }
+    .stat-kpi span{
+      font-weight: 700;
+      font-size: clamp(20px, 3.5vw, 28px);
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+    .stat-label{ font-size: .85rem; opacity: .8; }
   </style>
-   
-
 </head>
-<body class="hold-transition sidebar-mini">
 
+<!-- body con navbar/slider fijo y layout fijo -->
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
 <div class="wrapper">
 
   <!-- Navbar -->
@@ -209,7 +217,6 @@
         </li>
       </ul>
 
-      <!-- Notificaciones + Perfil -->
       <ul class="navbar-nav ml-auto d-flex align-items-center">
         <!-- Notificaciones -->
         <li class="nav-item dropdown mr-3">
@@ -262,7 +269,7 @@
     </div>
   </nav>
 
-  <!-- Sidebar -->
+    <!-- Sidebar -->
   <aside class="main-sidebar elevation-4">
     <a href="#" class="brand-link text-center brand-area">
       <img src="{{ asset('img/logo.png.png') }}" style="width:25px;height:25px;margin-right:8px;">
@@ -271,6 +278,15 @@
     <div class="sidebar">
       <nav class="mt-3">
         <ul class="nav nav-pills nav-sidebar flex-column">
+
+           <li class="nav-item">
+          <a href="{{ route('bienvenida') }}" 
+             class="nav-link {{ request()->routeIs('bienvenida') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-home" style="color: var(--brand-secondary);"></i>
+            <p class="ml-2 mb-0">Bienvenida</p>
+          </a>
+        </li>
+
           <li class="nav-item">
             <a href="{{ route('reportes.index') }}" class="nav-link {{ request()->routeIs('reportes.*') ? 'active' : '' }}">
               <i class="nav-icon fas fa-tools" style="color: var(--brand-accent);"></i>
@@ -287,9 +303,8 @@
       </nav>
     </div>
   </aside>
-
-  <!-- Contenido principal -->
-  <div class="content-wrapper" style="background-color:#f8f9fa;">
+  <!-- Contenido principal (SCROLL AQUÍ) -->
+  <div class="content-wrapper">
     <div class="content-header py-3 border-bottom">
       <div class="container-fluid d-flex justify-content-between align-items-center">
         <h1 class="m-0 font-weight-semibold heading-font" style="color:#333;">
@@ -301,114 +316,99 @@
       </div>
     </div>
 
-   
-<div class="dashboard-safe-container kpi-block">
-  <div class="row stat-row stat-row-lg-nowrap">
-    {{-- TOTAL --}}
-    <div class="col-12 col-sm-6 col-md-4">
-      <div class="stat-card is-primary">
-        <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
-        <div class="stat-meta">
-          <div class="stat-kpi"><span>{{ $total }}</span></div>
-          <div class="stat-label">Total de requerimientos</div>
+    <!-- KPI -->
+    <div class="dashboard-safe-container kpi-block">
+      <div class="row stat-row stat-row-lg-nowrap">
+        <div class="col-12 col-sm-6 col-md-4">
+          <div class="stat-card is-primary">
+            <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+            <div class="stat-meta">
+              <div class="stat-kpi"><span>{{ $total }}</span></div>
+              <div class="stat-label">Total de requerimientos</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4">
+          <div class="stat-card is-info">
+            <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+            <div class="stat-meta">
+              <div class="stat-kpi"><span>{{ $esteMes }}</span></div>
+              <div class="stat-label">Registrados este mes</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4">
+          <div class="stat-card is-success">
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+            <div class="stat-meta">
+              <div class="stat-kpi"><span>{{ $hoy }}</span></div>
+              <div class="stat-label">Registrados hoy</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-
-    {{-- ESTE MES --}}
-    <div class="col-12 col-sm-6 col-md-4">
-      <div class="stat-card is-info">
-        <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
-        <div class="stat-meta">
-          <div class="stat-kpi"><span>{{ $esteMes }}</span></div>
-          <div class="stat-label">Registrados este mes</div>
-        </div>
-      </div>
-    </div>
-
-    {{-- HOY --}}
-    <div class="col-12 col-sm-6 col-md-4">
-      <div class="stat-card is-success">
-        <div class="stat-icon"><i class="fas fa-clock"></i></div>
-        <div class="stat-meta">
-          <div class="stat-kpi"><span>{{ $hoy }}</span></div>
-          <div class="stat-label">Registrados hoy</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
 
     <!-- Tabla -->
-    <div class="card card-clean mt-3">
-      <div class="card-header bg-white border-bottom text-center">
-        <h3 class="card-title mb-0 font-weight-semibold heading-font" style="color:#333;">Lista de Requerimientos</h3>
-      </div>
-      <div class="card-body">
-        <div class="table-responsive">
-          <table id="tablaRequerimientos" class="table table-hover table-bordered align-middle text-center" style="width:100%">
-            <thead class="thead-light">
-              <tr class="text-muted">
-                <th data-priority="1">Código</th>
-                <th data-priority="3">Fecha</th>
-                <th data-priority="4">Área solicitante</th>
-                <th data-priority="5">Solicitante</th>
-                <th data-priority="6">Tipo</th>
-                <th data-priority="2">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              @forelse ($requerimientos as $req)
-                <tr>
-                  <td>{{ $req->codigo }}</td>
-                  <td>{{ \Carbon\Carbon::parse($req->fecha)->format('d/m/Y') }}</td>
-                  <td>{{ $req->area_solicitante }}</td>
-                  <td>{{ $req->nombre_solicitante }}</td>
-                  <td>{{ $req->servicio }}</td>
-                  <td>
-                    <span class="actions-wrap">
-                     <a href="{{ route('requerimientos.show', $req->id) }}"
-                      class="btn btn-sm btn-outline-info"
-                      title="Ver (PDF)" 
-                      target="_blank" 
-                      rel="noopener noreferrer">
-                      <i class="fas fa-eye"></i>
-                    </a>
-                      {{-- Eliminar --}}
-                      <form action="{{ route('requerimientos.destroy', $req->id) }}" method="POST" class="d-inline-block"
-                            onsubmit="return confirm('¿Eliminar el requerimiento {{ $req->codigo }}? Esta acción no se puede deshacer.');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger" title="Eliminar">
-                          <i class="fas fa-trash"></i>
-                        </button>
-                      </form>
-                    </span>
-                  </td>
+    <div class="container-fluid">
+      <div class="card card-clean mt-3">
+        <div class="card-header bg-white border-bottom text-center">
+          <h3 class="card-title mb-0 font-weight-semibold heading-font" style="color:#333;">Lista de Requerimientos</h3>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table id="tablaRequerimientos" class="table table-hover table-bordered align-middle text-center" style="width:100%">
+              <thead class="thead-light">
+                <tr class="text-muted">
+                  <th data-priority="1">Código</th>
+                  <th data-priority="3">Fecha</th>
+                  <th data-priority="4">Área solicitante</th>
+                  <th data-priority="5">Solicitante</th>
+                  <th data-priority="6">Tipo</th>
+                  <th data-priority="2">Acciones</th>
                 </tr>
-              @empty
-                {{-- DataTables mostrará "emptyTable" --}}
-              @endforelse
-            </tbody>
-          </table>
-        </div>
-        <div class="px-3 py-2 text-right">
-          <span class="text-muted">Total de requerimientos: <strong>{{ $requerimientos->count() }}</strong></span>
+              </thead>
+              <tbody>
+                @forelse ($requerimientos as $req)
+                  <tr>
+                    <td>{{ $req->codigo }}</td>
+                    <td>{{ \Carbon\Carbon::parse($req->fecha)->format('d/m/Y') }}</td>
+                    <td>{{ $req->area_solicitante }}</td>
+                    <td>{{ $req->nombre_solicitante }}</td>
+                    <td>{{ $req->servicio }}</td>
+                    <td>
+                      <span class="actions-wrap">
+                        <a href="{{ route('requerimientos.show', $req->id) }}"
+                           class="btn btn-sm btn-outline-info"
+                           title="Ver (PDF)" 
+                           target="_blank" 
+                           rel="noopener noreferrer">
+                          <i class="fas fa-eye"></i>
+                        </a>
+                        <form action="{{ route('requerimientos.destroy', $req->id) }}" method="POST" class="d-inline-block"
+                              onsubmit="return confirm('¿Eliminar el requerimiento {{ $req->codigo }}? Esta acción no se puede deshacer.');">
+                          @csrf
+                          @method('DELETE')
+                          <button type="submit" class="btn btn-sm btn-danger" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </form>
+                      </span>
+                    </td>
+                  </tr>
+                @empty
+                  {{-- DataTables mostrará "emptyTable" --}}
+                @endforelse
+              </tbody>
+            </table>
+          </div>
+          <div class="px-3 py-2 text-right">
+            <span class="text-muted">Total de requerimientos en página: <strong>{{ $requerimientos->count() }}</strong></span>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+    </div><!-- /.container-fluid -->
+  </div><!-- /.content-wrapper -->
 
   <!-- Footer -->
   <footer class="main-footer text-center">
@@ -416,7 +416,7 @@
   </footer>
 </div>
 
-<!-- ===== Modal Crear Requerimiento (BS4, responsive + UX) ===== -->
+<!-- ===== Modal Crear Requerimiento ===== -->
 <div class="modal fade" id="modalAgregar" tabindex="-1" role="dialog" aria-labelledby="modalAgregarLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
     <form method="POST" action="{{ route('requerimientos.store') }}" id="formCrearReq" novalidate>
@@ -522,17 +522,17 @@
                 @error('servicio') <small class="text-danger d-block">{{ $message }}</small> @enderror
               </div>
 
-             <div class="col-12 mb-2">
-              <label for="sustento" class="mb-1">Sustento</label>
-              <textarea
-                id="sustento"
-                name="sustento"
-                class="form-control no-resize tall-textarea"
-                placeholder="Detalle breve del requerimiento..."
-              >{{ old('sustento') }}</textarea>
-              @error('sustento') <small class="text-danger d-block">{{ $message }}</small> @enderror
-              <small class="form-text text-muted">Sea claro y conciso. Puede adjuntar detalles en los ítems.</small>
-            </div>
+              <div class="col-12 mb-2">
+                <label for="sustento" class="mb-1">Sustento</label>
+                <textarea
+                  id="sustento"
+                  name="sustento"
+                  class="form-control no-resize tall-textarea"
+                  placeholder="Detalle breve del requerimiento..."
+                >{{ old('sustento') }}</textarea>
+                @error('sustento') <small class="text-danger d-block">{{ $message }}</small> @enderror
+                <small class="form-text text-muted">Sea claro y conciso. Puede adjuntar detalles en los ítems.</small>
+              </div>
             </div>
 
             <input type="hidden" name="user_id" value="{{ Auth::id() }}">
@@ -606,7 +606,7 @@
   @csrf
 </form>
 
-<!-- ===== Scripts (orden correcto para BS4/AdminLTE3) ===== -->
+<!-- ===== Scripts (orden correcto) ===== -->
 <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('adminlte/dist/js/adminlte.min.js') }}"></script>
@@ -679,9 +679,7 @@
     $('#btnAddItem').on('click', function(){ addRow(); });
 
     $('#btnClearItems').on('click', function(){
-      if(confirm('¿Limpiar todas las filas de ítems?')){
-        $tbody.empty(); idx = 0; addRow();
-      }
+      if(confirm('¿Limpiar todas las filas de ítems?')){ $tbody.empty(); idx = 0; addRow(); }
     });
 
     $tbody.on('click', '.btn-del-row', function(){

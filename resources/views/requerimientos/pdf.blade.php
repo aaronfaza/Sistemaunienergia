@@ -134,9 +134,9 @@
         PARA MATERIALES Y/O SERVICIOS
       </td>
       <td class="meta">
-        CÓDIGO: {{ $req->codigo ?? 'REQ-2024' }}<br>
+        CÓDIGO:  REQ-2024<br>
         VERSIÓN: 01<br>
-        FECHA: {{ \Carbon\Carbon::parse($req->fecha)->format('d/m/Y') }}
+        FECHA: 01/07/2024
       </td>
     </tr>
   </table>
