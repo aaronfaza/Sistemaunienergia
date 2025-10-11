@@ -8,9 +8,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\RequerimientosExport;
+
 
 class RequerimientoController extends Controller
 {
+
+
+    public function exportExcel()
+{
+    return Excel::download(new RequerimientosExport, 'requerimientos_backup_'.now()->format('Ymd_His').'.xlsx');
+}
+    
     /**
      * Listado con filtros y paginación.
      * Filtros: codigo, fecha, area_solicitante, nombre_solicitante.

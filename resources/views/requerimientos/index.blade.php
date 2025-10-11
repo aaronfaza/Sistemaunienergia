@@ -315,7 +315,7 @@
         </button>
       </div>
     </div>
-
+      
     <!-- KPI -->
     <div class="dashboard-safe-container kpi-block">
       <div class="row stat-row stat-row-lg-nowrap">
@@ -348,7 +348,7 @@
         </div>
       </div>
     </div>
-
+   
     <!-- Tabla -->
     <div class="container-fluid">
       <div class="card card-clean mt-3">
@@ -405,9 +405,20 @@
           <div class="px-3 py-2 text-right">
             <span class="text-muted">Total de requerimientos en página: <strong>{{ $requerimientos->count() }}</strong></span>
           </div>
+          <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 px-3 px-md-4">
+          <h5 class="mb-2 mb-md-0 fw-semibold text-primary">
+              <i class="fas fa-file-export me-2"></i> Realizar Backup
+          </h5>
+          <div class="d-flex flex-wrap gap-2">
+              <a href="{{ route('requerimientos.export.excel') }}" class="btn btn-success shadow-sm">
+                  <i class="fas fa-file-excel me-1"></i> Excel
+              </a>
+          </div>
+      </div>
         </div>
       </div>
     </div><!-- /.container-fluid -->
+   
   </div><!-- /.content-wrapper -->
 
   <!-- Footer -->

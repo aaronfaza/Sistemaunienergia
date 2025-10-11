@@ -40,6 +40,11 @@ Route::middleware(['auth'])->group(function () {
         ->middleware(['auth']) // opcional
         ->name('bienvenida');
 
+    Route::get('/requerimientos/export/excel', [RequerimientoController::class, 'exportExcel'])
+    ->name('requerimientos.export.excel');
+
+ 
+
     
 
 });
