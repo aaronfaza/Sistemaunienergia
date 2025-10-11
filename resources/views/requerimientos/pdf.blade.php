@@ -22,6 +22,10 @@
   .sign-table .name, .sign-table .role { font-family: "DejaVu Sans", Arial, Helvetica, sans-serif !important; }
 </style>
 
+
+
+
+
   <style>
     @page { margin: 10mm 12mm; }
     body { font-family: Arial, sans-serif; font-size: 9.8px; margin: 0; }
@@ -67,7 +71,7 @@
     /* Firmas (sin logos) */
     .sign-table{ width:100%; border-collapse:collapse; page-break-inside: avoid; }
     .sign-table th,.sign-table td{ border:1px solid #000; }
-    .sign-table th{ background:#fff; font-weight:800; text-align:center; padding:5px; font-size:11px; }
+    .sign-table th{ background:#fff; font-weight:800; text-align:center; padding:5px; font-size:11px;  }
     .sign-table .box{ height:95px; padding:8px; vertical-align:bottom; text-align:center; }
     .sign-table .name{ font-weight:800; font-size:11px; padding-top:6px; }
     .sign-table .role{ font-size:11px; padding-bottom:6px; }
@@ -117,6 +121,44 @@
   .sign-table .name{ font-weight:600; margin-top:2px; }
   .sign-table .role{ font-size:10px; }
 </style>
+<style>
+
+<style>
+  /* Información general (ajuste fino, filas más juntas) */
+  .info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2px;
+  }
+
+  .info-table td {
+    padding: 1.5px 3px; /* 🔹 Menos espacio vertical */
+    vertical-align: middle; /* 🔹 Centra mejor el texto */
+    line-height: 1.1; /* 🔹 Compacta el texto en cada celda */
+  }
+
+  .info-label {
+    font-weight: bold;
+    width: 155px; /* 🔹 Ligeramente más angosto */
+  }
+
+  .info-destino {
+    vertical-align: top;
+    padding-left: 24px;
+  }
+
+  .info-destino div {
+    margin-bottom: 4px;
+  }
+
+  /* === SUSTENTO (solo líneas horizontales, sin bordes laterales) === */
+.sustento-box {
+  border: none;               /* sin bordes laterales */
+}
+
+
+</style>
+
 
 
 
@@ -232,11 +274,33 @@
 
   <div class="legend"><b>IDEN.:</b> Identificación &nbsp;&nbsp; <b>CANT.:</b> Cantidad &nbsp;&nbsp; <b>UNID.:</b> Unidad</div>
 
-  <!-- SUSTENTO (pequeño) -->
-  <div class="band-blue">SUSTENTO</div>
+
+
+
+<!-- SUSTENTO (mejorado con separación por comas) -->
+<div class="band-blue">SUSTENTO</div>
+
+@php
+    // Divide el texto del sustento en partes al encontrar comas
+    $sustentos = array_filter(array_map('trim', explode(',', $req->sustento ?? '')));
+@endphp
+
+@if (count($sustentos) > 0)
+  <div class="sustento-box sustento-lines">
+    @foreach ($sustentos as $s)
+      <div class="line">
+        {{ mb_strtoupper($s, 'UTF-8') }}
+      </div>
+    @endforeach
+  </div>
+@else
   <div class="sustento-box">
     {{ mb_strtoupper($req->sustento ?? '', 'UTF-8') }}
   </div>
+@endif
+
+
+
 <div style="margin:25px;"></div>
   <!-- FIRMAS (sin logos) -->
   <div class="band-blue">FIRMAS</div>
