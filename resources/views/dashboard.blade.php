@@ -196,7 +196,6 @@
     <div class="sidebar">
       <nav class="mt-3">
         <ul class="nav nav-pills nav-sidebar flex-column">
-
            <li class="nav-item">
           <a href="{{ route('bienvenida') }}" 
              class="nav-link {{ request()->routeIs('bienvenida') ? 'active' : '' }}">
@@ -217,10 +216,18 @@
               <p class="ml-2 mb-0">Requerimientos</p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="{{ route('control_cartas.index') }}" 
+              class="nav-link {{ request()->routeIs('control_cartas.*') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-envelope" style="color: var(--brand-success);"></i>
+                <p class="ml-2 mb-0">Cartas SO-PRO</p>
+            </a>
+          </li>
         </ul>
       </nav>
     </div>
   </aside>
+
 
   <!-- Contenido principal (SCROLL AQUÍ) -->
   <div class="content-wrapper">

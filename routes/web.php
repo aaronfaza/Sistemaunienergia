@@ -5,6 +5,7 @@ use App\Http\Controllers\ReporteMantenimientoController;
 use App\Http\Controllers\InspeccionVehicularController;
 use App\Http\Controllers\RequerimientoController;
 use App\Http\Controllers\DashboardWelcomeController;
+use App\Http\Controllers\ControlCartaController;
 
 // Redirect al login por defecto
 Route::get('/', function () {
@@ -44,6 +45,8 @@ Route::middleware(['auth'])->group(function () {
     ->name('requerimientos.export.excel');
 
  
+   Route::get('/control_cartas', [ControlCartaController::class, 'index'])->name('control_cartas.index');
+   Route::resource('control_cartas', ControlCartaController::class);
 
     
 
