@@ -15,26 +15,18 @@ class ControlCartaController extends Controller
      */
     public function index(Request $request)
     {
-        $buscar = trim($request->get('buscar'));
+        $buscar = $request->get('buscar');
 
-        $cartas = ControlCarta::query()
-            ->when($buscar, function ($query) use ($buscar) {
-                $query->where(function ($q) use ($buscar) {
-                    $q->where('codigo', 'like', "%$buscar%")
-                      ->orWhere('mes', 'like', "%$buscar%")
-                      ->orWhere('servicio_compra', 'like', "%$buscar%")
-                      ->orWhere('descripcion', 'like', "%$buscar%")
-                      ->orWhere('proveedor_elegido', 'like', "%$buscar%")
-                      ->orWhere('nro_orden', 'like', "%$buscar%")
-                      ->orWhere('autorizado_por', 'like', "%$buscar%")
-                      ->orWhere('area', 'like', "%$buscar%");
-                });
-            })
-            ->orderBy('fecha', 'desc')
-            ->paginate(10)
-            ->appends(['buscar' => $buscar]);
+    $cartas = ControlCarta::when($buscar, function ($query, $buscar) {
+            $query->where('codigo', 'like', "%{$buscar}%")
+                  ->orWhere('servicio_compra', 'like', "%{$buscar}%")
+                  ->orWhere('proveedor_elegido', 'like', "%{$buscar}%");
+        })
+        ->orderBy('fecha', 'desc')
+        ->paginate(10) // 👈 cantidad de registros por página
+        ->withQueryString(); // 👈 mantiene el buscador al paginar
 
-        return view('control_cartas.index', compact('cartas', 'buscar'));
+    return view('control_cartas.index', compact('cartas', 'buscar'));
     }
 
     /**
@@ -42,6 +34,10 @@ class ControlCartaController extends Controller
      */
     public function store(Request $request)
     {
+        $data = $request->all();
+        $data['estado'] = $data['estado'] ?? 'Pendiente';
+        ControlCarta::create($data);
+
         $request->validate([
             'codigo' => 'required|unique:control_cartas,codigo',
             'fecha' => 'required|date',
@@ -116,12 +112,29 @@ class ControlCartaController extends Controller
     }
 
     public function exportPdfIndividual($id)
-{
-    $carta = ControlCarta::findOrFail($id);
+        {
+            $carta = ControlCarta::findOrFail($id);
 
-    $pdf = Pdf::loadView('control_cartas.pdf_individual', compact('carta'))
-              ->setPaper('a4', 'portrait');
+            $pdf = Pdf::loadView('control_cartas.pdf_individual', compact('carta'))
+                    ->setPaper('a4', 'portrait');
 
-    return $pdf->download('Carta_SO_PRO_' . $carta->codigo . '.pdf');
-}
+            return $pdf->download('Carta_SO_PRO_' . $carta->codigo . '.pdf');
+        }
+
+        public function updateEstado(Request $request, $id)
+        {
+            $request->validate([
+                'estado' => 'required|in:Pendiente,Rechazado,Ejecutado'
+            ]);
+
+            $carta = ControlCarta::findOrFail($id);
+            $carta->estado = $request->estado;
+            $carta->save();
+
+            return back();
+        }
+
+
+
+
 }

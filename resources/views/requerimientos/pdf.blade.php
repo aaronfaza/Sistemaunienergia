@@ -6,159 +6,219 @@
 
 
   <style>
-  /* Solo cambio de fuente (sin modificar tamaños) */
-  .sign-table,
-  .sign-table thead th,
-  .sign-table td,
-  .sign-table .name,
-  .sign-table .role {
-    font-family: "DejaVu Sans", Arial, Helvetica, sans-serif !important;
-  }
-</style>
+/* =========================
+   CONFIGURACIÓN GENERAL
+   ========================= */
+@page { margin: 10mm 12mm; }
 
-<style>
-  .sign-table { font-family: "DejaVu Sans", Arial, Helvetica, sans-serif !important; }
-  .sign-table thead th { font-family: "DejaVu Serif", Georgia, "Times New Roman", serif !important; }
-  .sign-table .name, .sign-table .role { font-family: "DejaVu Sans", Arial, Helvetica, sans-serif !important; }
-</style>
-
-
-
-
-
-  <style>
-    @page { margin: 10mm 12mm; }
-    body { font-family: Arial, sans-serif; font-size: 9.8px; margin: 0; }
-
-    /* Encabezado compacto */
-    .header { width: 100%; border: 1px solid #000; border-collapse: collapse; margin-bottom: 4px; }
-    .header td { border: 1px solid #000; padding: 4px 6px; vertical-align: middle; }
-    .header .logo { width: 24%; text-align: center; }
-    .header .title { width: 48%; text-align: center; font-size: 11px; font-weight: bold; color: #002b5c; line-height: 1.2; }
-    .header .meta { width: 28%; font-size: 9px; }
-
-    /* Bandas/Secciones */
-    .subtitle{
-      background:#d9e2f3; text-align:center; font-weight:bold;
-      padding:3px; border:1px solid #000; margin:6px 0 4px; font-size:10px;
-    }
-
-    /* Información general (con aire) */
-    .info-table{ width:100%; border-collapse:collapse; margin-bottom:2px; }
-    .info-table td{ padding:4px 3px; vertical-align:top; }
-    .info-label{ font-weight:bold; width:170px; }
-    .info-destino{ vertical-align:top; padding-left:24px; }
-    .info-destino div{ margin-bottom:5px; }
-
-    /* Tabla de ítems tipo planilla */
-    .items{ width:100%; border-collapse:collapse; font-size:9.3px; }
-    .items th,.items td{ border:1px solid #000; text-align:center; }
-    .items th{ background:#d9e2f3; font-weight:bold; padding:3px 2px; }
-    .items td{ padding:2px 3px; }
-    .items td.desc{ text-align:left; }
-
-    /* Leyenda bajo la grilla */
-    .legend{ font-size:9px; margin-top:3px; }
-
-    /* Sustento pequeño */
-    .band-blue{
-      background:#d9e2f3; color:#000; font-weight:bold; text-align:center;
-      padding:3px; border:1px solid #000; margin:8px 0 3px; font-size:10px;
-    }
-    .sustento-box{ border:1px solid #000; padding:5px 8px; font-size:9.5px; }
-    .sustento-lines .line{ border-bottom:1px solid #000; height:14px; margin-top:4px; }
-
-    /* Firmas (sin logos) */
-    .sign-table{ width:100%; border-collapse:collapse; page-break-inside: avoid; }
-    .sign-table th,.sign-table td{ border:1px solid #000; }
-    .sign-table th{ background:#fff; font-weight:800; text-align:center; padding:5px; font-size:11px;  }
-    .sign-table .box{ height:95px; padding:8px; vertical-align:bottom; text-align:center; }
-    .sign-table .name{ font-weight:800; font-size:11px; padding-top:6px; }
-    .sign-table .role{ font-size:11px; padding-bottom:6px; }
-
-    .foot-rule{ border-top:1px solid #000; margin:8px 0 5px; }
-    .foot-note{ font-size:8.3px; text-align:center; }
-  </style>
-
-<style>
-  /* Lista destino: columnas alineadas */
-  .destino-table{
-    width:auto;
-    border-collapse:collapse;
-    margin-top:4px;
-    font-size:11px;
-  }
-  .destino-table td{ border:none; padding:2px 0; }
-  .destino-table .check-cell{
-    width:14px;
-    padding-right:9px;
-    vertical-align:middle;
-  }
-  .destino-table .text-cell{
-    vertical-align:top;     /* ⬅️ anclar arriba */
-    padding-top:8px;      /* ⬅️ baja el texto (ajusta 2–4px a gusto) */
-    line-height:1.15;
-    white-space:nowrap;
-  }
-  .destino-table input[type="checkbox"]{
-    width:11px; height:11px;
-    margin:0;
-    position:relative; top:0;
-    transform:scale(1);
-  }
-  .destino-title{ font-weight:bold; margin-bottom:2px; }
-</style>
-
-<style>
-  /* Firma sin líneas pero con el mismo espacio reservado */
-  .sign-table .box{
-    text-align:center;
-    padding:12px 10px;
-  }
-  .sign-placeholder{
-    height:28px;           /* ⇦ ajusta a 24–32px si quieres más/menos espacio */
-  }
-  .sign-table .name{ font-weight:600; margin-top:2px; }
-  .sign-table .role{ font-size:10px; }
-</style>
-<style>
-
-<style>
-  /* Información general (ajuste fino, filas más juntas) */
-  .info-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 2px;
-  }
-
-  .info-table td {
-    padding: 1.5px 3px; /* 🔹 Menos espacio vertical */
-    vertical-align: middle; /* 🔹 Centra mejor el texto */
-    line-height: 1.1; /* 🔹 Compacta el texto en cada celda */
-  }
-
-  .info-label {
-    font-weight: bold;
-    width: 155px; /* 🔹 Ligeramente más angosto */
-  }
-
-  .info-destino {
-    vertical-align: top;
-    padding-left: 24px;
-  }
-
-  .info-destino div {
-    margin-bottom: 4px;
-  }
-
-  /* === SUSTENTO (solo líneas horizontales, sin bordes laterales) === */
-.sustento-box {
-  border: none;               /* sin bordes laterales */
+body{
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9.8px;
+  margin: 0;
 }
 
+/* =========================
+   ENCABEZADO
+   ========================= */
+.header{
+  width:100%;
+  border:1.5px solid #000;
+  border-collapse:collapse;
+  margin-bottom:4px;
+}
+.header td{
+  border:1px solid #000;
+  padding:4px 6px;
+  vertical-align:middle;
+}
+.header .logo{ width:24%; text-align:center; }
+.header .title{
+  width:48%;
+  text-align:center;
+  font-size:11px;
+  font-weight:bold;
+  color:#002b5c;
+  line-height:1.2;
+}
+.header .meta{ width:28%; font-size:9px; }
 
+/* =========================
+   BANDAS / SUBTÍTULOS
+   ========================= */
+.subtitle,
+.band-blue{
+  background:#d9e2f3;
+  text-align:center;
+  font-weight:bold;
+  padding:3px;
+  border:1px solid #000;
+  margin:6px 0 4px;
+  font-size:10px;
+}
+
+/* =========================
+   INFORMACIÓN GENERAL
+   ========================= */
+.info-table{
+  width:100%;
+  border-collapse:collapse;
+  margin-bottom:2px;
+}
+.info-table td{
+  padding:1.5px 3px;
+  vertical-align:middle;
+  line-height:1.1;
+}
+.info-label{
+  font-weight:bold;
+  width:155px;
+}
+.info-destino{
+  vertical-align:top;
+  padding-left:24px;
+}
+.info-destino div{ margin-bottom:4px; }
+
+/* =========================
+   TABLA DE ÍTEMS
+   ========================= */
+.items{
+  width:100%;
+  border-collapse:collapse;
+  font-size:9.3px;
+}
+.items th,
+.items td{
+  border:1px solid #000;
+  text-align:center;
+}
+.items th{
+  background:#d9e2f3;
+  font-weight:bold;
+  padding:3px 2px;
+}
+.items td{ padding:2px 3px; }
+.items td.desc{ text-align:left; }
+
+.legend{
+  font-size:9px;
+  margin-top:3px;
+}
+
+/* =========================
+   SUSTENTO – FORMATO FÍSICO
+   ========================= */
+.sustento-box{
+  border:none;
+  margin-top:4px;
+  font-size:9.5px;
+}
+
+.sustento-lines .line{
+  border-bottom:1px solid #000;
+  min-height:16px;        /* altura uniforme */
+  line-height:16px;
+  margin-top:6px;         /* separación entre párrafos */
+  padding-left:2px;
+  padding-right:2px;
+  white-space:normal;
+}
+
+/* =========================
+   TABLA DE FIRMAS (FIJA)
+   ========================= */
+.sign-table{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;              /* 🔒 NO escalable */
+  page-break-inside:avoid;
+  border:1.5px solid #000;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.sign-table th,
+.sign-table td{
+  border:1px solid #000;
+}
+
+.sign-table th{
+  background:#d9e2f3;
+  font-size:11px;
+  font-weight:700;
+  text-align:center;
+  padding:5px;
+}
+
+/* Celdas de firma */
+.sign-cell{
+  height:110px;                    /* 🔒 altura fija */
+  vertical-align:bottom;
+  text-align:center;
+  padding-bottom:14px;
+}
+
+/* Línea divisoria central */
+.sign-left{ border-right:none; }
+.sign-right{ border-left:2px solid #000; }
+
+/* Nombre */
+.sign-name{
+  font-size:11px;
+  font-weight:700;
+  margin-bottom:2px;
+}
+
+/* Cargo */
+.sign-role{
+  font-size:10px;
+}
+
+/* =========================
+   PIE DE PÁGINA
+   ========================= */
+.foot-rule{
+  border-top:1px solid #000;
+  margin:8px 0 5px;
+}
+.foot-note{
+  font-size:8.3px;
+  text-align:center;
+}
+
+/* =========================
+   DESTINO (CHECKLIST)
+   ========================= */
+.destino-table{
+  width:auto;
+  border-collapse:collapse;
+  margin-top:4px;
+  font-size:11px;
+}
+.destino-table td{
+  border:none;
+  padding:2px 0;
+}
+.destino-table .check-cell{
+  width:14px;
+  padding-right:9px;
+  vertical-align:middle;
+}
+.destino-table .text-cell{
+  vertical-align:top;
+  padding-top:8px;
+  line-height:1.15;
+  white-space:nowrap;
+}
+.destino-table input[type="checkbox"]{
+  width:11px;
+  height:11px;
+  margin:0;
+}
+.destino-title{
+  font-weight:bold;
+  margin-bottom:2px;
+}
 </style>
-
 
 
 
@@ -277,61 +337,63 @@
 
 
 
-<!-- SUSTENTO (mejorado con separación por comas) -->
 <div class="band-blue">SUSTENTO</div>
 
 @php
-    // Divide el texto del sustento en partes al encontrar comas
-    $sustentos = array_filter(array_map('trim', explode(',', $req->sustento ?? '')));
+  // Separar el texto por comas
+  $sustentos = array_filter(
+      array_map('trim', explode(',', $req->sustento ?? ''))
+  );
 @endphp
 
-@if (count($sustentos) > 0)
-  <div class="sustento-box sustento-lines">
-    @foreach ($sustentos as $s)
-      <div class="line">
-        {{ mb_strtoupper($s, 'UTF-8') }}
-      </div>
-    @endforeach
-  </div>
-@else
-  <div class="sustento-box">
-    {{ mb_strtoupper($req->sustento ?? '', 'UTF-8') }}
-  </div>
-@endif
-
+<div class="sustento-box sustento-lines">
+  @foreach ($sustentos as $texto)
+    <div class="line">
+      {{ mb_strtoupper($texto, 'UTF-8') }}
+    </div>
+  @endforeach
+</div>
 
 
 <div style="margin:25px;"></div>
   <!-- FIRMAS (sin logos) -->
   <div class="band-blue">FIRMAS</div>
-  <table class="sign-table">
-    <thead>
-      <tr>
-        <th>SOLICITANTE</th>
-        <th>APROBADO POR:</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-      <td class="box">
-        <div class="sign-placeholder"></div>
-        <div class="destino-title">{{ $req->nombre_solicitante }}</div>
-        <div class="role">{{ $req->cargo_solicitante }}</div>
+
+<table class="sign-table">
+  <thead>
+    <tr>
+      <th style="width:50%;" class="tr">SOLICITANTE</th>
+      <th style="width:50%;">APROBADO POR:</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="sign-cell sign-left">
+        <div class="sign-name">
+          {{ $req->nombre_solicitante }}
+        </div>
+        <div class="sign-role">
+          {{ $req->cargo_solicitante }}
+        </div>
       </td>
-      <td class="box">
-        <div class="sign-placeholder"></div>
-        <div class="destino-title">{{ $req->aprobador_nombre ?? 'Juan Ticlla Enciso' }}</div>
-        <div class="role">{{ $req->aprobador_cargo ?? 'Jefe de Operaciones del Lote IX' }}</div>
+
+      <td class="sign-cell sign-right">
+        <div class="sign-name">
+          {{ $req->aprobador_nombre ?? 'Juan Ticlla Enciso' }}
+        </div>
+        <div class="sign-role">
+          {{ $req->aprobador_cargo ?? 'Jefe de Operaciones del Lote IX' }}
+        </div>
       </td>
     </tr>
+  </tbody>
+</table>
 
-    </tbody>
-  </table>
+<div class="foot-rule"></div>
+<div class="foot-note">
+  Este documento es propiedad de Unienergía ABC. Prohibida su reproducción total o parcial sin autorización.
+</div>
 
-  <div class="foot-rule"></div>
-  <div class="foot-note">
-    Este documento es propiedad de Unienergía ABC. Prohibida su reproducción total o parcial sin autorización.
-  </div>
 
 </body>
 </html>

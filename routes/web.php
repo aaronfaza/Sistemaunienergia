@@ -58,6 +58,10 @@ Route::get(
     [ControlCartaController::class, 'exportPdfIndividual']
 )->name('control_cartas.export.pdf.individual');
 
+Route::patch('/control_cartas/{id}/estado', 
+  [ControlCartaController::class, 'updateEstado']
+)->name('control_cartas.update_estado');
+
 });
 
 // Auth scaffolding (no tocar)
