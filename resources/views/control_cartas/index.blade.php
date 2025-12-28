@@ -275,6 +275,54 @@ textarea:focus {
 }
 
   </style>
+
+<style>
+/* ===== ESTADOS DE CARTAS ===== */
+.estado-select {
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  min-width: 120px;
+  text-align: center;
+  transition: all .2s ease;
+}
+
+/* Pendiente */
+.estado-pendiente {
+  background: rgba(245, 158, 11, .18);
+  color: #b45309;
+}
+.estado-pendiente:hover {
+  background: rgba(245, 158, 11, .30);
+}
+
+/* Ejecutado */
+.estado-ejecutado {
+  background: rgba(16, 185, 129, .20);
+  color: #047857;
+}
+.estado-ejecutado:hover {
+  background: rgba(16, 185, 129, .32);
+}
+
+/* Rechazado */
+.estado-rechazado {
+  background: rgba(239, 68, 68, .18);
+  color: #b91c1c;
+}
+.estado-rechazado:hover {
+  background: rgba(239, 68, 68, .30);
+}
+</style>
+
+
+
+
+
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed" >
@@ -446,6 +494,18 @@ textarea:focus {
       </div>
         <table class="table table-bordered table-hover">
           <thead class="thead-light">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div class="text-muted">
+                  Mostrando 
+                  <strong>{{ $cartas->firstItem() }}</strong>
+                  a 
+                  <strong>{{ $cartas->lastItem() }}</strong>
+                  de 
+                  <strong>{{ $cartas->total() }}</strong>
+                  registros
+              </div>
+          </div>
+
             <tr>
               <th>#</th>
               <th>Código</th>
@@ -454,19 +514,49 @@ textarea:focus {
               <th>Proveedor Elegido</th>
               <th>Monto (S/)</th>
               <th>Monto ($)</th>
+              <th>Estado</th>
               <th class="text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
             @forelse ($cartas as $index => $carta)
               <tr>
-                <td>{{ $index + 1 }}</td>
+                <<td>{{ $cartas->firstItem() + $index }}</td>
                 <td>{{ $carta->codigo }}</td>
                 <td>{{ \Carbon\Carbon::parse($carta->fecha)->format('d/m/Y') }}</td>
                 <td>{{ $carta->servicio_compra }}</td>
                 <td>{{ $carta->proveedor_elegido }}</td>
                 <td>{{ $carta->monto_soles }}</td>
                 <td>{{ $carta->monto_dolares }}</td>
+                <td class="text-center">
+                <form action="{{ route('control_cartas.update_estado', $carta->id) }}" method="POST">
+                  @csrf
+                  @method('PATCH')
+
+                  <select name="estado"
+                    onchange="this.form.submit()"
+                    class="estado-select
+                      @if($carta->estado === 'Pendiente') estado-pendiente
+                      @elseif($carta->estado === 'Ejecutado') estado-ejecutado
+                      @else estado-rechazado
+                      @endif">
+
+                    <option value="Pendiente" {{ $carta->estado == 'Pendiente' ? 'selected' : '' }}>
+                      🟡 Pendiente
+                    </option>
+
+                    <option value="Ejecutado" {{ $carta->estado == 'Ejecutado' ? 'selected' : '' }}>
+                      🟢 Ejecutado
+                    </option>
+
+                    <option value="Rechazado" {{ $carta->estado == 'Rechazado' ? 'selected' : '' }}>
+                      🔴 Rechazado
+                    </option>
+
+                  </select>
+                </form>
+              </td>
+
                 <td class="text-center">
                   <!-- Ver -->
                   <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#modalVer{{ $carta->id }}">
@@ -615,118 +705,196 @@ textarea:focus {
 
 <!-- Modal Agregar Carta -->
 <div class="modal fade" id="modalAgregar" tabindex="-1" role="dialog" aria-labelledby="modalAgregarLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-    <div class="modal-content" style="border-radius: 12px;">
-      <div class="modal-header bg-success text-white">
-        <h5 class="modal-title" id="modalAgregarLabel">
-          <i class="fas fa-plus-circle mr-2"></i> Nueva Carta SO-PRO
+  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-content shadow-lg" style="border-radius:16px;">
+
+      <!-- HEADER -->
+      <div class="modal-header text-white"
+           style="background:linear-gradient(135deg,#10b981,#047857); border-radius:16px 16px 0 0;">
+        <h5 class="modal-title font-weight-bold" id="modalAgregarLabel">
+          <i class="fas fa-file-alt mr-2"></i> Registro de Carta SO-PRO
         </h5>
-        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" class="close text-white" data-dismiss="modal">
+          <span>&times;</span>
         </button>
       </div>
 
       <form action="{{ route('control_cartas.store') }}" method="POST">
         @csrf
+
         <div class="modal-body">
-          <div class="row">
-            <div class="col-md-4">
-              <label for="codigo"><strong>Código</strong></label>
-              <input type="text" class="form-control" name="codigo" required>
+
+          <!-- ================= DATOS GENERALES ================= -->
+          <div class="card mb-3 border-0 shadow-sm">
+            <div class="card-header bg-light font-weight-bold text-success">
+              <i class="fas fa-info-circle mr-1"></i> Datos generales
             </div>
-            <div class="col-md-4">
-              <label for="fecha"><strong>Fecha</strong></label>
-              <input type="date" class="form-control" name="fecha" required>
-            </div>
-            <div class="col-md-4">
-              <label for="mes"><strong>Mes</strong></label>
-              <input type="text" class="form-control" name="mes" required>
+            <div class="card-body">
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label>Código</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                    </div>
+                    <input type="text" class="form-control" name="codigo" required>
+                  </div>
+                </div>
+
+                <div class="form-group col-md-4">
+                  <label>Fecha</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fas fa-calendar-day"></i></span>
+                    </div>
+                    <input type="date" class="form-control" name="fecha" required>
+                  </div>
+                </div>
+
+                <div class="form-group col-md-4">
+                  <label>Mes</label>
+                  <input type="text" class="form-control" name="mes" placeholder="Ej: Marzo" required>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="row mt-3">
-            <div class="col-md-6">
-              <label for="servicio_compra"><strong>Servicio / Compra</strong></label>
-              <input type="text" class="form-control" name="servicio_compra" required>
+          <!-- ================= SERVICIO ================= -->
+          <div class="card mb-3 border-0 shadow-sm">
+            <div class="card-header bg-light font-weight-bold text-primary">
+              <i class="fas fa-briefcase mr-1"></i> Servicio / Compra
             </div>
-            <div class="col-md-6">
-              <label for="descripcion"><strong>Descripción</strong></label>
-              <textarea class="form-control" name="descripcion" rows="2" required></textarea>
+            <div class="card-body">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>Servicio o Compra</label>
+                  <input type="text" class="form-control" name="servicio_compra" required>
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label>Descripción</label>
+                  <textarea class="form-control" name="descripcion" rows="2" required></textarea>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="row mt-3">
-            <div class="col-md-6">
-              <label for="proveedor_elegido"><strong>Proveedor elegido</strong></label>
-              <input type="text" class="form-control" name="proveedor_elegido" required>
+          <!-- ================= PROVEEDOR ================= -->
+          <div class="card mb-3 border-0 shadow-sm">
+            <div class="card-header bg-light font-weight-bold text-info">
+              <i class="fas fa-industry mr-1"></i> Proveedor
             </div>
-            <div class="col-md-6">
-              <label for="cotizaciones_consideradas"><strong>Cotizaciones consideradas</strong></label>
-              <input type="text" class="form-control" name="cotizaciones_consideradas">
+            <div class="card-body">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>Proveedor elegido</label>
+                  <input type="text" class="form-control" name="proveedor_elegido" required>
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label>Cotizaciones consideradas</label>
+                  <input type="text" class="form-control" name="cotizaciones_consideradas"
+                         placeholder="Ej: 3 cotizaciones">
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="row mt-3">
-            <div class="col-md-4">
-              <label for="equipo"><strong>Equipo</strong></label>
-              <input type="text" class="form-control" name="equipo">
+          <!-- ================= EQUIPO Y MONTOS ================= -->
+          <div class="card mb-3 border-0 shadow-sm">
+            <div class="card-header bg-light font-weight-bold text-warning">
+              <i class="fas fa-tools mr-1"></i> Equipo y montos
             </div>
-            <div class="col-md-4">
-              <label for="especificacion"><strong>Especificación</strong></label>
-              <input type="text" class="form-control" name="especificacion">
-            </div>
-            <div class="col-md-4">
-              <label for="n_orden"><strong>N° Orden</strong></label>
-              <input type="text" class="form-control" name="n_orden">
+            <div class="card-body">
+
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label>Equipo</label>
+                  <input type="text" class="form-control" name="equipo">
+                </div>
+
+                <div class="form-group col-md-4">
+                  <label>Especificación</label>
+                  <input type="text" class="form-control" name="especificacion">
+                </div>
+
+                <div class="form-group col-md-4">
+                  <label>N° Orden</label>
+                  <input type="text" class="form-control" name="n_orden">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-md-3">
+                  <label>Monto (S/)</label>
+                  <input type="number" step="0.01" class="form-control" name="monto_soles">
+                </div>
+
+                <div class="form-group col-md-3">
+                  <label>Monto ($)</label>
+                  <input type="number" step="0.01" class="form-control" name="monto_dolares">
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label>Autorizado por</label>
+                  <input type="text" class="form-control" name="autorizado_por">
+                </div>
+              </div>
+
             </div>
           </div>
 
-          <div class="row mt-3">
-            <div class="col-md-3">
-              <label for="monto_soles"><strong>Monto (S/)</strong></label>
-              <input type="number" step="0.01" class="form-control" name="monto_soles">
+          <!-- ================= FECHAS ================= -->
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light font-weight-bold text-secondary">
+              <i class="fas fa-calendar-alt mr-1"></i> Control de fechas
             </div>
-            <div class="col-md-3">
-              <label for="monto_dolares"><strong>Monto ($)</strong></label>
-              <input type="number" step="0.01" class="form-control" name="monto_dolares">
-            </div>
-            <div class="col-md-6">
-              <label for="autorizado_por"><strong>Autorizado por</strong></label>
-              <input type="text" class="form-control" name="autorizado_por">
+            <div class="card-body">
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label>N° Factura</label>
+                  <input type="text" class="form-control" name="factura_n">
+                </div>
+
+                <div class="form-group col-md-4">
+                  <label>Fecha recepción</label>
+                  <input type="date" class="form-control" name="fecha_recepcion">
+                </div>
+
+                <div class="form-group col-md-4">
+                  <label>Fecha vencimiento</label>
+                  <input type="date" class="form-control" name="fecha_vencimiento">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label>Fecha de pago</label>
+                  <input type="date" class="form-control" name="fecha_pago">
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="row mt-3">
-            <div class="col-md-4">
-              <label for="factura_n"><strong>N° Factura</strong></label>
-              <input type="text" class="form-control" name="factura_n">
-            </div>
-            <div class="col-md-4">
-              <label for="fecha_recepcion"><strong>Fecha de recepción</strong></label>
-              <input type="date" class="form-control" name="fecha_recepcion">
-            </div>
-            <div class="col-md-4">
-              <label for="fecha_vencimiento"><strong>Fecha de vencimiento</strong></label>
-              <input type="date" class="form-control" name="fecha_vencimiento">
-            </div>
-          </div>
-
-          <div class="row mt-3">
-            <div class="col-md-4">
-              <label for="fecha_pago"><strong>Fecha de pago</strong></label>
-              <input type="date" class="form-control" name="fecha_pago">
-            </div>
-          </div>
         </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-success">Guardar Carta</button>
+        <!-- FOOTER -->
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-success px-4">
+            <i class="fas fa-save mr-1"></i> Guardar Carta
+          </button>
         </div>
+
       </form>
     </div>
   </div>
 </div>
+
+
+
 
       <!-- Modal Ver Detalle (UX Mejorado) -->
             <div class="modal fade" id="modalVer{{ $carta->id }}" tabindex="-1" role="dialog">
@@ -887,6 +1055,9 @@ textarea:focus {
               
             @endforelse
           </tbody>
+          <div class="d-flex justify-content-end mt-3">
+              {{ $cartas->links('pagination::bootstrap-4') }}
+          </div>
         </table>
           
         <div class="d-flex justify-content-end mt-3">

@@ -30,6 +30,7 @@ class ControlCarta extends Model
         'fecha_vencimiento',
         'fecha_pago',
         'area',
+        'estado',
     ];
 
     protected $casts = [
