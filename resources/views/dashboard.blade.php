@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>SISTEMA INTEGRADO DE GESTION</title>
+  <title>Reportes de Mantenimiento Mecannico</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Icono -->
@@ -113,6 +113,200 @@
       .content-header .btn { width: 100%; }
       .filters-row .form-control { width: 100% !important; }
     }
+
+    /* ======================================================
+   MANTENIMIENTO – UX/UI ENTERPRISE UNIENERGIA
+   ====================================================== */
+
+/* =========================
+   CARDS GENERALES
+   ========================= */
+.card-clean {
+  border-radius: 18px;
+  border: 1px solid rgba(0,0,0,.05);
+  box-shadow: 0 14px 34px rgba(15,23,42,.06);
+}
+
+.card-clean .card-header {
+  background: linear-gradient(180deg, #ffffff, #f9fafb);
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+
+/* =========================
+   BOTONES – SISTEMA UNIFICADO
+   ========================= */
+.btn {
+  border-radius: 999px !important;
+  font-weight: 600;
+  letter-spacing: .2px;
+  transition: all .2s ease;
+}
+
+/* Crear / Guardar */
+.btn-brand {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  border: none;
+  color: #fff !important;
+  box-shadow: 0 8px 20px rgba(37,99,235,.35);
+}
+.btn-brand:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(37,99,235,.45);
+}
+
+/* Buscar */
+.btn-primary {
+  background: linear-gradient(135deg, #003366, #002B5C);
+  border: none;
+  box-shadow: 0 6px 18px rgba(0,51,102,.35);
+}
+.btn-primary:hover {
+  box-shadow: 0 12px 26px rgba(0,51,102,.45);
+}
+
+/* Ver */
+.btn-info {
+  background: linear-gradient(135deg, #0ea5e9, #0369a1);
+  border: none;
+  box-shadow: 0 6px 16px rgba(14,165,233,.35);
+}
+.btn-info:hover {
+  box-shadow: 0 12px 26px rgba(14,165,233,.45);
+}
+
+/* Editar */
+.btn-outline-brand {
+  border-radius: 999px;
+  border: 1px solid rgba(16,185,129,.45);
+  color: #10b981;
+}
+.btn-outline-brand:hover {
+  background: rgba(16,185,129,.12);
+}
+
+/* Eliminar */
+.btn-danger {
+  background: rgba(239,68,68,.12);
+  border: none;
+  color: #ef4444;
+}
+.btn-danger:hover {
+  background: rgba(239,68,68,.22);
+}
+
+/* =========================
+   TABLA DE REPORTES (NO BOOTSTRAP LOOK)
+   ========================= */
+#tablaReportes {
+  border-collapse: separate !important;
+  border-spacing: 0 8px;
+}
+
+#tablaReportes thead th {
+  background: #f8fafc !important;
+  border: none !important;
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: #475569;
+  padding: .75rem;
+}
+
+#tablaReportes tbody tr {
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(15,23,42,.06);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+#tablaReportes tbody tr:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(15,23,42,.12);
+}
+
+#tablaReportes tbody td {
+  border: none !important;
+  vertical-align: middle;
+  padding: .65rem .75rem;
+  font-size: .9rem;
+  color: #1e293b;
+}
+
+/* Primera columna (Nombre) */
+#tablaReportes tbody td:first-child {
+  font-weight: 600;
+  color: #2563eb;
+}
+
+/* =========================
+   DATATABLES CONTROLES
+   ========================= */
+.dataTables_wrapper .dataTables_filter input {
+  border-radius: 999px;
+  padding: .4rem .9rem;
+  font-size: .85rem;
+  border: 1px solid #cbd5e1;
+}
+
+.dataTables_wrapper .dataTables_length select {
+  border-radius: 999px;
+  font-size: .85rem;
+  padding: .3rem .6rem;
+}
+
+/* Paginación */
+.page-item .page-link {
+  border-radius: 999px !important;
+  border: none;
+  margin: 0 2px;
+  color: #334155;
+}
+
+.page-item.active .page-link {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(37,99,235,.4);
+}
+
+/* =========================
+   FILTROS (BUSQUEDA)
+   ========================= */
+.filters-row {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: .85rem 1rem;
+  box-shadow: 0 8px 22px rgba(15,23,42,.05);
+}
+
+/* =========================
+   MODALES – LOOK ENTERPRISE
+   ========================= */
+.modal-content {
+  border-radius: 20px !important;
+  box-shadow: 0 24px 48px rgba(15,23,42,.25);
+}
+
+.modal-header,
+.modal-footer {
+  border-color: rgba(0,0,0,.05);
+}
+
+/* =========================
+   FORMULARIOS
+   ========================= */
+.form-control,
+.custom-select {
+  border-radius: 12px;
+  font-size: .9rem;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.form-control:focus,
+.custom-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.18);
+}
+
   </style>
 </head>
 
@@ -195,7 +389,9 @@
     </a>
     <div class="sidebar">
       <nav class="mt-3">
-        <ul class="nav nav-pills nav-sidebar flex-column">
+        <ul class="nav nav-pills nav-sidebar flex-column"
+    data-widget="treeview"
+    data-accordion="true">
            <li class="nav-item">
           <a href="{{ route('bienvenida') }}" 
              class="nav-link {{ request()->routeIs('bienvenida') ? 'active' : '' }}">
@@ -216,13 +412,29 @@
               <p class="ml-2 mb-0">Requerimientos</p>
             </a>
           </li>
-          <li class="nav-item">
-            <a href="{{ route('control_cartas.index') }}" 
-              class="nav-link {{ request()->routeIs('control_cartas.*') ? 'active' : '' }}">
-                <i class="nav-icon fas fa-envelope" style="color: var(--brand-success);"></i>
-                <p class="ml-2 mb-0">Cartas SO-PRO</p>
-            </a>
-          </li>
+          
+          <li class="nav-item has-treeview">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-folder-open" style="color: var(--brand-info);"></i>
+            <p>
+              Control Cartas
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+
+          <ul class="nav nav-treeview ml-2">
+            <li class="nav-item">
+              <a href="{{ route('control_cartas.index') }}"
+                class="nav-link {{ request()->routeIs('control_cartas.*') ? 'active' : '' }}">
+                <i class="far fa-envelope nav-icon" style="color: var(--brand-accent);"></i>
+                <p>SO-PRO</p>
+              </a>
+            </li>
+          </ul>
+
+        </li>
+
+
         </ul>
       </nav>
     </div>

@@ -197,6 +197,351 @@
     }
     .stat-label{ font-size: .85rem; opacity: .8; }
   </style>
+  <style>
+    /* =====================================
+   TABLA UX MODERNA – UNIENERGIA
+   ===================================== */
+
+/* ===== CONTENEDOR TABLA ===== */
+#tablaRequerimientos {
+  border-collapse: separate !important;
+  border-spacing: 0 8px;
+}
+
+/* ===== HEADER ===== */
+#tablaRequerimientos thead th {
+  background: #f8fafc !important;
+  border: none !important;
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: #475569;
+  padding: .75rem .75rem;
+}
+
+/* ===== FILAS ===== */
+#tablaRequerimientos tbody tr {
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(15,23,42,.06);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+#tablaRequerimientos tbody tr:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(15,23,42,.12);
+}
+
+/* ===== CELDAS ===== */
+#tablaRequerimientos tbody td {
+  border: none !important;
+  vertical-align: middle;
+  padding: .65rem .75rem;
+  font-size: .9rem;
+  color: #1e293b;
+}
+
+/* ===== COLUMNA CÓDIGO ===== */
+#tablaRequerimientos tbody td:first-child {
+  font-weight: 600;
+  color: #2563eb;
+}
+
+/* ===== ACCIONES ===== */
+.actions-wrap {
+  display: inline-flex;
+  gap: .35rem;
+}
+
+.actions-wrap .btn {
+  border-radius: 999px;
+  padding: .28rem .55rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s ease;
+}
+
+/* Ver */
+.actions-wrap .btn-outline-info {
+  border-color: rgba(14,165,233,.35);
+  color: #0ea5e9;
+}
+.actions-wrap .btn-outline-info:hover {
+  background: rgba(14,165,233,.12);
+}
+
+/* Eliminar */
+.actions-wrap .btn-danger {
+  border-radius: 999px;
+  padding: .28rem .55rem;
+  background: rgba(239,68,68,.1);
+  border: none;
+  color: #ef4444;
+}
+.actions-wrap .btn-danger:hover {
+  background: rgba(239,68,68,.2);
+}
+
+/* ===== DATATABLES CONTROLS ===== */
+.dataTables_wrapper .dataTables_filter input {
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+  padding: .35rem .75rem;
+  font-size: .85rem;
+}
+
+.dataTables_wrapper .dataTables_length select {
+  border-radius: 999px;
+  font-size: .85rem;
+  padding: .25rem .6rem;
+}
+
+/* ===== PAGINACIÓN ===== */
+.page-item .page-link {
+  border-radius: 999px !important;
+  border: none;
+  margin: 0 2px;
+  color: #334155;
+}
+
+.page-item.active .page-link {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(37,99,235,.4);
+}
+
+/* ===== MODAL LOOK MÁS PREMIUM ===== */
+.modal-content {
+  border-radius: 18px !important;
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(0,0,0,.05);
+}
+
+.modal-footer {
+  border-top: 1px solid rgba(0,0,0,.05);
+}
+
+/* ===== INPUTS ===== */
+.form-control,
+.custom-select {
+  border-radius: 10px;
+  font-size: .9rem;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.form-control:focus,
+.custom-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+}
+
+/* ===== TABLA ÍTEMS ===== */
+.table-items tbody tr:hover {
+  background: #f8fafc;
+}
+/* ======================================================
+   KPI PREMIUM – UNIENERGIA (NO BOOTSTRAP LOOK)
+   ====================================================== */
+
+/* KPI Card base */
+.stat-card {
+  position: relative;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff, #f9fafb);
+  border: 1px solid rgba(0,0,0,.04);
+  box-shadow: 0 10px 28px rgba(15,23,42,.08);
+  overflow: hidden;
+}
+
+/* Barra lateral de estado */
+.stat-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14%;
+  bottom: 14%;
+  width: 5px;
+  border-radius: 6px;
+}
+
+/* Colores por tipo */
+.stat-card.is-primary::before { background: linear-gradient(#2563eb, #1e40af); }
+.stat-card.is-info::before    { background: linear-gradient(#0ea5e9, #0369a1); }
+.stat-card.is-success::before { background: linear-gradient(#10b981, #047857); }
+
+/* Fondo dinámico sutil */
+.stat-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(37,99,235,.12), transparent 55%);
+  pointer-events: none;
+}
+
+/* Iconos KPI */
+.stat-icon {
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  box-shadow: inset 0 0 0 1px rgba(37,99,235,.18);
+}
+
+.stat-icon i {
+  font-size: 1.2rem;
+}
+
+/* Texto KPI */
+.stat-kpi span {
+  font-size: clamp(22px, 3.6vw, 30px);
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.stat-label {
+  font-size: .82rem;
+  letter-spacing: .02em;
+  color: #475569;
+}
+
+/* Hover KPI */
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 38px rgba(15,23,42,.14);
+}
+
+/* ======================================================
+   BOTONES CORPORATIVOS – UNIFICADOS
+   ====================================================== */
+
+.btn {
+  border-radius: 999px !important;
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+
+/* Botón principal (crear / guardar) */
+.btn-brand {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #fff !important;
+  border: none;
+  box-shadow: 0 8px 20px rgba(37,99,235,.35);
+}
+
+.btn-brand:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(37,99,235,.45);
+}
+
+/* Botón Excel */
+.btn-success {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  border: none;
+  box-shadow: 0 6px 18px rgba(22,163,74,.35);
+}
+
+.btn-success:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(22,163,74,.45);
+}
+
+/* Botones outline */
+.btn-outline-brand,
+.btn-outline-secondary {
+  border-radius: 999px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* ======================================================
+   ACCIONES TABLA – ICONOS PREMIUM
+   ====================================================== */
+
+.actions-wrap .btn {
+  border-radius: 999px;
+  padding: .3rem .55rem;
+  box-shadow: none;
+}
+
+/* Ver */
+.actions-wrap .btn-outline-info {
+  border-color: rgba(14,165,233,.35);
+  color: #0ea5e9;
+}
+.actions-wrap .btn-outline-info:hover {
+  background: rgba(14,165,233,.12);
+}
+
+/* Eliminar */
+.actions-wrap .btn-danger {
+  background: rgba(239,68,68,.12);
+  border: none;
+  color: #ef4444;
+}
+.actions-wrap .btn-danger:hover {
+  background: rgba(239,68,68,.22);
+}
+
+/* ======================================================
+   CABECERAS Y TARJETAS
+   ====================================================== */
+
+.card-clean {
+  border-radius: 18px;
+  box-shadow: 0 14px 34px rgba(15,23,42,.06);
+}
+
+.card-clean .card-header {
+  background: linear-gradient(180deg, #ffffff, #f9fafb);
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+
+/* ======================================================
+   INPUTS Y FORMULARIOS
+   ====================================================== */
+
+.form-control,
+.custom-select {
+  border-radius: 12px;
+  font-size: .9rem;
+}
+
+.form-control:focus,
+.custom-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.18);
+}
+
+/* ======================================================
+   DATATABLES – CONTROLES LIMPIOS
+   ====================================================== */
+
+.dataTables_wrapper .dataTables_filter input {
+  border-radius: 999px;
+  padding: .4rem .9rem;
+  font-size: .85rem;
+}
+
+.dataTables_wrapper .dataTables_length select {
+  border-radius: 999px;
+  font-size: .85rem;
+  padding: .3rem .6rem;
+}
+
+/* ======================================================
+   MODAL LOOK ENTERPRISE
+   ====================================================== */
+
+.modal-content {
+  border-radius: 20px !important;
+}
+
+.modal-header,
+.modal-footer {
+  border-color: rgba(0,0,0,.05);
+}
+
+  </style>
 </head>
 
 <!-- body con navbar/slider fijo y layout fijo -->
@@ -270,6 +615,7 @@
   </nav>
 
     <!-- Sidebar -->
+   <!-- Sidebar -->
   <aside class="main-sidebar elevation-4">
     <a href="#" class="brand-link text-center brand-area">
       <img src="{{ asset('img/logo.png.png') }}" style="width:25px;height:25px;margin-right:8px;">
@@ -277,7 +623,9 @@
     </a>
     <div class="sidebar">
       <nav class="mt-3">
-        <ul class="nav nav-pills nav-sidebar flex-column">
+        <ul class="nav nav-pills nav-sidebar flex-column"
+    data-widget="treeview"
+    data-accordion="true">
            <li class="nav-item">
           <a href="{{ route('bienvenida') }}" 
              class="nav-link {{ request()->routeIs('bienvenida') ? 'active' : '' }}">
@@ -298,17 +646,34 @@
               <p class="ml-2 mb-0">Requerimientos</p>
             </a>
           </li>
-          <li class="nav-item">
-            <a href="{{ route('control_cartas.index') }}" 
-              class="nav-link {{ request()->routeIs('control_cartas.*') ? 'active' : '' }}">
-                <i class="nav-icon fas fa-envelope" style="color: var(--brand-success);"></i>
-                <p class="ml-2 mb-0">Cartas SO-PRO</p>
-            </a>
-          </li>
+          
+          <li class="nav-item has-treeview">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-folder-open" style="color: var(--brand-info);"></i>
+            <p>
+              Control Cartas
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+
+          <ul class="nav nav-treeview ml-2">
+            <li class="nav-item">
+              <a href="{{ route('control_cartas.index') }}"
+                class="nav-link {{ request()->routeIs('control_cartas.*') ? 'active' : '' }}">
+                <i class="far fa-envelope nav-icon" style="color: var(--brand-accent);"></i>
+                <p>SO-PRO</p>
+              </a>
+            </li>
+          </ul>
+
+        </li>
+
+
         </ul>
       </nav>
     </div>
   </aside>
+
 
 
   
