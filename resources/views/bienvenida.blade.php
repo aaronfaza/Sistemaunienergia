@@ -112,6 +112,131 @@
     .stat-kpi span{ font-weight:700; font-size:clamp(20px,3.5vw,28px); letter-spacing:-.5px; line-height:1; }
     .stat-label{ font-size:.85rem; opacity:.8; }
   </style>
+
+<style>
+/* ===========================
+   UX/UI MODERNO – UNIENERGIA
+   =========================== */
+
+/* ===== BOTONES CORPORATIVOS ===== */
+.btn-brand {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #fff !important;
+  border: none;
+  border-radius: 999px;
+  padding: 0.55rem 1.2rem;
+  font-weight: 600;
+  letter-spacing: .2px;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, .35);
+  transition: all .25s ease;
+}
+.btn-brand:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px rgba(37, 99, 235, .45);
+}
+
+/* ===== KPI CARDS – MÁS INNOVADOR ===== */
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+  border: 1px solid rgba(0,0,0,.04);
+}
+.stat-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(37,99,235,.12), transparent 60%);
+  opacity: .6;
+  pointer-events: none;
+}
+.stat-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12%;
+  bottom: 12%;
+  width: 4px;
+  border-radius: 6px;
+}
+.stat-card.is-primary::before { background: #2563eb; }
+.stat-card.is-info::before    { background: #0ea5e9; }
+.stat-card.is-success::before { background: #10b981; }
+
+/* ===== ICONOS KPI ===== */
+.stat-icon {
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  box-shadow: inset 0 0 0 1px rgba(37,99,235,.15);
+}
+.stat-icon i {
+  font-size: 1.15rem;
+}
+
+/* ===== CARDS GENERALES (ACTIVIDAD, GRÁFICOS) ===== */
+.card-clean {
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,.05);
+  box-shadow: 0 10px 26px rgba(15,23,42,.06);
+  overflow: hidden;
+}
+.card-clean .card-header {
+  background: linear-gradient(180deg, #ffffff, #f9fafb);
+  font-weight: 600;
+  border-bottom: 1px solid rgba(0,0,0,.05);
+}
+
+/* ===== LISTA ACTIVIDAD ===== */
+.card-clean ul li {
+  padding: .35rem 0;
+}
+.card-clean ul li i {
+  opacity: .85;
+}
+
+/* ===== SIDEBAR MÁS MODERNA ===== */
+.nav-sidebar .nav-link {
+  padding: .55rem .9rem;
+  font-size: .9rem;
+  transition: all .2s ease;
+}
+.nav-sidebar .nav-link.active {
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.12),
+              0 6px 18px rgba(0,0,0,.25);
+}
+.nav-sidebar .nav-link p {
+  margin-left: .6rem;
+}
+
+/* ===== DROPDOWNS MÁS ELEGANTES ===== */
+.dropdown-menu {
+  border-radius: 14px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.15);
+}
+
+/* ===== FOOTER ===== */
+.main-footer {
+  background: linear-gradient(90deg, #020617, #0f172a);
+  color: #cbd5f5;
+  border-top: none;
+}
+
+/* ===== SCROLL MÁS SUAVE ===== */
+.content-wrapper {
+  scroll-behavior: smooth;
+}
+.nav-treeview .nav-link {
+  font-size: .85rem;
+  opacity: .85;
+}
+
+.nav-treeview .nav-link.active {
+  background: linear-gradient(90deg, rgba(0,168,107,.18), transparent);
+  color: var(--brand-accent) !important;
+}
+
+</style>
+
 </head>
 
 <!-- body fijo para que solo scrollee el content -->
@@ -193,7 +318,9 @@
     </a>
     <div class="sidebar">
       <nav class="mt-3">
-        <ul class="nav nav-pills nav-sidebar flex-column">
+        <ul class="nav nav-pills nav-sidebar flex-column"
+    data-widget="treeview"
+    data-accordion="true">
            <li class="nav-item">
           <a href="{{ route('bienvenida') }}" 
              class="nav-link {{ request()->routeIs('bienvenida') ? 'active' : '' }}">
@@ -214,13 +341,29 @@
               <p class="ml-2 mb-0">Requerimientos</p>
             </a>
           </li>
-          <li class="nav-item">
-            <a href="{{ route('control_cartas.index') }}" 
-              class="nav-link {{ request()->routeIs('control_cartas.*') ? 'active' : '' }}">
-                <i class="nav-icon fas fa-envelope" style="color: var(--brand-success);"></i>
-                <p class="ml-2 mb-0">Cartas SO-PRO</p>
-            </a>
+          
+          <li class="nav-item has-treeview">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-folder-open" style="color: var(--brand-info);"></i>
+            <p>
+              Control Cartas
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+
+          <ul class="nav nav-treeview ml-2">
+            <li class="nav-item">
+              <a href="{{ route('control_cartas.index') }}"
+                class="nav-link {{ request()->routeIs('control_cartas.*') ? 'active' : '' }}">
+                <i class="far fa-envelope nav-icon" style="color: var(--brand-accent);"></i>
+                <p>SO-PRO</p>
+              </a>
+            </li>
+          </ul>
+
         </li>
+
+
         </ul>
       </nav>
     </div>

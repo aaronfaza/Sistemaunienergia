@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -30,12 +29,15 @@ class ControlCarta extends Model
         'fecha_recepcion',
         'fecha_vencimiento',
         'fecha_pago',
-        'area'
+        'area',
     ];
 
-    // Ejemplo de relación con usuarios (si el usuario genera las cartas)
-    public function usuario()
-    {
-        return $this->belongsTo(User::class, 'autorizado_por', 'name');
-    }
+    protected $casts = [
+        'fecha' => 'date',
+        'fecha_recepcion' => 'date',
+        'fecha_vencimiento' => 'date',
+        'fecha_pago' => 'date',
+        'monto_soles' => 'decimal:2',
+        'monto_dolares' => 'decimal:2',
+    ];
 }

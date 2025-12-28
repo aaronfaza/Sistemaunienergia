@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>SISTEMA INTEGRADO DE GESTION</title>
+  <title>Control y Seguimiento Cartas</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Icono -->
@@ -111,6 +111,169 @@
     .stat-meta{ display:flex; flex-direction:column; color:#25334a; }
     .stat-kpi span{ font-weight:700; font-size:clamp(20px,3.5vw,28px); letter-spacing:-.5px; line-height:1; }
     .stat-label{ font-size:.85rem; opacity:.8; }
+
+    /* ======================================================
+   CONTROL DE CARTAS – UX/UI ENTERPRISE UNIENERGIA
+   ====================================================== */
+
+/* =========================
+   CARDS GENERALES
+   ========================= */
+.card {
+  border-radius: 18px;
+  border: 1px solid rgba(0,0,0,.05);
+  box-shadow: 0 14px 34px rgba(15,23,42,.06);
+}
+
+.card-header {
+  background: linear-gradient(180deg, #ffffff, #f9fafb);
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+
+/* =========================
+   BOTONES – SISTEMA UNIFICADO
+   ========================= */
+.btn {
+  border-radius: 999px !important;
+  font-weight: 600;
+  letter-spacing: .2px;
+  transition: all .2s ease;
+}
+
+/* Nueva Carta */
+.btn-success {
+  background: linear-gradient(135deg, #10b981, #047857);
+  border: none;
+  box-shadow: 0 8px 20px rgba(16,185,129,.35);
+}
+.btn-success:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(16,185,129,.45);
+}
+
+/* Buscar */
+.btn-primary {
+  background: linear-gradient(135deg, #003366, #002B5C);
+  border: none;
+  box-shadow: 0 6px 18px rgba(0,51,102,.35);
+}
+
+/* Ver */
+.btn-info {
+  background: linear-gradient(135deg, #0ea5e9, #0369a1);
+  border: none;
+  box-shadow: 0 6px 16px rgba(14,165,233,.35);
+}
+
+/* Editar */
+.btn-warning {
+  background: rgba(245,158,11,.15);
+  border: none;
+  color: #b45309;
+}
+.btn-warning:hover {
+  background: rgba(245,158,11,.25);
+}
+
+/* Eliminar */
+.btn-danger {
+  background: rgba(239,68,68,.12);
+  border: none;
+  color: #ef4444;
+}
+.btn-danger:hover {
+  background: rgba(239,68,68,.22);
+}
+
+/* =========================
+   TABLA DE CARTAS (NO BOOTSTRAP LOOK)
+   ========================= */
+.table {
+  border-collapse: separate !important;
+  border-spacing: 0 8px;
+}
+
+.table thead th {
+  background: #f8fafc !important;
+  border: none !important;
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: #475569;
+  padding: .75rem;
+}
+
+.table tbody tr {
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(15,23,42,.06);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.table tbody tr:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(15,23,42,.12);
+}
+
+.table tbody td {
+  border: none !important;
+  vertical-align: middle;
+  padding: .65rem .75rem;
+  font-size: .9rem;
+  color: #1e293b;
+}
+
+/* Código */
+.table tbody td:nth-child(2) {
+  font-weight: 600;
+  color: #2563eb;
+}
+
+/* =========================
+   BUSCADOR
+   ========================= */
+.input-group .form-control {
+  border-radius: 999px 0 0 999px;
+}
+
+.input-group .btn {
+  border-radius: 0 999px 999px 0 !important;
+}
+
+/* =========================
+   MODALES – FICHA CORPORATIVA
+   ========================= */
+.modal-content {
+  border-radius: 20px !important;
+  box-shadow: 0 24px 48px rgba(15,23,42,.25);
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(0,0,0,.05);
+}
+
+.modal-footer {
+  border-top: 1px solid rgba(0,0,0,.05);
+}
+
+/* =========================
+   FORMULARIOS
+   ========================= */
+.form-control,
+.custom-select,
+textarea {
+  border-radius: 12px;
+  font-size: .9rem;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.form-control:focus,
+.custom-select:focus,
+textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.18);
+}
+
   </style>
 </head>
 
@@ -186,6 +349,7 @@
   </nav>
 
  <!-- Sidebar -->
+   <!-- Sidebar -->
   <aside class="main-sidebar elevation-4">
     <a href="#" class="brand-link text-center brand-area">
       <img src="{{ asset('img/logo.png.png') }}" style="width:25px;height:25px;margin-right:8px;">
@@ -193,7 +357,9 @@
     </a>
     <div class="sidebar">
       <nav class="mt-3">
-        <ul class="nav nav-pills nav-sidebar flex-column">
+        <ul class="nav nav-pills nav-sidebar flex-column"
+    data-widget="treeview"
+    data-accordion="true">
            <li class="nav-item">
           <a href="{{ route('bienvenida') }}" 
              class="nav-link {{ request()->routeIs('bienvenida') ? 'active' : '' }}">
@@ -214,17 +380,34 @@
               <p class="ml-2 mb-0">Requerimientos</p>
             </a>
           </li>
-          <li class="nav-item">
-            <a href="{{ route('control_cartas.index') }}" 
-              class="nav-link {{ request()->routeIs('control_cartas.*') ? 'active' : '' }}">
-                <i class="nav-icon fas fa-envelope" style="color: var(--brand-success);"></i>
-                <p class="ml-2 mb-0">Cartas SO-PRO</p>
-            </a>
+          
+          <li class="nav-item has-treeview">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-folder-open" style="color: var(--brand-info);"></i>
+            <p>
+              Control Cartas
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+
+          <ul class="nav nav-treeview ml-2">
+            <li class="nav-item">
+              <a href="{{ route('control_cartas.index') }}"
+                class="nav-link {{ request()->routeIs('control_cartas.*') ? 'active' : '' }}">
+                <i class="far fa-envelope nav-icon" style="color: var(--brand-accent);"></i>
+                <p>SO-PRO</p>
+              </a>
+            </li>
+          </ul>
+
         </li>
+
+
         </ul>
       </nav>
     </div>
   </aside>
+
 
 
 
@@ -307,43 +490,7 @@
                 </td>
                 
               </tr>
-
-              <!-- Modal Ver Detalle -->
-              <div class="modal fade" id="modalVer{{ $carta->id }}" tabindex="-1" role="dialog">
-                <div class="modal-dialog modal-lg" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
-                      <h5 class="modal-title">Detalle de Carta</h5>
-                      <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                      <p><strong>Código:</strong> {{ $carta->codigo }}</p>
-                      <p><strong>Fecha:</strong> {{ \Carbon\Carbon::parse($carta->fecha)->format('d/m/Y') }}</p>
-                      <p><strong>Mes:</strong> {{ $carta->mes }}</p>
-                      <p><strong>Servicio o Compra:</strong> {{ $carta->servicio_compra }}</p>
-                      <p><strong>Descripción:</strong> {{ $carta->descripcion }}</p>
-                      <p><strong>Proveedor Elegido:</strong> {{ $carta->proveedor_elegido }}</p>
-                      <p><strong>Cotizaciones Consideradas:</strong> {{ $carta->cotizaciones_consideradas }}</p>
-                      <p><strong>Equipo:</strong> {{ $carta->equipo }}</p>
-                      <p><strong>Especificación:</strong> {{ $carta->especificacion }}</p>
-                      <p><strong>Monto en Soles:</strong> {{ $carta->monto_soles }}</p>
-                      <p><strong>Monto en Dólares:</strong> {{ $carta->monto_dolares }}</p>
-                      <p><strong>N° de Orden:</strong> {{ $carta->nro_orden }}</p>
-                      <p><strong>Autorizado por:</strong> {{ $carta->autorizado_por }}</p>
-                      <p><strong>Factura N°:</strong> {{ $carta->factura_nro }}</p>
-                      <p><strong>Fecha de Recepción:</strong> {{ $carta->fecha_recepcion }}</p>
-                      <p><strong>Fecha de Vencimiento:</strong> {{ $carta->fecha_vencimiento }}</p>
-                      <p><strong>Fecha de Pago:</strong> {{ $carta->fecha_pago }}</p>
-                      <p><strong>Área:</strong> {{ $carta->area }}</p>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            <!-- Modal Editar -->
+  <!-- Modal Editar -->
             <div class="modal fade" id="modalEditar{{ $carta->id }}" tabindex="-1" role="dialog" aria-labelledby="modalEditarLabel{{ $carta->id }}" aria-hidden="true">
               <div class="modal-dialog modal-xl" role="document">
                 <div class="modal-content">
@@ -466,23 +613,6 @@
             </div>
 
 
-            @empty
-              <tr>
-                <td colspan="8" class="text-center text-muted">No hay cartas registradas.</td>
-              </tr>
-            @endforelse
-          </tbody>
-        </table>
-
-        <div class="d-flex justify-content-end mt-3">
-          {{ $cartas->links() }}
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
 <!-- Modal Agregar Carta -->
 <div class="modal fade" id="modalAgregar" tabindex="-1" role="dialog" aria-labelledby="modalAgregarLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -598,6 +728,182 @@
   </div>
 </div>
 
+      <!-- Modal Ver Detalle (UX Mejorado) -->
+            <div class="modal fade" id="modalVer{{ $carta->id }}" tabindex="-1" role="dialog">
+              <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                <div class="modal-content" style="border-radius:18px;">
+
+                  <!-- HEADER -->
+                  <div class="modal-header text-white"
+                      style="background: linear-gradient(135deg, #003366, #002B5C); border-radius:18px 18X|x 0 0;">
+                    <div>
+                      <h5 class="modal-title mb-0 font-weight-bold">
+                        📄 Carta SO-PRO — {{ $carta->codigo }}
+                      </h5>
+                      <small class="opacity-75">
+                        Registrada el {{ \Carbon\Carbon::parse($carta->fecha)->format('d/m/Y') }}
+                      </small>
+                    </div>
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                  </div>
+
+                  <!-- BODY -->
+                  <div class="modal-body">
+
+                    <!-- BLOQUE: DATOS GENERALES -->
+                    <div class="card mb-3 shadow-sm border-0">
+                      <div class="card-body">
+                        <h6 class="text-primary font-weight-bold mb-3">
+                          <i class="fas fa-info-circle mr-1"></i> Datos Generales
+                        </h6>
+
+                        <div class="row">
+                          <div class="col-md-3"><strong>Mes</strong><br>{{ $carta->mes }}</div>
+                          <div class="col-md-3"><strong>Área</strong><br>{{ $carta->area }}</div>
+                          <div class="col-md-3"><strong>Autorizado por</strong><br>{{ $carta->autorizado_por }}</div>
+                          <div class="col-md-3"><strong>N° Orden</strong><br>{{ $carta->nro_orden ?? '—' }}</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- BLOQUE: SERVICIO -->
+                    <div class="card mb-3 shadow-sm border-0">
+                      <div class="card-body">
+                        <h6 class="text-primary font-weight-bold mb-2">
+                          <i class="fas fa-briefcase mr-1"></i> Servicio / Compra
+                        </h6>
+                        <p class="mb-1"><strong>{{ $carta->servicio_compra }}</strong></p>
+                        <p class="text-muted mb-0">{{ $carta->descripcion }}</p>
+                      </div>
+                    </div>
+
+                    <!-- BLOQUE: PROVEEDOR Y MONTOS -->
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="card shadow-sm border-0 mb-3">
+                          <div class="card-body">
+                            <h6 class="text-primary font-weight-bold mb-2">
+                              <i class="fas fa-industry mr-1"></i> Proveedor
+                            </h6>
+                            <p class="mb-1"><strong>Proveedor elegido</strong></p>
+                            <p>{{ $carta->proveedor_elegido }}</p>
+
+                            <p class="mb-1"><strong>Cotizaciones</strong></p>
+                            <p class="text-muted mb-0">
+                              {{ $carta->cotizaciones_consideradas ?? '—' }}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <div class="card shadow-sm border-0 mb-3">
+                          <div class="card-body">
+                            <h6 class="text-primary font-weight-bold mb-2">
+                              <i class="fas fa-coins mr-1"></i> Montos
+                            </h6>
+
+                            <div class="d-flex justify-content-between">
+                              <span>Monto (S/)</span>
+                              <span class="font-weight-bold text-success">
+                                S/ {{ number_format($carta->monto_soles, 2) }}
+                              </span>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                              <span>Monto ($)</span>
+                              <span class="font-weight-bold text-info">
+                                $ {{ number_format($carta->monto_dolares, 2) }}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- BLOQUE: EQUIPO -->
+                    <div class="card mb-3 shadow-sm border-0">
+                      <div class="card-body">
+                        <h6 class="text-primary font-weight-bold mb-2">
+                          <i class="fas fa-tools mr-1"></i> Equipo / Especificación
+                        </h6>
+                        <p class="mb-1"><strong>Equipo:</strong> {{ $carta->equipo }}</p>
+                        <p class="mb-0"><strong>Especificación:</strong> {{ $carta->especificacion }}</p>
+                      </div>
+                    </div>
+
+                    <!-- BLOQUE: FECHAS -->
+                    <div class="card shadow-sm border-0">
+                      <div class="card-body">
+                        <h6 class="text-primary font-weight-bold mb-3">
+                          <i class="fas fa-calendar-alt mr-1"></i> Control de Fechas
+                        </h6>
+
+                        <div class="row">
+                          <div class="col-md-4">
+                            <strong>Recepción</strong><br>
+                            {{ $carta->fecha_recepcion ?? '—' }}
+                          </div>
+                          <div class="col-md-4">
+                            <strong>Vencimiento</strong><br>
+                            {{ $carta->fecha_vencimiento ?? '—' }}
+                          </div>
+                          <div class="col-md-4">
+                            <strong>Pago</strong><br>
+                            {{ $carta->fecha_pago ?? '—' }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                 <!-- FOOTER -->
+              <div class="modal-footer bg-light d-flex justify-content-between align-items-center">
+
+                <div class="text-muted small">
+                  <i class="fas fa-file-pdf mr-1"></i>
+                  Exportar ficha de la carta
+                </div>
+
+                <div>
+                  <a href="{{ route('control_cartas.export.pdf.individual', $carta->id) }}"
+                    class="btn btn-danger shadow-sm"
+                    target="_blank">
+                    <i class="fas fa-file-pdf mr-1"></i> Descargar PDF
+                  </a>
+
+                  <button type="button" class="btn btn-outline-secondary ml-2" data-dismiss="modal">
+                    Cerrar
+                  </button>
+                </div>
+
+              </div>
+
+            @empty
+              <tr>
+                <td colspan="8" class="text-center text-muted">No hay cartas registradas.</td>
+              </tr>
+              
+            @endforelse
+          </tbody>
+        </table>
+          
+        <div class="d-flex justify-content-end mt-3">
+          {{ $cartas->links() }}
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</section>
+
+
+  
+<a href="{{ route('control_cartas.export.excel', ['buscar' => $buscar]) }}"
+   class="btn btn-success shadow-sm">
+    <i class="fas fa-file-excel mr-1"></i> Backup Excel
+</a>
 
 
 

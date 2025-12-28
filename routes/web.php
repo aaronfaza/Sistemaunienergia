@@ -48,7 +48,15 @@ Route::middleware(['auth'])->group(function () {
    Route::get('/control_cartas', [ControlCartaController::class, 'index'])->name('control_cartas.index');
    Route::resource('control_cartas', ControlCartaController::class);
 
-    
+    Route::get(
+    '/control_cartas/export/excel',
+    [ControlCartaController::class, 'exportExcel']
+)->name('control_cartas.export.excel');
+
+Route::get(
+    '/control_cartas/{id}/export/pdf',
+    [ControlCartaController::class, 'exportPdfIndividual']
+)->name('control_cartas.export.pdf.individual');
 
 });
 

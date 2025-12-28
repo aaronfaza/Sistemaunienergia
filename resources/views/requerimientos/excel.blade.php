@@ -1,6 +1,6 @@
 <table border="0" width="100%">
     <tr>
-        <td colspan="8" align="center" bgcolor="#1f4e79">
+        <td colspan="8" align="center" bgcolor="#124f88ff">
             <strong style="color:#ffffff;">
                 REPORTE DE REQUERIMIENTOS – BACKUP
             </strong>

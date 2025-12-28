@@ -2,143 +2,126 @@
 
 namespace App\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use App\Models\ControlCarta;
 use App\Exports\ControlCartasExport;
 use Maatwebsite\Excel\Facades\Excel;
-use PDF;
 
 class ControlCartaController extends Controller
 {
-   
+    /**
+     * Listado + buscador
+     */
     public function index(Request $request)
-{
-    $buscar = trim($request->get('buscar')); // limpiar espacios
-
-    $cartas = \App\Models\ControlCarta::query()
-        ->when($buscar, function ($query, $buscar) {
-            $query->where(function ($q) use ($buscar) {
-                $q->where('codigo', 'LIKE', "%{$buscar}%")
-                  ->orWhere('mes', 'LIKE', "%{$buscar}%")
-                  ->orWhere('servicio_compra', 'LIKE', "%{$buscar}%")
-                  ->orWhere('descripcion', 'LIKE', "%{$buscar}%")
-                  ->orWhere('proveedor_elegido', 'LIKE', "%{$buscar}%")
-                  ->orWhere('nro_orden', 'LIKE', "%{$buscar}%")
-                  ->orWhere('autorizado_por', 'LIKE', "%{$buscar}%")
-                  ->orWhere('area', 'LIKE', "%{$buscar}%");
-            });
-        })
-        ->orderBy('fecha', 'desc')
-        ->paginate(10)
-        ->appends(['buscar' => $buscar]); // mantiene el texto al cambiar de página
-
-    return view('control_cartas.index', compact('cartas', 'buscar'));
-}
-
-    public function create()
     {
-        return view('control_cartas.create');
+        $buscar = trim($request->get('buscar'));
+
+        $cartas = ControlCarta::query()
+            ->when($buscar, function ($query) use ($buscar) {
+                $query->where(function ($q) use ($buscar) {
+                    $q->where('codigo', 'like', "%$buscar%")
+                      ->orWhere('mes', 'like', "%$buscar%")
+                      ->orWhere('servicio_compra', 'like', "%$buscar%")
+                      ->orWhere('descripcion', 'like', "%$buscar%")
+                      ->orWhere('proveedor_elegido', 'like', "%$buscar%")
+                      ->orWhere('nro_orden', 'like', "%$buscar%")
+                      ->orWhere('autorizado_por', 'like', "%$buscar%")
+                      ->orWhere('area', 'like', "%$buscar%");
+                });
+            })
+            ->orderBy('fecha', 'desc')
+            ->paginate(10)
+            ->appends(['buscar' => $buscar]);
+
+        return view('control_cartas.index', compact('cartas', 'buscar'));
     }
 
+    /**
+     * Guardar carta
+     */
     public function store(Request $request)
     {
         $request->validate([
-            'codigo' => 'required',
+            'codigo' => 'required|unique:control_cartas,codigo',
             'fecha' => 'required|date',
-            'mes' => 'required',
-            'servicio_compra' => 'required',
-            'descripcion' => 'required',
-            'proveedor_elegido' => 'required',
-            'cotizaciones_consideradas' => 'nullable',
-            'equipo' => 'nullable',
-            'especificacion' => 'nullable',
+            'mes' => 'nullable|string',
+            'servicio_compra' => 'required|string',
+            'descripcion' => 'nullable|string',
+            'proveedor_elegido' => 'nullable|string',
+            'cotizaciones_consideradas' => 'nullable|string',
+            'equipo' => 'nullable|string',
+            'especificacion' => 'nullable|string',
             'monto_soles' => 'nullable|numeric',
             'monto_dolares' => 'nullable|numeric',
-            'n_orden' => 'nullable',
-            'autorizado_por' => 'nullable',
-            'factura_n' => 'nullable',
+            'nro_orden' => 'nullable|string',
+            'autorizado_por' => 'nullable|string',
+            'factura_nro' => 'nullable|string',
             'fecha_recepcion' => 'nullable|date',
             'fecha_vencimiento' => 'nullable|date',
             'fecha_pago' => 'nullable|date',
+            'area' => 'nullable|string',
         ]);
 
         ControlCarta::create($request->all());
 
-        return redirect()->route('control_cartas.index')->with('success', 'Carta registrada correctamente.');
+        return redirect()
+            ->route('control_cartas.index')
+            ->with('success', 'Carta registrada correctamente.');
     }
 
-    public function exportExcel()
+    /**
+     * Actualizar carta
+     */
+    public function update(Request $request, $id)
     {
-        return Excel::download(new ControlCartasExport, 'control_cartas.xlsx');
+        $carta = ControlCarta::findOrFail($id);
+
+        $request->validate([
+            'codigo' => 'required|unique:control_cartas,codigo,' . $carta->id,
+            'fecha' => 'required|date',
+            'servicio_compra' => 'required|string',
+        ]);
+
+        $carta->update($request->all());
+
+        return redirect()
+            ->route('control_cartas.index')
+            ->with('success', 'Carta actualizada correctamente.');
     }
 
-    public function exportPdf()
-    {
-        $cartas = ControlCarta::all();
-        $pdf = PDF::loadView('control_cartas.pdf', compact('cartas'));
-        return $pdf->download('control_cartas.pdf');
-    }
+    /**
+     * Eliminar carta
+     */
     public function destroy($id)
-        {
-            // Buscar el registro por ID
-            $controlCarta = ControlCarta::findOrFail($id);
+    {
+        ControlCarta::findOrFail($id)->delete();
 
-            // Eliminarlo
-            $controlCarta->delete();
+        return redirect()
+            ->route('control_cartas.index')
+            ->with('success', 'Carta eliminada correctamente.');
+    }
 
-            // Redirigir con mensaje de éxito
-            return redirect()->route('control_cartas.index')
-                            ->with('success', 'Carta eliminada correctamente.');
-        }
+    /**
+     * Exportar Excel (backup)
+     */
+    public function exportExcel(Request $request)
+    {
+        $buscar = $request->get('buscar');
 
-        public function update(Request $request, $id)
+        return Excel::download(
+            new ControlCartasExport($buscar),
+            'backup_cartas_' . now()->format('Ymd_His') . '.xlsx'
+        );
+    }
+
+    public function exportPdfIndividual($id)
 {
-    $request->validate([
-        'codigo' => 'required|string|max:255',
-        'fecha' => 'required|date',
-        'mes' => 'nullable|string|max:50',
-        'servicio_compra' => 'required|string|max:500',
-        'descripcion' => 'nullable|string',
-        'proveedor_elegido' => 'nullable|string|max:255',
-        'cotizaciones_consideradas' => 'nullable|string',
-        'equipo' => 'nullable|string|max:255',
-        'especificacion' => 'nullable|string|max:500',
-        'monto_soles' => 'nullable|numeric',
-        'monto_dolares' => 'nullable|numeric',
-        'nro_orden' => 'nullable|string|max:100',
-        'autorizado_por' => 'nullable|string|max:255',
-        'factura_nro' => 'nullable|string|max:100',
-        'fecha_recepcion' => 'nullable|date',
-        'fecha_vencimiento' => 'nullable|date',
-        'fecha_pago' => 'nullable|date',
-        'area' => 'nullable|string|max:255',
-    ]);
+    $carta = ControlCarta::findOrFail($id);
 
-    $carta = \App\Models\ControlCarta::findOrFail($id);
+    $pdf = Pdf::loadView('control_cartas.pdf_individual', compact('carta'))
+              ->setPaper('a4', 'portrait');
 
-    $carta->update($request->only([
-        'codigo',
-        'fecha',
-        'mes',
-        'servicio_compra',
-        'descripcion',
-        'proveedor_elegido',
-        'cotizaciones_consideradas',
-        'equipo',
-        'especificacion',
-        'monto_soles',
-        'monto_dolares',
-        'nro_orden',
-        'autorizado_por',
-        'factura_nro',
-        'fecha_recepcion',
-        'fecha_vencimiento',
-        'fecha_pago',
-        'area',
-    ]));
-
-    return redirect()->route('control_cartas.index')->with('success', 'Carta actualizada correctamente.');
+    return $pdf->download('Carta_SO_PRO_' . $carta->codigo . '.pdf');
 }
-
-
 }

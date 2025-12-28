@@ -1,198 +1,286 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<link rel="icon" href="{{ asset('img/logo.png.png') }}" type="image/png">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Iniciar sesión - Unienergia</title>
-<style>
-    * {
-        box-sizing: border-box;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ asset('img/logo.png.png') }}" type="image/png">
+    <title>Acceso al Sistema | Unienergia</title>
+    <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/png">
 
-    body {
-        background: linear-gradient(135deg, #4f46e5, #3b82f6);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        margin: 0;
-    }
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
 
-    .login-container {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(8px);
-        padding: 2.5rem;
-        border-radius: 16px;
-        width: 100%;
-        max-width: 380px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        animation: fadeIn 0.8s ease-in-out;
-    }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            background: linear-gradient(160deg, #0f172a, #1e3a8a);
+        }
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+        /* ===== PANEL IZQUIERDO ===== */
+        .left-panel {
+            width: 50%;
+            color: #ffffff;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
 
-    .login-container h2 {
-        text-align: center;
-        margin-bottom: 1.5rem;
-        color: #1e293b;
-        font-size: 1.5rem;
-    }
+        .left-panel img {
+            width: 180px;
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 0 12px rgba(59,130,246,.55));
+        }
 
-    .login-container img {
-        max-width: 180px;
-        margin-bottom: 1rem;
-    }
+        .left-panel h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
 
-    label {
-        display: block;
-        margin-bottom: 0.3rem;
-        color: #374151;
-        font-weight: 500;
-    }
+        .left-panel p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #c7d2fe;
+            max-width: 420px;
+        }
 
-    input[type="email"],
-    input[type="password"] {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #d1d5db;
-        border-radius: 8px;
-        margin-bottom: 1rem;
-        outline: none;
-        transition: all 0.3s ease;
-        font-size: 0.95rem;
-    }
+        .features {
+            margin-top: 2.5rem;
+        }
 
-    input:focus {
-        border-color: #4f46e5;
-        box-shadow: 0 0 6px rgba(79, 70, 229, 0.3);
-    }
+        .features li {
+            margin-bottom: 0.8rem;
+            list-style: none;
+            font-size: 0.95rem;
+            color: #e0e7ff;
+        }
 
-    .actions {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-        font-size: 0.9rem;
-    }
+        .features li::before {
+            content: "✓";
+            color: #38bdf8;
+            margin-right: 0.5rem;
+        }
 
-    .actions label {
-        color: #475569;
-    }
+        /* ===== PANEL DERECHO ===== */
+        .right-panel {
+            width: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+        }
 
-    .actions a {
-        color: #4f46e5;
-        text-decoration: none;
-        font-weight: 500;
-    }
+        /* ===== LIQUID GLASS LOGIN ===== */
+        .login-box {
+            width: 100%;
+            max-width: 380px;
+            padding: 2.6rem;
+            border-radius: 20px;
 
-    .actions a:hover {
-        text-decoration: underline;
-    }
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
 
-    button {
-        width: 100%;
-        background: linear-gradient(135deg, #4f46e5, #3b82f6);
-        color: white;
-        padding: 0.8rem;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 1rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
+            border: 1px solid rgba(255, 255, 255, 0.35);
 
-    button:hover {
-        background: linear-gradient(135deg, #4338ca, #2563eb);
-        transform: scale(1.02);
-    }
+            box-shadow:
+                0 30px 60px rgba(0, 0, 0, 0.55),
+                inset 0 1px 1px rgba(255, 255, 255, 0.35);
+        }
 
-    /* Mensajes de error y éxito */
-    .alert {
-        padding: 0.8rem;
-        border-radius: 8px;
-        margin-bottom: 1rem;
-        font-size: 0.9rem;
-    }
+        .login-box h2 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #f8fafc;
+            margin-bottom: 0.3rem;
+        }
 
-    .alert-success {
-        background: #dcfce7;
-        color: #166534;
-        border: 1px solid #86efac;
-    }
+        .login-box span {
+            font-size: 0.9rem;
+            color: #cbd5f5;
+        }
 
-    .alert-error {
-        background: #fee2e2;
-        color: #991b1b;
-        border: 1px solid #fca5a5;
-    }
+        label {
+            display: block;
+            margin-top: 1.4rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #e5e7eb;
+        }
 
-      footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background: #1f2937;
-        color: #e5e7eb;
-        text-align: center;
-        padding: 0.8rem 0;
-        font-size: 0.85rem;
-    }
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            margin-top: 0.3rem;
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.9);
+            transition: border 0.2s, box-shadow 0.2s;
+        }
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+        input:focus {
+            outline: none;
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.45);
+        }
 
-</style>
+        .options {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #e5e7eb;
+        }
+
+        .options a {
+            color: #93c5fd;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        button {
+            margin-top: 1.8rem;
+            width: 100%;
+            padding: 0.9rem;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            transform: translateY(-1px);
+        }
+
+        .alert {
+            margin-top: 1rem;
+            padding: 0.6rem 0.8rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+        }
+
+        .alert-success {
+            background: rgba(34, 197, 94, 0.3);
+            color: #dcfce7;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.3);
+            color: #fee2e2;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #cbd5f5;
+            padding: 0.6rem 0;
+            background: rgba(2, 6, 23, 0.85);
+            backdrop-filter: blur(6px);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            body {
+                flex-direction: column;
+            }
+
+            .left-panel,
+            .right-panel {
+                width: 100%;
+            }
+
+            .left-panel {
+                padding: 2.5rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <div class="login-container">
-        <div style="text-align: center;">
-            <img src="{{ asset('img/logo1.png') }}" alt="Logo">
-        </div>
-        <h2>Iniciar Sesión</h2>
 
-        @if (session('status'))
-            <div class="alert alert-success">
-                {{ session('status') }}
-            </div>
-        @endif
+    <!-- PANEL IZQUIERDO -->
+    <div class="left-panel">
+        <img src="{{ asset('img/logo1.png') }}" alt="Unienergia">
 
-        @if ($errors->any())
-            <div class="alert alert-error">
-                <ul style="margin:0; padding-left:1.2rem;">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+        <h1>Sistema Integrado Administrativo</h1>
+        <p>
+            Plataforma centralizada para la gestión de trámites, documentos
+            administrativos y control institucional.
+        </p>
 
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
-
-            <label for="email">Correo electrónico</label>
-            <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus>
-
-            <label for="password">Contraseña</label>
-            <input type="password" name="password" id="password" required>
-
-            <div class="actions">
-                <label><input type="checkbox" name="remember"> Recordarme</label>
-                <a href="#">¿Olvidaste tu contraseña?</a>
-            </div>
-
-            <button type="submit">Ingresar</button>
-        </form>
+        <ul class="features">
+            <li>Gestión de requerimientos</li>
+            <li>Control de cartas y documentos</li>
+            <li>Seguimiento administrativo</li>
+            <li>Módulo logístico (próximamente)</li>
+        </ul>
     </div>
-     <footer>
-        © {{ date('Y') }} Empresa de Recursos Energéticos SAC - Todos los derechos reservados
+
+    <!-- PANEL DERECHO -->
+    <div class="right-panel">
+        <div class="login-box">
+
+            <h2>Acceso al sistema</h2>
+            <span>Ingrese sus credenciales</span>
+
+            @if (session('status'))
+                <div class="alert alert-success">
+                    {{ session('status') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="alert alert-error">
+                    <ul style="margin:0; padding-left:1rem;">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+
+                <label for="email">Correo electrónico</label>
+                <input type="email" name="email" id="email" required>
+
+                <label for="password">Contraseña</label>
+                <input type="password" name="password" id="password" required>
+
+                <div class="options">
+                    <label>
+                        <input type="checkbox" name="remember">
+                        Recordarme
+                    </label>
+                    <a href="#">¿Olvidó su contraseña?</a>
+                </div>
+
+                <button type="submit">Ingresar</button>
+            </form>
+
+        </div>
+    </div>
+
+    <footer>
+        © {{ date('Y') }} Empresa de Recursos Energéticos SAC — Todos los derechos reservados
     </footer>
+
 </body>
 </html>
+<link rel="icon" href="{{ asset('img/logo.png.png') }}" type="image/png">
