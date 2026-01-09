@@ -548,7 +548,7 @@
           </div>
 
           <div class="px-3 py-2 text-right">
-            <span class="text-muted">Total de reportes: <strong>{{ $reportes->count() }}</strong></span>
+            <span class="text-muted">Total de reportes: <strong>{{ $totalReportes }}</strong></span>
           </div>
         </div>
       </div>
