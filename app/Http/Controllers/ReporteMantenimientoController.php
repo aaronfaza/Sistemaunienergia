@@ -9,27 +9,29 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class ReporteMantenimientoController extends Controller
 {
     public function index(Request $request)
-    {
-        $query = ReporteMantenimiento::query();
+{
+    $query = ReporteMantenimiento::query();
 
-        if ($request->filled('nombre')) {
-            $query->where('nombre', 'like', '%' . $request->nombre . '%');
-        }
-
-        if ($request->filled('fecha')) {
-            $query->whereDate('fecha_inicio', $request->fecha);
-        }
-
-        $totalReportes = $query->count(); 
-        $reportes = $query->orderByDesc('id')->paginate(6);
-        $notificaciones = ReporteMantenimiento::latest()->take(5)->get();
-
-        
-        return view('dashboard', compact('reportes', 'totalReportes', 'notificaciones'));
-
-
-        return view('dashboard', compact('reportes', 'totalReportes'));
+    if ($request->filled('nombre')) {
+        $query->where('nombre', 'like', '%' . $request->nombre . '%');
     }
+
+    if ($request->filled('fecha')) {
+        $query->whereDate('fecha_inicio', $request->fecha);
+    }
+
+    // Total real con filtros
+    $totalReportes = (clone $query)->count();
+
+    // Para DataTables: traer TODOS los registros filtrados
+    $reportes = $query->orderByDesc('id')->get();
+
+    // Notificaciones aparte (ejemplo)
+    $notificaciones = ReporteMantenimiento::latest()->take(5)->get();
+
+    return view('dashboard', compact('reportes', 'totalReportes', 'notificaciones'));
+}
+
 
     public function create()
     {
