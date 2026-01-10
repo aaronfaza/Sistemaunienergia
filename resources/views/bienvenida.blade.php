@@ -310,7 +310,7 @@
     </div>
   </nav>
 
- <!-- Sidebar -->
+<!-- Sidebar -->
   <aside class="main-sidebar elevation-4">
     <a href="#" class="brand-link text-center brand-area">
       <img src="{{ asset('img/logo.png.png') }}" style="width:25px;height:25px;margin-right:8px;">
@@ -342,7 +342,7 @@
             </a>
           </li>
           
-          <li class="nav-item has-treeview">
+        <li class="nav-item has-treeview">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-folder-open" style="color: var(--brand-info);"></i>
             <p>
@@ -359,8 +359,14 @@
                 <p>SO-PRO</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="{{ route('cartas_fis.index') }}"
+                class="nav-link {{ request()->routeIs('cartas_fis.*') ? 'active' : '' }}">
+                <i class="far fa-clipboard nav-icon" style="color: var(--brand-info);"></i>
+                <p>FIS</p>
+              </a>
+            </li>
           </ul>
-
         </li>
 
 
@@ -368,6 +374,8 @@
       </nav>
     </div>
   </aside>
+
+  
 
 
   <!-- Contenido principal (SCROLL AQUÍ) -->

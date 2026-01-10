@@ -6,6 +6,7 @@ use App\Http\Controllers\InspeccionVehicularController;
 use App\Http\Controllers\RequerimientoController;
 use App\Http\Controllers\DashboardWelcomeController;
 use App\Http\Controllers\ControlCartaController;
+use App\Http\Controllers\CartaFisController;
 
 // Redirect al login por defecto
 Route::get('/', function () {
@@ -19,6 +20,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [ReporteMantenimientoController::class, 'index'])
         ->name('dashboard');
 
+    Route::get('/reportes/backup-excel', [ReporteMantenimientoController::class, 'backupExcel'])
+    ->name('reportes.backup.excel');
+
     // Reportes de mantenimiento mecánico (tu caso anterior)
     Route::resource('reportes', ReporteMantenimientoController::class);
 
@@ -29,6 +33,7 @@ Route::middleware(['auth'])->group(function () {
     // Ruta para imprimir PDF de requerimientos
     Route::get('/requerimientos/{id}/pdf', [RequerimientoController::class, 'imprimir'])
     ->name('requerimientos.imprimir');
+    
 
     // Inspección vehicular (nuevo caso de uso)
     Route::resource('inspecciones', InspeccionVehicularController::class)
@@ -61,6 +66,17 @@ Route::get(
 Route::patch('/control_cartas/{id}/estado', 
   [ControlCartaController::class, 'updateEstado']
 )->name('control_cartas.update_estado');
+
+Route::resource('cartas_fis', \App\Http\Controllers\CartaFisController::class)
+    ->only(['index','store','update','destroy']);
+
+
+
+
+
+
+
+
 
 });
 

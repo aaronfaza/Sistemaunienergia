@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class ReporteMantenimiento extends Model
 {
@@ -24,6 +25,9 @@ class ReporteMantenimiento extends Model
         'herramientas',
         'materiales',
         'descripcion_actividad',
+        'foto',
+        'firma',
+        
     ];
 
     // Definir que herramientas y materiales son arrays (JSON en base de datos)

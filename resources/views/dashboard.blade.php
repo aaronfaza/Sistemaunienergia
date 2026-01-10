@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Reportes de Mantenimiento Mecannico</title>
+  <title>Reportes de Mantenimiento Mecanico</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Icono -->
@@ -20,301 +20,232 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 
   <style>
-    /* ===== Paleta corporativa (ajusta aquí) ===== */
     :root{
-      --brand-primary: #003366;   /* azul corporativo */
-      --brand-primary-dark: #002B5C;
-      --brand-accent: #00A86B;    /* verde acento */
-      --brand-accent-dark: #038b5a;
-      --brand-info: #17a2b8;      /* info */
-      --brand-danger: #dc3545;    /* danger */
-      --sidebar-bg: #121212;      /* fondo cabecera sidebar */
-      --sidebar-main: #1F1F1F;    /* fondo cuerpo sidebar */
-      --text-on-brand: #ffffff;
-
-      /* Alturas para layout sticky */
-      --header-h: 56px;  /* ajusta si tu navbar es más alto */
-      --footer-h: 44px;  /* pon 0 si no quieres footer fijo */
+      --brand-primary:#003366;
+      --brand-primary-dark:#002B5C;
+      --brand-accent:#00A86B;
+      --brand-accent-dark:#038b5a;
+      --brand-info:#17a2b8;
+      --brand-danger:#dc3545;
+      --sidebar-bg:#121212;
+      --sidebar-main:#1F1F1F;
+      --text-on-brand:#ffffff;
+      --header-h:56px;
+      --footer-h:44px;
     }
 
-    /* ========== LAYOUT: navbar/sidebar fijos y scroll SOLO en el contenido ========== */
-    html, body{
-      height: 100%;
-      overflow: hidden; /* bloquea scroll global */
+    .signature-card{
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 16px;
+      padding: 12px;
+      background: #fff;
+      box-shadow: 0 10px 24px rgba(15,23,42,.06);
     }
-    .wrapper{
-      height: 100vh;
-      overflow: hidden;
+    .signature-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:8px;
     }
-    /* Navbar */
-    .navbar-uni { background-color: var(--brand-primary); box-shadow: 0 2px 4px rgba(0,0,0,.2); }
-    .navbar-uni .nav-link, .navbar-uni .navbar-brand { color: var(--text-on-brand); }
-    .navbar-uni .nav-link:hover { opacity: .9; }
-    .main-header{
-      position: sticky; top: 0; z-index: 1035; height: var(--header-h);
+    .signature-title{
+      font-weight:700;
+      font-size:.95rem;
+      margin:0;
+    }
+    .signature-hint{
+      font-size:.78rem;
+      color:#64748b;
+      margin:0;
+    }
+    .signature-wrap{
+      border: 1px dashed rgba(0,0,0,.25);
+      border-radius: 14px;
+      overflow:hidden;
+      background: #fbfdff;
     }
 
-    /* Sidebar */
-    .main-sidebar { background-color: var(--sidebar-main) !important; }
-    .brand-area { background-color: var(--sidebar-bg); }
-    .brand-area .brand-text { color: var(--text-on-brand); }
-    .nav-sidebar .nav-link { color: #eaeaea !important; border-radius: .35rem; margin: 0 .25rem; }
-    .nav-sidebar .nav-link.active {
-      background: linear-gradient(90deg, var(--brand-primary) 0%, var(--brand-primary-dark) 100%);
-      color: #fff !important;
+    .signature-canvas{
+      width: 100%;
+      height: 180px;
+      display:block;
+      touch-action: none; /* evita scroll y mejora táctil */
+      cursor: crosshair;
     }
-    .nav-sidebar .nav-link:hover { background-color: rgba(255,255,255,.08) !important; color: #fff !important; }
-    .nav-icon.text-info { color: var(--brand-info) !important; }
-    .nav-icon.text-success { color: var(--brand-accent) !important; }
+    .signature-actions{
+      display:flex;
+      gap:8px;
+      margin-top:10px;
+    }
 
-    /* Contenido: ÚNICO que scrollea */
+
+    html, body{ height:100%; overflow:hidden; }
+    .wrapper{ height:100vh; overflow:hidden; }
+
+    .navbar-uni{ background-color:var(--brand-primary); box-shadow:0 2px 4px rgba(0,0,0,.2); }
+    .navbar-uni .nav-link, .navbar-uni .navbar-brand{ color:var(--text-on-brand); }
+    .navbar-uni .nav-link:hover{ opacity:.9; }
+    .main-header{ position:sticky; top:0; z-index:1035; height:var(--header-h); }
+
+    .main-sidebar{ background-color:var(--sidebar-main)!important; }
+    .brand-area{ background-color:var(--sidebar-bg); }
+    .brand-area .brand-text{ color:var(--text-on-brand); }
+    .nav-sidebar .nav-link{ color:#eaeaea!important; border-radius:.35rem; margin:0 .25rem; }
+    .nav-sidebar .nav-link.active{
+      background:linear-gradient(90deg,var(--brand-primary) 0%, var(--brand-primary-dark) 100%);
+      color:#fff!important;
+    }
+    .nav-sidebar .nav-link:hover{ background-color:rgba(255,255,255,.08)!important; color:#fff!important; }
+
     .content-wrapper{
       background-color:#f8f9fa;
-      height: calc(100vh - var(--header-h) - var(--footer-h));
-      overflow: auto;
-      -webkit-overflow-scrolling: touch;
+      height:calc(100vh - var(--header-h) - var(--footer-h));
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+    .main-footer{ position:sticky; bottom:0; z-index:1020; background:#fff; }
+
+    @media (min-width:992px){ :root{ --header-h:64px; } }
+    .heading-font{ font-family:'Montserrat', sans-serif; }
+
+    .card-clean{
+      border-radius:18px;
+      border:1px solid rgba(0,0,0,.05);
+      box-shadow:0 14px 34px rgba(15,23,42,.06);
+    }
+    .card-clean .card-header{
+      background:linear-gradient(180deg,#ffffff,#f9fafb);
+      font-weight:600;
+      letter-spacing:.2px;
     }
 
-    /* Footer fijo abajo (quítalo si no lo quieres fijo) */
-    .main-footer{
-      position: sticky; bottom: 0; z-index: 1020; background:#fff;
+    .btn{
+      border-radius:999px!important;
+      font-weight:600;
+      letter-spacing:.2px;
+      transition:all .2s ease;
+    }
+    .btn-brand{
+      background:linear-gradient(135deg,#2563eb,#1e40af);
+      border:none;
+      color:#fff!important;
+      box-shadow:0 8px 20px rgba(37,99,235,.35);
+    }
+    .btn-brand:hover{ transform:translateY(-1px); box-shadow:0 14px 32px rgba(37,99,235,.45); }
+    .btn-primary{
+      background:linear-gradient(135deg,#003366,#002B5C);
+      border:none;
+      box-shadow:0 6px 18px rgba(0,51,102,.35);
+    }
+    .btn-info{
+      background:linear-gradient(135deg,#0ea5e9,#0369a1);
+      border:none;
+      box-shadow:0 6px 16px rgba(14,165,233,.35);
+    }
+    .btn-outline-brand{
+      border-radius:999px;
+      border:1px solid rgba(16,185,129,.45);
+      color:#10b981;
+    }
+    .btn-outline-brand:hover{ background:rgba(16,185,129,.12); }
+    .btn-danger{ background:rgba(239,68,68,.12); border:none; color:#ef4444; }
+    .btn-danger:hover{ background:rgba(239,68,68,.22); }
+    .btn-fw{ font-weight:600; }
+
+    #tablaReportes{ border-collapse:separate!important; border-spacing:0 8px; }
+    #tablaReportes thead th{
+      background:#f8fafc!important;
+      border:none!important;
+      font-size:.78rem;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      color:#475569;
+      padding:.75rem;
+      white-space:nowrap;
+    }
+    #tablaReportes tbody tr{
+      background:#ffffff;
+      box-shadow:0 6px 18px rgba(15,23,42,.06);
+      transition:transform .18s ease, box-shadow .18s ease;
+    }
+    #tablaReportes tbody tr:hover{
+      transform:translateY(-1px);
+      box-shadow:0 14px 32px rgba(15,23,42,.12);
+    }
+    #tablaReportes tbody td{
+      border:none!important;
+      vertical-align:middle;
+      padding:.65rem .75rem;
+      font-size:.9rem;
+      color:#1e293b;
+    }
+    #tablaReportes tbody td:first-child{ font-weight:600; color:#2563eb; }
+
+    .filters-row{
+      background:#ffffff;
+      border-radius:16px;
+      padding:.85rem 1rem;
+      box-shadow:0 8px 22px rgba(15,23,42,.05);
     }
 
-    @media (min-width: 992px){
-      :root{ --header-h: 64px; } /* header un poco más alto en desktop */
+    .modal-content{
+      border-radius:20px!important;
+      box-shadow:0 24px 48px rgba(15,23,42,.25);
+    }
+    .modal-header, .modal-footer{ border-color:rgba(0,0,0,.05); }
+
+    .form-control, .custom-select{
+      border-radius:12px;
+      font-size:.9rem;
+      transition:border-color .15s ease, box-shadow .15s ease;
+    }
+    .form-control:focus, .custom-select:focus{
+      border-color:#2563eb;
+      box-shadow:0 0 0 3px rgba(37,99,235,.18);
     }
 
-    /* Tipografía de títulos */
-    .heading-font { font-family: 'Montserrat', sans-serif; }
-
-    /* Cards */
-    .card-clean { border: 1px solid rgba(0,0,0,.06); box-shadow: 0 2px 10px rgba(0,0,0,.04); }
-
-    /* Botones con paleta */
-    .btn-brand { background-color: var(--brand-accent); color: #fff; border-color: var(--brand-accent); }
-    .btn-brand:hover { background-color: var(--brand-accent-dark); border-color: var(--brand-accent-dark); color:#fff; }
-    .btn-outline-brand { border-color: var(--brand-accent); color: var(--brand-accent); }
-    .btn-outline-brand:hover { background-color: var(--brand-accent); color:#fff; }
-    .btn-primary { background-color: var(--brand-primary); border-color: var(--brand-primary); }
-    .btn-primary:hover { background-color: var(--brand-primary-dark); border-color: var(--brand-primary-dark); }
-    .btn-info { background-color: var(--brand-info); border-color: var(--brand-info); }
-    .btn-danger { background-color: var(--brand-danger); border-color: var(--brand-danger); }
-    .btn-fw { font-weight: 600; }
-
-    /* Badges noti */
-    .badge-narrow { font-size: .65rem; padding: .2rem .35rem; }
-
-    /* Tabla */
-    table.dataTable thead th { white-space: nowrap; }
-    .table thead th { font-weight: 600; }
-
-    /* Responsive helpers */
-    @media (max-width: 576px) {
-      .content-header .btn { width: 100%; }
-      .filters-row .form-control { width: 100% !important; }
+    /* ===== FOTO UX ===== */
+    .photo-card{
+      border:1px dashed rgba(15,23,42,.18);
+      border-radius:16px;
+      padding:12px;
+      background:linear-gradient(180deg,#fff,#fbfdff);
     }
-
-    /* ======================================================
-   MANTENIMIENTO – UX/UI ENTERPRISE UNIENERGIA
-   ====================================================== */
-
-/* =========================
-   CARDS GENERALES
-   ========================= */
-.card-clean {
-  border-radius: 18px;
-  border: 1px solid rgba(0,0,0,.05);
-  box-shadow: 0 14px 34px rgba(15,23,42,.06);
-}
-
-.card-clean .card-header {
-  background: linear-gradient(180deg, #ffffff, #f9fafb);
-  font-weight: 600;
-  letter-spacing: .2px;
-}
-
-/* =========================
-   BOTONES – SISTEMA UNIFICADO
-   ========================= */
-.btn {
-  border-radius: 999px !important;
-  font-weight: 600;
-  letter-spacing: .2px;
-  transition: all .2s ease;
-}
-
-/* Crear / Guardar */
-.btn-brand {
-  background: linear-gradient(135deg, #2563eb, #1e40af);
-  border: none;
-  color: #fff !important;
-  box-shadow: 0 8px 20px rgba(37,99,235,.35);
-}
-.btn-brand:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 32px rgba(37,99,235,.45);
-}
-
-/* Buscar */
-.btn-primary {
-  background: linear-gradient(135deg, #003366, #002B5C);
-  border: none;
-  box-shadow: 0 6px 18px rgba(0,51,102,.35);
-}
-.btn-primary:hover {
-  box-shadow: 0 12px 26px rgba(0,51,102,.45);
-}
-
-/* Ver */
-.btn-info {
-  background: linear-gradient(135deg, #0ea5e9, #0369a1);
-  border: none;
-  box-shadow: 0 6px 16px rgba(14,165,233,.35);
-}
-.btn-info:hover {
-  box-shadow: 0 12px 26px rgba(14,165,233,.45);
-}
-
-/* Editar */
-.btn-outline-brand {
-  border-radius: 999px;
-  border: 1px solid rgba(16,185,129,.45);
-  color: #10b981;
-}
-.btn-outline-brand:hover {
-  background: rgba(16,185,129,.12);
-}
-
-/* Eliminar */
-.btn-danger {
-  background: rgba(239,68,68,.12);
-  border: none;
-  color: #ef4444;
-}
-.btn-danger:hover {
-  background: rgba(239,68,68,.22);
-}
-
-/* =========================
-   TABLA DE REPORTES (NO BOOTSTRAP LOOK)
-   ========================= */
-#tablaReportes {
-  border-collapse: separate !important;
-  border-spacing: 0 8px;
-}
-
-#tablaReportes thead th {
-  background: #f8fafc !important;
-  border: none !important;
-  font-size: .78rem;
-  text-transform: uppercase;
-  letter-spacing: .05em;
-  color: #475569;
-  padding: .75rem;
-}
-
-#tablaReportes tbody tr {
-  background: #ffffff;
-  box-shadow: 0 6px 18px rgba(15,23,42,.06);
-  transition: transform .18s ease, box-shadow .18s ease;
-}
-
-#tablaReportes tbody tr:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 32px rgba(15,23,42,.12);
-}
-
-#tablaReportes tbody td {
-  border: none !important;
-  vertical-align: middle;
-  padding: .65rem .75rem;
-  font-size: .9rem;
-  color: #1e293b;
-}
-
-/* Primera columna (Nombre) */
-#tablaReportes tbody td:first-child {
-  font-weight: 600;
-  color: #2563eb;
-}
-
-/* =========================
-   DATATABLES CONTROLES
-   ========================= */
-.dataTables_wrapper .dataTables_filter input {
-  border-radius: 999px;
-  padding: .4rem .9rem;
-  font-size: .85rem;
-  border: 1px solid #cbd5e1;
-}
-
-.dataTables_wrapper .dataTables_length select {
-  border-radius: 999px;
-  font-size: .85rem;
-  padding: .3rem .6rem;
-}
-
-/* Paginación */
-.page-item .page-link {
-  border-radius: 999px !important;
-  border: none;
-  margin: 0 2px;
-  color: #334155;
-}
-
-.page-item.active .page-link {
-  background: linear-gradient(135deg, #2563eb, #1e40af);
-  color: #fff;
-  box-shadow: 0 6px 16px rgba(37,99,235,.4);
-}
-
-/* =========================
-   FILTROS (BUSQUEDA)
-   ========================= */
-.filters-row {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: .85rem 1rem;
-  box-shadow: 0 8px 22px rgba(15,23,42,.05);
-}
-
-/* =========================
-   MODALES – LOOK ENTERPRISE
-   ========================= */
-.modal-content {
-  border-radius: 20px !important;
-  box-shadow: 0 24px 48px rgba(15,23,42,.25);
-}
-
-.modal-header,
-.modal-footer {
-  border-color: rgba(0,0,0,.05);
-}
-
-/* =========================
-   FORMULARIOS
-   ========================= */
-.form-control,
-.custom-select {
-  border-radius: 12px;
-  font-size: .9rem;
-  transition: border-color .15s ease, box-shadow .15s ease;
-}
-
-.form-control:focus,
-.custom-select:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37,99,235,.18);
-}
-
+    .photo-preview{
+      width:100%;
+      height:160px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.06);
+      background:#f8fafc;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .photo-preview img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .photo-empty{
+      font-size:.85rem;
+      color:#64748b;
+      text-align:center;
+      padding:10px;
+    }
+    .photo-meta{
+      font-size:.8rem;
+      color:#64748b;
+      margin-top:8px;
+      line-height:1.2;
+    }
   </style>
 </head>
 
-<!-- body fijo para que solo scrollee el content -->
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
 <div class="wrapper">
 
- <!-- Navbar -->
+  <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-uni">
     <div class="container-fluid d-flex justify-content-between align-items-center">
       <ul class="navbar-nav d-flex align-items-center">
@@ -328,9 +259,7 @@
         </li>
       </ul>
 
-      <!-- Notificaciones + Perfil -->
       <ul class="navbar-nav ml-auto d-flex align-items-center">
-        <!-- Notificaciones -->
         <li class="nav-item dropdown mr-3">
           <a class="nav-link position-relative" href="#" id="notificacionesDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
             <i class="fas fa-bell fa-lg text-white"></i>
@@ -356,7 +285,6 @@
           </div>
         </li>
 
-        <!-- Usuario -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle d-flex align-items-center px-3 py-2 rounded-pill shadow-sm text-white"
              href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-expanded="false"
@@ -382,7 +310,7 @@
   </nav>
 
   <!-- Sidebar -->
-  <aside class="main-sidebar elevation-4">
+ <aside class="main-sidebar elevation-4">
     <a href="#" class="brand-link text-center brand-area">
       <img src="{{ asset('img/logo.png.png') }}" style="width:25px;height:25px;margin-right:8px;">
       <span class="brand-text font-weight-bold">UNIENERGIA ABC</span>
@@ -413,7 +341,7 @@
             </a>
           </li>
           
-          <li class="nav-item has-treeview">
+        <li class="nav-item has-treeview">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-folder-open" style="color: var(--brand-info);"></i>
             <p>
@@ -430,8 +358,14 @@
                 <p>SO-PRO</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="{{ route('cartas_fis.index') }}"
+                class="nav-link {{ request()->routeIs('cartas_fis.*') ? 'active' : '' }}">
+                <i class="far fa-clipboard nav-icon" style="color: var(--brand-info);"></i>
+                <p>FIS</p>
+              </a>
+            </li>
           </ul>
-
         </li>
 
 
@@ -441,7 +375,7 @@
   </aside>
 
 
-  <!-- Contenido principal (SCROLL AQUÍ) -->
+  <!-- Contenido -->
   <div class="content-wrapper">
     <div class="content-header py-3 border-bottom">
       <div class="container-fluid">
@@ -460,7 +394,6 @@
       </div>
     </div>
 
-    <!-- Card título + botón -->
     <div class="container-fluid">
       <div class="card card-clean mb-3">
         <div class="card-header bg-white border-bottom">
@@ -473,7 +406,6 @@
         </div>
       </div>
 
-      <!-- Filtros -->
       <div class="filters-row mb-3">
         <form action="{{ route('reportes.index') }}" method="GET" class="form-inline">
           <div class="form-group mr-2 mb-2">
@@ -488,10 +420,9 @@
         </form>
       </div>
 
-      <!-- Tabla de reportes -->
       <div class="card card-clean">
         <div class="card-header bg-white border-bottom d-flex justify-content-center align-items-center">
-          <h3 class="card-title mb-0 heading-font" style="color:#333;">📋 REPORTES DE MANTENIMIENTO MECÁNICO</h3>
+          <h3 class="card-title mb-0 heading-font" style="color:#333;">📋 REPORTES DE MANTENIMIENTO MECÁNICO 2025</h3>
         </div>
 
         <div class="card-body">
@@ -541,7 +472,6 @@
                     </td>
                   </tr>
                 @empty
-                  {{-- Sin fila con colspan para no romper DataTables --}}
                 @endforelse
               </tbody>
             </table>
@@ -552,10 +482,13 @@
           </div>
         </div>
       </div>
-    </div> <!-- /.container-fluid -->
-  </div> <!-- /.content-wrapper -->
+    </div>
+    <a href="{{ route('reportes.backup.excel') }}"
+      class="btn btn-success shadow-sm mb-3">
+      <i class="fas fa-file-excel mr-1"></i> Backup Excel
+    </a>
+  </div>
 
-  <!-- Footer -->
   <footer class="main-footer text-center">
     <strong>Unienergia ABC © 2025</strong> Todos los derechos reservados.
   </footer>
@@ -565,11 +498,12 @@
   @csrf
 </form>
 
-<!-- ========== Modales ========== -->
+<!-- ========== Modales Editar (con FOTO) ========== -->
 @foreach($reportes as $reporte)
 <div class="modal fade" id="editarModal{{ $reporte->id }}" tabindex="-1" role="dialog" aria-labelledby="editarLabel{{ $reporte->id }}" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
-    <form method="POST" action="{{ route('reportes.update', $reporte->id) }}">
+    <!-- ✅ enctype necesario -->
+    <form method="POST" action="{{ route('reportes.update', $reporte->id) }}" enctype="multipart/form-data">
       @csrf
       @method('PUT')
       <div class="modal-content shadow-sm border-0">
@@ -584,10 +518,58 @@
 
         <div class="modal-body">
           <div class="form-row">
+
+            <!-- FOTO (preview + subir) -->
+            <div class="col-md-12 mb-3">
+              <div class="photo-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <label class="mb-0 font-weight-bold">
+                    <i class="fas fa-camera mr-1"></i> Evidencia fotográfica
+                  </label>
+                  <small class="text-muted">JPG / PNG / WEBP • Máx. 4MB</small>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-5 mb-2 mb-md-0">
+                    <div class="photo-preview" id="previewWrap_edit_{{ $reporte->id }}">
+                      @if($reporte->foto)
+                        <img id="previewImg_edit_{{ $reporte->id }}" src="{{ asset('storage/'.$reporte->foto) }}" alt="Foto evidencia">
+                      @else
+                        <div class="photo-empty" id="previewEmpty_edit_{{ $reporte->id }}">
+                          Sin foto. Sube una imagen para evidenciar el reporte.
+                        </div>
+                        <img id="previewImg_edit_{{ $reporte->id }}" src="" alt="Previsualización" style="display:none;">
+                      @endif
+                    </div>
+                    @if($reporte->foto)
+                      <div class="photo-meta">
+                        <i class="far fa-image mr-1"></i>
+                        Archivo: <span class="text-dark">{{ basename($reporte->foto) }}</span>
+                      </div>
+                    @endif
+                  </div>
+
+                  <div class="col-md-7">
+                    <input type="file"
+                           name="foto"
+                           class="form-control"
+                           accept="image/*"
+                           onchange="previewFoto(event, 'edit', {{ $reporte->id }})">
+
+                    <div class="photo-meta">
+                      Si subes una nueva foto, reemplazará la anterior automáticamente.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- RESTO CAMPOS -->
             <div class="col-md-4 mb-3">
               <label>Nombre</label>
               <input type="text" name="nombre" class="form-control shadow-sm" value="{{ $reporte->nombre }}" required>
             </div>
+
             <div class="col-md-8 mb-3">
               <label>Título del reporte</label>
               <input type="text" name="titulo" class="form-control shadow-sm" value="{{ $reporte->titulo }}" required>
@@ -597,6 +579,7 @@
               <label>Fecha de inicio</label>
               <input type="date" name="fecha_inicio" class="form-control shadow-sm" value="{{ $reporte->fecha_inicio }}" required>
             </div>
+
             <div class="col-md-4 mb-3">
               <label>Fecha de término</label>
               <input type="date" name="fecha_termino" class="form-control shadow-sm" value="{{ $reporte->fecha_termino }}" required>
@@ -639,8 +622,51 @@
               <label>Descripción de la actividad</label>
               <textarea name="descripcion_actividad" class="form-control shadow-sm" rows="3">{{ $reporte->descripcion_actividad }}</textarea>
             </div>
+
           </div>
         </div>
+        <!-- FIRMA RESPONSABLE (EDIT) -->
+        <div class="col-md-12 mb-3">
+          <div class="signature-card">
+            <div class="signature-head">
+              <div>
+                <p class="signature-title">Firma del Personal Responsable</p>
+                <p class="signature-hint">Si necesita actualizar la firma, firme nuevamente y confirme.</p>
+              </div>
+              @if(!empty($reporte->firma))
+                <span class="badge badge-success">Con firma</span>
+              @else
+                <span class="badge badge-warning">Sin firma</span>
+              @endif
+            </div>
+
+            @if(!empty($reporte->firma))
+              <div style="margin-bottom:10px; text-align:center;">
+                <img
+                  src="{{ asset('storage/'.$reporte->firma) }}"
+                  alt="Firma guardada"
+                  style="max-height:70px; max-width:100%; border:1px solid rgba(0,0,0,.15); border-radius:10px; padding:6px; background:#fff;"
+                >
+              </div>
+            @endif
+          <div class="signature-wrap">
+            <canvas id="firmaCanvasEdit{{ $reporte->id }}" class="signature-canvas"></canvas>
+          </div>
+
+          <input type="hidden" name="firma_data" id="firmaDataEdit{{ $reporte->id }}">
+
+          <div class="signature-actions mt-2">
+            <button type="button" class="btn btn-outline-secondary btn-sm firma-clear" data-id="{{ $reporte->id }}">
+              Limpiar
+            </button>
+            <button type="button" class="btn btn-outline-primary btn-sm firma-save" data-id="{{ $reporte->id }}">
+              Confirmar firma
+            </button>
+          </div>
+
+          </div>
+        </div>
+
 
         <div class="modal-footer bg-light">
           <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
@@ -654,10 +680,11 @@
 </div>
 @endforeach
 
-<!-- Modal Agregar Registro -->
+<!-- ========== Modal Agregar (con FOTO) ========== -->
 <div class="modal fade" id="modalAgregar" tabindex="-1" role="dialog" aria-labelledby="modalAgregarLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
-    <form method="POST" action="{{ route('reportes.store') }}">
+    <!-- ✅ enctype necesario -->
+    <form method="POST" action="{{ route('reportes.store') }}" enctype="multipart/form-data">
       @csrf
       <div class="modal-content shadow-sm border-0">
         <div class="modal-header bg-white border-bottom">
@@ -667,10 +694,48 @@
 
         <div class="modal-body">
           <div class="form-row">
+
+            <!-- FOTO (preview + subir) -->
+            <div class="col-md-12 mb-3">
+              <div class="photo-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <label class="mb-0 font-weight-bold">
+                    <i class="fas fa-camera mr-1"></i> Evidencia fotográfica
+                  </label>
+                  <small class="text-muted">JPG / PNG / WEBP • Máx. 4MB</small>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-5 mb-2 mb-md-0">
+                    <div class="photo-preview" id="previewWrap_new">
+                      <div class="photo-empty" id="previewEmpty_new">
+                        Sin foto. Sube una imagen para evidenciar el reporte.
+                      </div>
+                      <img id="previewImg_new" src="" alt="Previsualización" style="display:none;">
+                    </div>
+                  </div>
+
+                  <div class="col-md-7">
+                    <input type="file"
+                           name="foto"
+                           class="form-control"
+                           accept="image/*"
+                           onchange="previewFoto(event, 'new')">
+
+                    <div class="photo-meta">
+                      Recomendación: foto horizontal, enfocando el equipo y rotulado si aplica.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- RESTO CAMPOS -->
             <div class="col-md-4 mb-3">
               <label>Nombre</label>
               <input type="text" name="nombre" class="form-control shadow-sm" value="{{ Auth::user()->name }}" readonly>
             </div>
+
             <div class="col-md-8 mb-3">
               <label>Título</label>
               <input type="text" name="titulo" class="form-control shadow-sm" required>
@@ -680,6 +745,7 @@
               <label>Fecha de inicio</label>
               <input type="date" name="fecha_inicio" class="form-control shadow-sm" required>
             </div>
+
             <div class="col-md-4 mb-3">
               <label>Fecha de término</label>
               <input type="date" name="fecha_termino" class="form-control shadow-sm" required>
@@ -722,6 +788,35 @@
             </div>
           </div>
         </div>
+        <!-- FIRMA RESPONSABLE -->
+        <div class="col-md-12 mb-3">
+          <div class="signature-card">
+            <div class="signature-head">
+              <div>
+                <p class="signature-title">Firma del Personal Responsable</p>
+                <p class="signature-hint">Firme con mouse o pantalla táctil. Luego guarde el reporte.</p>
+              </div>
+              <span class="badge badge-light">Obligatorio</span>
+            </div>
+
+            <div class="signature-wrap">
+              <canvas id="firmaCanvasNew" class="signature-canvas"></canvas>
+            </div>
+
+            <input type="hidden" name="firma_data" id="firmaDataNew">
+
+            <div class="signature-actions mt-2">
+              <button type="button" class="btn btn-outline-secondary btn-sm" id="firmaClearNew">
+                Limpiar
+              </button>
+              <button type="button" class="btn btn-outline-primary btn-sm" id="firmaSaveNew">
+                Confirmar firma
+              </button>
+            </div>
+
+          </div>
+        </div>
+
 
         <div class="modal-footer bg-light">
           <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
@@ -734,21 +829,176 @@
   </div>
 </div>
 
-<!-- ========== Scripts (orden correcto BS4/AdminLTE3) ========== -->
+
+
 <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{ asset('adminlte/dist/js/adminlte.min.js') }}"></script>
 
-<!-- DataTables (jQuery + Bootstrap 4) -->
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
 
 <script>
+  // Guardamos instancias para NO recrearlas (precisión)
+  const signaturePads = new Map();
+
+  function resizeCanvasForSignaturePad(canvas, pad) {
+    // Tamaño real visible
+    const rect = canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+
+    // Retina scaling
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+
+    // Guardar trazo para no perderlo (opcional)
+    const data = pad && !pad.isEmpty() ? pad.toData() : null;
+
+    canvas.width  = Math.round(rect.width * ratio);
+    canvas.height = Math.round(rect.height * ratio);
+
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0); // escalado preciso
+
+    if (pad) {
+      pad.clear();
+      if (data) pad.fromData(data);
+    }
+  }
+
+  function initPad(canvasId, hiddenId) {
+    const canvas = document.getElementById(canvasId);
+    const hidden = document.getElementById(hiddenId);
+    if (!canvas || !hidden) return null;
+
+    // Si ya existe, reutiliza
+    if (signaturePads.has(canvasId)) {
+      const pad = signaturePads.get(canvasId);
+      resizeCanvasForSignaturePad(canvas, pad);
+      return pad;
+    }
+
+    const pad = new SignaturePad(canvas, {
+      minWidth: 0.8,
+      maxWidth: 2.2,
+      penColor: "#0f172a",
+      throttle: 0,     // más precisión (menos suavizado raro)
+      minDistance: 0,  // registra movimientos pequeños
+    });
+
+    signaturePads.set(canvasId, pad);
+    resizeCanvasForSignaturePad(canvas, pad);
+
+    // Cada vez que el usuario dibuja, puedes auto-guardar (opcional)
+    // pad.onEnd = () => { hidden.value = pad.toDataURL("image/png"); };
+
+    return pad;
+  }
+
+  // --- NUEVO (AGREGAR) ---
+  function wireNewSignature() {
+    const pad = initPad("firmaCanvasNew", "firmaDataNew");
+    if (!pad) return;
+
+    document.getElementById("firmaClearNew")?.addEventListener("click", () => {
+      pad.clear();
+      document.getElementById("firmaDataNew").value = "";
+    });
+
+    document.getElementById("firmaSaveNew")?.addEventListener("click", () => {
+      if (pad.isEmpty()) { alert("Firme antes de confirmar."); return; }
+      document.getElementById("firmaDataNew").value = pad.toDataURL("image/png");
+    });
+  }
+
+  // --- EDITAR (por id) ---
+  function wireEditSignature(id) {
+    const canvasId = "firmaCanvasEdit" + id;
+    const hiddenId = "firmaDataEdit" + id;
+
+    const pad = initPad(canvasId, hiddenId);
+    if (!pad) return;
+
+    document.querySelector(`.firma-clear[data-id="${id}"]`)?.addEventListener("click", () => {
+      pad.clear();
+      document.getElementById(hiddenId).value = "";
+    });
+
+    document.querySelector(`.firma-save[data-id="${id}"]`)?.addEventListener("click", () => {
+      if (pad.isEmpty()) { alert("Firme antes de confirmar."); return; }
+      document.getElementById(hiddenId).value = pad.toDataURL("image/png");
+    });
+  }
+
+  // IMPORTANTE: Inicializar cuando el modal YA está visible
+  $('#modalAgregar').on('shown.bs.modal', function () {
+    wireNewSignature();
+    // Recalibrar al abrir (precisión)
+    const pad = signaturePads.get("firmaCanvasNew");
+    if (pad) resizeCanvasForSignaturePad(document.getElementById("firmaCanvasNew"), pad);
+  });
+
+  // Para modales de editar (muchos)
+  $(document).on('shown.bs.modal', '.modal', function () {
+    const modalId = this.getAttribute("id") || "";
+    // tu id ejemplo: editarModal12 -> extraer 12
+    const match = modalId.match(/editarModal(\d+)/);
+    if (match) {
+      const id = match[1];
+      wireEditSignature(id);
+      const canvasId = "firmaCanvasEdit" + id;
+      const pad = signaturePads.get(canvasId);
+      if (pad) resizeCanvasForSignaturePad(document.getElementById(canvasId), pad);
+    }
+  });
+
+  // Recalibrar si cambias tamaño ventana
+  window.addEventListener("resize", () => {
+    signaturePads.forEach((pad, canvasId) => {
+      const canvas = document.getElementById(canvasId);
+      if (canvas) resizeCanvasForSignaturePad(canvas, pad);
+    });
+  });
+</script>
+
+
+
+
+
+
+
+
+
+
+<script>
+  function previewFoto(event, mode, id) {
+    const input = event.target;
+    if (!input.files || !input.files[0]) return;
+
+    const file = input.files[0];
+    const url = URL.createObjectURL(file);
+
+    if (mode === 'new') {
+      const img = document.getElementById('previewImg_new');
+      const empty = document.getElementById('previewEmpty_new');
+      if (empty) empty.style.display = 'none';
+      img.src = url;
+      img.style.display = 'block';
+      return;
+    }
+
+    // edit
+    const img = document.getElementById('previewImg_edit_' + id);
+    const empty = document.getElementById('previewEmpty_edit_' + id);
+
+    if (empty) empty.style.display = 'none';
+    img.src = url;
+    img.style.display = 'block';
+  }
+
   $(function () {
-    // Ocultar badge de notificaciones al abrir
     $('#notificacionesDropdown').on('click', function () { $('#notiBadge').hide(); });
 
-    // DataTables para reportes
     $('#tablaReportes').DataTable({
       responsive: true,
       autoWidth: false,
