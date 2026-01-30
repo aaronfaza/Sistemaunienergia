@@ -669,7 +669,7 @@
               <a href="{{ route('cartas_fis.index') }}"
                 class="nav-link {{ request()->routeIs('cartas_fis.*') ? 'active' : '' }}">
                 <i class="far fa-clipboard nav-icon" style="color: var(--brand-info);"></i>
-                <p>FIS</p>
+                <p>Fis</p>
               </a>
             </li>
           </ul>
