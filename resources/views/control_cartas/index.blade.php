@@ -1088,20 +1088,32 @@ textarea:focus {
 
 </div>
 
+<!-- Formulario de Cierre de sesión (Logout) -->
 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
-  @csrf
+    @csrf
 </form>
 
- <footer class="main-footer text-center">
-    <strong>Unienergia ABC © {{ date('Y') }}</strong> Todos los derechos reservados.
-  </footer>
+<!-- Footer -->
+<footer class="main-footer text-center py-3">
+    <div class="container">
+        <strong>Unienergia ABC © {{ date('Y') }}</strong> Todos los derechos reservados.
+    </div>
+</footer>
+
 <!-- ========== Scripts (orden correcto BS4/AdminLTE3) ========== -->
+<!-- Scripts esenciales -->
 <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{ asset('adminlte/dist/js/adminlte.min.js') }}"></script>
 
+<!-- Script de manejo de notificaciones (esconder el badge cuando se hace clic) -->
 <script>
-  $(function(){ $('#notificacionesDropdown').on('click', function(){ $('#notiBadge').hide(); }); });
+    $(document).ready(function() {
+        // Ocultar el badge de notificaciones al hacer clic
+        $('#notificacionesDropdown').on('click', function() {
+            $('#notiBadge').hide();
+        });
+    });
 </script>
 
 
