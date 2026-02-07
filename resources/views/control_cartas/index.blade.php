@@ -347,7 +347,7 @@ textarea:focus {
       <ul class="navbar-nav ml-auto d-flex align-items-center">
         <!-- Notificaciones -->
         <li class="nav-item dropdown mr-3">
-          <a class="nav-link position-relative" href="#" id="notificacionesDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link position-relative" href="#" id="notificacionesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fas fa-bell fa-lg text-white"></i>
             @if(isset($notificaciones) && $notificaciones->count() > 0)
               <span id="notiBadge" class="badge badge-danger position-absolute" style="top:-4px;right:-8px;font-size:.65rem;">
@@ -374,7 +374,7 @@ textarea:focus {
         <!-- Usuario -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle d-flex align-items-center px-3 py-2 rounded-pill shadow-sm text-white"
-             href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-expanded="false"
+             href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"
              style="background-color: var(--brand-primary-dark);">
             <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=32" alt="Avatar" class="rounded-circle" width="32" height="32">
             <span class="d-none d-md-inline font-weight-semibold ml-2">{{ Auth::user()->name }}</span>
