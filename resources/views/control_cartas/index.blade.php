@@ -594,7 +594,7 @@ textarea:focus {
                 <div class="modal-content">
                   <div class="modal-header bg-warning text-dark">
                     <h5 class="modal-title" id="modalEditarLabel{{ $carta->id }}">Editar Carta — {{ $carta->codigo }}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Cerrar">
                       <span aria-hidden="true">&times;</span>
                     </button>
                   </div>
@@ -722,7 +722,7 @@ textarea:focus {
         <h5 class="modal-title font-weight-bold" id="modalAgregarLabel">
           <i class="fas fa-file-alt mr-2"></i> Registro de Carta SO-PRO
         </h5>
-        <button type="button" class="close text-white" data-dismiss="modal">
+        <button type="button" class="close text-white" data-bs-dismiss="modal">
           <span>&times;</span>
         </button>
       </div>
@@ -920,7 +920,7 @@ textarea:focus {
                         Registrada el {{ \Carbon\Carbon::parse($carta->fecha)->format('d/m/Y') }}
                       </small>
                     </div>
-                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                    <button type="button" class="close text-white" data-bs-dismiss="modal">&times;</button>
                   </div>
 
                   <!-- BODY -->
