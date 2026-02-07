@@ -1118,6 +1118,3 @@ textarea:focus {
 
 </body>
 </html>
-
-</body>
-</html>
