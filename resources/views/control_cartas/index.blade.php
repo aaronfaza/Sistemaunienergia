@@ -473,7 +473,7 @@ textarea:focus {
   <div class="content-header py-3 border-bottom" style="background-color: #f9fafb;">
     <div class="container-fluid d-flex justify-content-between align-items-center">
       <h1 class="m-0 font-weight-bold heading-font" style="color: #333; font-size: 1.5rem;">
-        📋 CONTROL Y SEGUIMIENTO DE CARTAS - ÁREA DE PRODUCCION.
+        📋 CONTROL Y SEGUIMIENTO DE CARTAS - .
       </h1>
       <button class="btn btn-success" data-toggle="modal" data-target="#modalAgregar" style="border-radius: 8px;">
         <i class="fas fa-plus mr-1"></i> Nueva Carta
