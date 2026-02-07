@@ -589,7 +589,7 @@ textarea:focus {
                 
               </tr>
   <!-- Modal Editar -->
-            <div class="modal fade" id="modalEditar{{ $carta->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal fade" id="modalEditar{{ $carta->id }}" tabindex="-1" aria-hidden="true" data-bs-dismiss="modal">
               <div class="modal-dialog modal-xl" role="document">
                 <div class="modal-content">
                   <div class="modal-header bg-warning text-dark">
@@ -702,7 +702,7 @@ textarea:focus {
                     </div>
 
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                       <button type="submit" class="btn btn-success">Guardar Cambios</button>
                     </div>
                   </form>
@@ -888,7 +888,7 @@ textarea:focus {
 
         <!-- FOOTER -->
         <div class="modal-footer bg-light">
-          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
             Cancelar
           </button>
           <button type="submit" class="btn btn-success px-4">
@@ -1049,7 +1049,7 @@ textarea:focus {
                     <i class="fas fa-file-pdf mr-1"></i> Descargar PDF
                   </a>
 
-                  <button type="button" class="btn btn-outline-secondary ml-2" data-dismiss="modal">
+                  <button type="button" class="btn btn-outline-secondary ml-2" data-bs-dismiss="modal">
                     Cerrar
                   </button>
                 </div>
