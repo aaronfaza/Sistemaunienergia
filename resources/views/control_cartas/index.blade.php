@@ -589,7 +589,7 @@ textarea:focus {
                 
               </tr>
   <!-- Modal Editar -->
-            <div class="modal fade" id="modalEditar{{ $carta->id }}" tabindex="-1" role="dialog" aria-labelledby="modalEditarLabel{{ $carta->id }}" aria-hidden="true">
+            <div class="modal fade" id="modalEditar{{ $carta->id }}" tabindex="-1" aria-hidden="true">
               <div class="modal-dialog modal-xl" role="document">
                 <div class="modal-content">
                   <div class="modal-header bg-warning text-dark">
