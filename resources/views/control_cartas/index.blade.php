@@ -475,9 +475,11 @@ textarea:focus {
       <h1 class="m-0 font-weight-bold heading-font" style="color: #333; font-size: 1.5rem;">
         📋 CONTROL Y SEGUIMIENTO DE CARTAS - .
       </h1>
-      <button class="btn btn-success" data-toggle="modal" data-target="#modalAgregar" style="border-radius: 8px;">
-        <i class="fas fa-plus mr-1"></i> Nueva Carta
-      </button>
+      <button type="button" class="btn btn-success"
+        data-toggle="modal"
+        data-target="#modalAgregar">
+        <i class="fas fa-plus"></i> Agregar registro
+    </button>
     </div>
   </div>
 
