@@ -558,11 +558,24 @@ textarea:focus {
 
           </div>
         </div>
+        <div class="d-flex gap-2">
+    <a href="{{ route('cartas_fis.excel') }}" class="btn btn-success d-flex align-items-center">
+        <i class="fas fa-file-excel me-2"></i> Excel FIS
+    </a>
+
+    <a href="{{ route('cartas_fis.backup') }}" class="btn btn-dark d-flex align-items-center">
+        <i class="fas fa-database me-2"></i> Generar Backup
+    </a>
+</div>
       </div>
+      
     </section>
 
   </div>
 
+
+
+  
   <footer class="main-footer text-center">
     <strong>Unienergia ABC © {{ date('Y') }}</strong> Todos los derechos reservados.
   </footer>
@@ -843,6 +856,7 @@ textarea:focus {
 
       </form>
     </div>
+    
   </div>
 </div>
 @endforeach

@@ -71,7 +71,12 @@ Route::resource('cartas_fis', \App\Http\Controllers\CartaFisController::class)
     ->only(['index','store','update','destroy']);
 
 
+// Rutas de Exportación y Backup
+Route::get('/cartas-fis/excel', [CartaFisController::class, 'exportExcel'])->name('cartas_fis.excel');
+Route::get('/cartas-fis/backup', [CartaFisController::class, 'backup'])->name('cartas_fis.backup');
 
+// Ruta de recursos (index, store, update, etc.)
+Route::resource('cartas_fis', CartaFisController::class);
 
 
 
