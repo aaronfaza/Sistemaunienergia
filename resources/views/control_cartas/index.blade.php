@@ -475,10 +475,8 @@ textarea:focus {
       <h1 class="m-0 font-weight-bold heading-font" style="color: #333; font-size: 1.5rem;">
         📋 CONTROL Y SEGUIMIENTO DE CARTAS - ÁREA DE PRODUCCION.
       </h1>
-      <button class="btn btn-success"
-        data-bs-toggle="modal"
-        data-bs-target="#modalAgregar">
-        Agregar
+      <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregar">
+        Nueva Carta
     </button>
     </div>
   </div>
@@ -569,12 +567,12 @@ textarea:focus {
 
                 <td class="text-center">
                   <!-- Ver -->
-                  <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#modalVer{{ $carta->id }}">
+                  <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalVer{{ $carta->id }}">
                     <i class="fas fa-eye"></i>
                   </button>
 
                   <!-- Editar -->
-                  <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#modalEditar{{ $carta->id }}">
+                  <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#modalEditar{{ $carta->id }}">
                     <i class="fas fa-edit"></i>
                   </button>
 
