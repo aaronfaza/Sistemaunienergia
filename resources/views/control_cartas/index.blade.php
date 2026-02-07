@@ -1104,9 +1104,9 @@ textarea:focus {
 
 <!-- ========== Scripts (orden correcto BS4/AdminLTE3) ========== -->
 <!-- Scripts esenciales -->
-<script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('adminlte/dist/js/adminlte.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 
 <!-- Script de manejo de notificaciones (esconder el badge cuando se hace clic) -->
 <script>
