@@ -1546,7 +1546,7 @@ textarea:focus {
               <a href="{{ route('control_cartas.index') }}"
                 class="nav-link {{ request()->routeIs('control_cartas.*') ? 'active' : '' }}">
                 <i class="far fa-envelope nav-icon" style="color: var(--brand-accent);"></i>
-                <p>SO-PRO</p>
+                <p>SO-PR</p>
               </a>
             </li>
             <li class="nav-item">
