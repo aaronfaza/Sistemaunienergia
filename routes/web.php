@@ -7,6 +7,9 @@ use App\Http\Controllers\RequerimientoController;
 use App\Http\Controllers\DashboardWelcomeController;
 use App\Http\Controllers\ControlCartaController;
 use App\Http\Controllers\CartaFisController;
+use App\Http\Controllers\LogisticaLoteController;
+use App\Exports\LogisticaExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 // Redirect al login por defecto
 Route::get('/', function () {
@@ -77,6 +80,18 @@ Route::get('/cartas-fis/backup', [CartaFisController::class, 'backup'])->name('c
 
 // Ruta de recursos (index, store, update, etc.)
 Route::resource('cartas_fis', CartaFisController::class);
+
+
+Route::resource('logistica_lotes', LogisticaLoteController::class);
+
+Route::get('/logistica-lotes/{id}/pdf', [LogisticaLoteController::class, 'exportPdf'])->name('logistica_lotes.pdf');
+
+Route::post('logistica_lotes/{id}/actualizar-estado', [LogisticaLoteController::class, 'updateEstado']);
+
+Route::get('logistica-export', function () {
+    return Excel::download(new LogisticaExport, 'backup_logistica_'.date('d-m-Y').'.xlsx');
+})->name('logistica.export');
+
 
 
 
