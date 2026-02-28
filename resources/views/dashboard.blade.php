@@ -428,7 +428,7 @@
 
       <div class="card card-clean">
         <div class="card-header bg-white border-bottom d-flex justify-content-center align-items-center">
-          <h3 class="card-title mb-0 heading-font" style="color:#333;">📋 REPORTES DE MANTENIMIENTO MECÁNICO 2025</h3>
+          <h3 class="card-title mb-0 heading-font" style="color:#333;">📋 REPORTES DE MANTENIMIENTO MECÁNICO 2025-2026</h3>
         </div>
 
         <div class="card-body">
@@ -686,29 +686,38 @@
 </div>
 @endforeach
 
-<!-- ========== Modal Agregar (con FOTO) ========== -->
+<!-- ========== Modal Agregar (con FOTO optimizada) ========== -->
 <div class="modal fade" id="modalAgregar" tabindex="-1" role="dialog" aria-labelledby="modalAgregarLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
-    <!-- ✅ enctype necesario -->
-    <form method="POST" action="{{ route('reportes.store') }}" enctype="multipart/form-data">
+
+    <form id="formAgregarReporte" method="POST" action="{{ route('reportes.store') }}" enctype="multipart/form-data" novalidate>
       @csrf
+
       <div class="modal-content shadow-sm border-0">
         <div class="modal-header bg-white border-bottom">
-          <h5 class="modal-title font-weight-semibold" id="modalAgregarLabel" style="color:#333;">🛠️ Nuevo Reporte de Mantenimiento</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+          <h5 class="modal-title font-weight-semibold" id="modalAgregarLabel" style="color:#333;">
+            🛠️ Nuevo Reporte de Mantenimiento
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
 
         <div class="modal-body">
+
+          <!-- Zona mensajes -->
+          <div id="msgFormNew" class="alert alert-danger d-none"></div>
+
           <div class="form-row">
 
-            <!-- FOTO (preview + subir) -->
+            <!-- FOTO -->
             <div class="col-md-12 mb-3">
               <div class="photo-card">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                   <label class="mb-0 font-weight-bold">
                     <i class="fas fa-camera mr-1"></i> Evidencia fotográfica
                   </label>
-                  <small class="text-muted">JPG / PNG / WEBP • Máx. 4MB</small>
+                  <small class="text-muted">JPG / PNG / WEBP / HEIC • Se optimiza automáticamente</small>
                 </div>
 
                 <div class="row">
@@ -717,19 +726,24 @@
                       <div class="photo-empty" id="previewEmpty_new">
                         Sin foto. Sube una imagen para evidenciar el reporte.
                       </div>
-                      <img id="previewImg_new" src="" alt="Previsualización" style="display:none;">
+                      <img id="previewImg_new" src="" alt="Previsualización" style="display:none;max-width:100%;border-radius:10px;">
                     </div>
+                    <small class="text-muted d-block mt-2" id="photoInfoNew"></small>
                   </div>
 
                   <div class="col-md-7">
-                    <input type="file"
-                           name="foto"
-                           class="form-control"
-                           accept="image/*"
-                           onchange="previewFoto(event, 'new')">
+                    <input
+                      id="foto_new"
+                      type="file"
+                      name="foto"
+                      class="form-control"
+                      accept="image/jpeg,image/png,image/webp,image/heic,image/heif,image/*"
+                      >
 
-                    <div class="photo-meta">
+                    <div class="text-muted small mt-2">
                       Recomendación: foto horizontal, enfocando el equipo y rotulado si aplica.
+                      <br>
+                      * Si la imagen es grande, el sistema la convierte/optimiza para asegurar el guardado.
                     </div>
                   </div>
                 </div>
@@ -793,40 +807,36 @@
               <textarea name="descripcion_actividad" class="form-control shadow-sm" rows="3"></textarea>
             </div>
           </div>
-        </div>
-        <!-- FIRMA RESPONSABLE -->
-        <div class="col-md-12 mb-3">
-          <div class="signature-card">
-            <div class="signature-head">
-              <div>
-                <p class="signature-title">Firma del Personal Responsable</p>
-                <p class="signature-hint">Firme con mouse o pantalla táctil. Luego guarde el reporte.</p>
+
+          <!-- FIRMA RESPONSABLE -->
+          <div class="col-md-12 mb-3">
+            <div class="signature-card">
+              <div class="signature-head">
+                <div>
+                  <p class="signature-title">Firma del Personal Responsable</p>
+                  <p class="signature-hint">Firme con mouse o pantalla táctil. Luego guarde el reporte.</p>
+                </div>
+                <span class="badge badge-light">Obligatorio</span>
               </div>
-              <span class="badge badge-light">Obligatorio</span>
+
+              <div class="signature-wrap">
+                <canvas id="firmaCanvasNew" class="signature-canvas"></canvas>
+              </div>
+
+              <input type="hidden" name="firma_data" id="firmaDataNew">
+
+              <div class="signature-actions mt-2">
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="firmaClearNew">Limpiar</button>
+                <button type="button" class="btn btn-outline-primary btn-sm" id="firmaSaveNew">Confirmar firma</button>
+              </div>
             </div>
-
-            <div class="signature-wrap">
-              <canvas id="firmaCanvasNew" class="signature-canvas"></canvas>
-            </div>
-
-            <input type="hidden" name="firma_data" id="firmaDataNew">
-
-            <div class="signature-actions mt-2">
-              <button type="button" class="btn btn-outline-secondary btn-sm" id="firmaClearNew">
-                Limpiar
-              </button>
-              <button type="button" class="btn btn-outline-primary btn-sm" id="firmaSaveNew">
-                Confirmar firma
-              </button>
-            </div>
-
           </div>
-        </div>
 
+        </div>
 
         <div class="modal-footer bg-light">
           <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-brand btn-fw">
+          <button id="btnGuardarNew" type="submit" class="btn btn-brand btn-fw">
             <i class="fas fa-save mr-1"></i> Guardar
           </button>
         </div>
@@ -844,6 +854,204 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+
+
+
+<script>
+/** ===== Helpers ===== */
+function bytesToMB(bytes){ return (bytes / (1024*1024)).toFixed(2); }
+
+function showMsgNew(msg){
+  const box = document.getElementById('msgFormNew');
+  box.textContent = msg;
+  box.classList.remove('d-none');
+}
+function clearMsgNew(){
+  const box = document.getElementById('msgFormNew');
+  box.textContent = '';
+  box.classList.add('d-none');
+}
+
+function setPreviewNew(file){
+  const empty = document.getElementById('previewEmpty_new');
+  const img = document.getElementById('previewImg_new');
+  const info = document.getElementById('photoInfoNew');
+
+  empty.style.display = 'none';
+  img.style.display = 'block';
+  img.src = URL.createObjectURL(file);
+  info.textContent = `${file.type || 'imagen'} • ${bytesToMB(file.size)} MB`;
+}
+
+/**
+ * Comprime/convierte a JPEG para evitar fallos por tamaño.
+ * - maxDim: 1920 (calidad operativa)
+ * - quality: 0.82 (equilibrio)
+ */
+async function compressToJpeg(file, maxDim = 1920, quality = 0.82){
+  // Algunos navegadores no soportan createImageBitmap para ciertos formatos (ej HEIC)
+  // En esos casos, lo dejamos pasar y lo guardará el backend (si lo soporta).
+  let bitmap;
+  try{
+    bitmap = await createImageBitmap(file);
+  }catch(e){
+    return file; // fallback: no se pudo leer; no rompemos el flujo.
+  }
+
+  const w = bitmap.width;
+  const h = bitmap.height;
+  const ratio = Math.min(maxDim / w, maxDim / h, 1);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.round(w * ratio);
+  canvas.height = Math.round(h * ratio);
+
+  const ctx = canvas.getContext('2d', { alpha: false });
+  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+
+  const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
+  if(!blob) return file;
+
+  const baseName = (file.name || 'foto').replace(/\.[^/.]+$/, '');
+  return new File([blob], `${baseName}.jpg`, { type: 'image/jpeg', lastModified: Date.now() });
+}
+
+/**
+ * Reemplaza el file del input por el optimizado (sin tocar backend)
+ */
+function replaceInputFile(input, file){
+  const dt = new DataTransfer();
+  dt.items.add(file);
+  input.files = dt.files;
+}
+
+/** ===== Estado global (evita submit antes de terminar compresión) ===== */
+let fotoProcessingPromise = null;
+
+/** ===== Init ===== */
+document.addEventListener('DOMContentLoaded', () => {
+  const inputFoto = document.getElementById('foto_new');
+  const form = document.getElementById('formAgregarReporte');
+  const btnGuardar = document.getElementById('btnGuardarNew');
+
+  // 1) Foto: preview + optimización
+  inputFoto.addEventListener('change', () => {
+    clearMsgNew();
+    const file = inputFoto.files && inputFoto.files[0];
+    if(!file) return;
+
+    // Validación básica de tipo (permitimos image/*, pero filtramos lo más común)
+    if(!file.type.startsWith('image/')){
+      inputFoto.value = '';
+      showMsgNew('El archivo seleccionado no es una imagen válida.');
+      return;
+    }
+
+    // Mostrar preview inicial
+    setPreviewNew(file);
+
+    // Si pesa mucho, comprimimos SIEMPRE antes de enviar
+    fotoProcessingPromise = (async () => {
+      // Umbral: si supera 3.5MB, compress; si es PNG grande, también.
+      const shouldCompress = (file.size > 3.5 * 1024 * 1024) || (file.type === 'image/png');
+      if(!shouldCompress) return;
+
+      const optimized = await compressToJpeg(file, 1920, 0.82);
+
+      // Si se optimizó, reemplazar input y actualizar preview
+      if(optimized && optimized !== file){
+        replaceInputFile(inputFoto, optimized);
+        setPreviewNew(optimized);
+      }
+    })();
+  });
+
+  // 2) Firma: si no le dan "Confirmar", capturamos igual en submit
+  function captureSignatureIfAny(){
+    const canvas = document.getElementById('firmaCanvasNew');
+    const hidden = document.getElementById('firmaDataNew');
+    if(!canvas || !hidden) return true;
+
+    // Detecta canvas vacío (técnica simple)
+    const ctx = canvas.getContext('2d');
+    const pixels = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+    let hasInk = false;
+    for(let i=3; i<pixels.length; i+=4){
+      if(pixels[i] !== 0){ hasInk = true; break; } // alpha != 0
+    }
+
+    if(!hasInk){
+      showMsgNew('La firma es obligatoria. Por favor, firme antes de guardar.');
+      return false;
+    }
+
+    // Guardar firma en base64 PNG
+    hidden.value = canvas.toDataURL('image/png');
+    return true;
+  }
+
+  // Si el usuario presiona “Confirmar firma”
+  const btnFirmaSave = document.getElementById('firmaSaveNew');
+  if(btnFirmaSave){
+    btnFirmaSave.addEventListener('click', () => {
+      clearMsgNew();
+      const ok = captureSignatureIfAny();
+      if(ok) {
+        // feedback opcional
+        // showMsgNew('Firma confirmada correctamente.');
+        document.getElementById('msgFormNew').classList.add('d-none');
+      }
+    });
+  }
+
+  // 3) Submit: espera compresión + firma + bloqueo doble submit
+  form.addEventListener('submit', async (e) => {
+    clearMsgNew();
+
+    // Evita doble submit
+    if(btnGuardar.dataset.loading === '1'){
+      e.preventDefault();
+      return;
+    }
+
+    // Esperar foto (si se está procesando)
+    if(fotoProcessingPromise){
+      btnGuardar.disabled = true;
+      btnGuardar.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Guardando...';
+      try{
+        await fotoProcessingPromise;
+      }catch(err){
+        // si algo falla, igual intentamos enviar sin bloquear al usuario
+      }
+    }
+
+    // Firma obligatoria
+    const okFirma = captureSignatureIfAny();
+    if(!okFirma){
+      e.preventDefault();
+      btnGuardar.disabled = false;
+      btnGuardar.innerHTML = '<i class="fas fa-save mr-1"></i> Guardar';
+      return;
+    }
+
+    // Bloquear botón para evitar doble click
+    btnGuardar.dataset.loading = '1';
+    btnGuardar.disabled = true;
+    btnGuardar.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Guardando...';
+  });
+
+});
+</script>
+
+
+
+
+
+
+
+
+
+
 
 <script>
   // Guardamos instancias para NO recrearlas (precisión)
@@ -966,14 +1174,6 @@
     });
   });
 </script>
-
-
-
-
-
-
-
-
 
 
 <script>
