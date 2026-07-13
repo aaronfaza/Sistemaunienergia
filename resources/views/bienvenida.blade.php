@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>SISTEMA INTEGRADO DE GESTION</title>
+  <title>SISTEMA INTEGRADO DE GESTION v1</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Icono -->
