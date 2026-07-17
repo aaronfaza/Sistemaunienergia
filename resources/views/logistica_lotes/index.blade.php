@@ -337,7 +337,11 @@ textarea:focus {
           <a class="nav-link dropdown-toggle d-flex align-items-center px-3 py-2 rounded-pill shadow-sm text-white"
              href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-expanded="false"
              style="background-color: var(--brand-primary-dark);">
-            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=32" alt="Avatar" class="rounded-circle" width="32" height="32">
+            @if(Auth::user()->foto_perfil)
+              <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="rounded-circle" width="32" height="32" style="object-fit:cover;">
+            @else
+              <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=32" alt="Avatar" class="rounded-circle" width="32" height="32">
+            @endif
             <span class="d-none d-md-inline font-weight-semibold ml-2">{{ Auth::user()->name }}</span>
           </a>
           <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" style="border-radius:12px;min-width:240px;">
