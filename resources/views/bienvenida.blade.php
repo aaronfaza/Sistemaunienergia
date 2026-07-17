@@ -475,6 +475,16 @@
               </div>
             </div>
           </div>
+
+          <div class="col-12 col-sm-6 col-md-3 mb-3">
+            <div class="stat-card is-success">
+              <div class="stat-icon"><i class="fas fa-user-check"></i></div>
+              <div class="stat-meta">
+                <div class="stat-kpi"><span>{{ $usuariosActivos ?? 0 }}</span></div>
+                <div class="stat-label">Usuarios activos (30 días)</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -534,7 +544,61 @@
         </div>
       </div>
 
-      {{-- (Opcional) Más tarjetas de decisión aquí --}}
+      {{-- Últimas conexiones + Cumpleaños del mes --}}
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card card-clean">
+            <div class="card-header bg-white"><i class="fas fa-sign-in-alt mr-1"></i>Últimas conexiones</div>
+            <div class="card-body">
+              <ul class="list-unstyled mb-0">
+                @forelse($ultimasConexiones as $u)
+                  <li class="mb-3 d-flex align-items-start">
+                    <i class="fas fa-user-circle mr-2 text-info mt-1"></i>
+                    <div>
+                      <strong>{{ $u->name }}</strong>
+                      <span class="text-muted small">— {{ $u->cargo ?? 'Sin cargo' }}</span>
+                      <div class="text-muted small">
+                        {{ $u->last_login_at->diffForHumans() }}
+                        ({{ $u->last_login_at->format('d/m/Y H:i') }})
+                      </div>
+                    </div>
+                  </li>
+                @empty
+                  <li class="text-muted">Aún no hay conexiones registradas.</li>
+                @endforelse
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card card-clean">
+            <div class="card-header bg-white"><i class="fas fa-birthday-cake mr-1"></i>Cumpleaños del mes</div>
+            <div class="card-body">
+              <ul class="list-unstyled mb-0">
+                @forelse($cumpleañosMes as $u)
+                  @php $esHoy = $u->fecha_nacimiento->day === now()->day && $u->fecha_nacimiento->month === now()->month; @endphp
+                  <li class="mb-3 d-flex align-items-start">
+                    <i class="fas fa-birthday-cake mr-2 {{ $esHoy ? 'text-danger' : 'text-warning' }} mt-1"></i>
+                    <div>
+                      <strong>{{ $u->name }}</strong>
+                      <span class="text-muted small">— {{ $u->cargo ?? 'Sin cargo' }}</span>
+                      <div class="text-muted small">
+                        {{ $u->fecha_nacimiento->format('d/m') }}
+                        @if($esHoy)
+                          <span class="badge badge-danger ml-1">¡Hoy!</span>
+                        @endif
+                      </div>
+                    </div>
+                  </li>
+                @empty
+                  <li class="text-muted">Nadie cumple años este mes.</li>
+                @endforelse
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
 
     </div> <!-- /.container-fluid -->
   </div> <!-- /.content-wrapper -->
