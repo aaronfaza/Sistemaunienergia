@@ -369,10 +369,19 @@
                       @endif
                     </td>
                     <td>
-                      <button type="button" class="btn btn-sm btn-info btn-fw mr-1" data-toggle="modal" data-target="#verAnomalia{{ $anomalia->id }}">
+                      <a href="{{ route('anomalias.show', $anomalia->id) }}"
+                         class="btn btn-sm btn-info btn-fw mr-1"
+                         title="Ver Reporte" target="_blank">
                         <i class="fas fa-eye mr-1"></i> Ver
-                      </button>
+                      </a>
+
                       @if(!Auth::user()->esSoloMantenimiento())
+                        <a href="{{ route('anomalias.pdf', $anomalia->id) }}"
+                           class="btn btn-sm btn-primary btn-fw mr-1"
+                           title="Descargar PDF">
+                          <i class="fas fa-file-pdf mr-1"></i> Descargar
+                        </a>
+
                         <form action="{{ route('anomalias.destroy', $anomalia->id) }}" method="POST" class="d-inline"
                               onsubmit="return confirm('¿Eliminar esta anomalía?');">
                           @csrf
@@ -384,38 +393,6 @@
                       @endif
                     </td>
                   </tr>
-
-                  <!-- Modal Ver -->
-                  <div class="modal fade" id="verAnomalia{{ $anomalia->id }}" tabindex="-1" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog modal-lg" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header bg-white border-bottom">
-                          <h5 class="modal-title">⚠️ Anomalía — {{ $anomalia->pozo }}</h5>
-                          <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </div>
-                        <div class="modal-body">
-                          <div class="row">
-                            <div class="col-md-6"><strong>Reportado por:</strong> {{ $anomalia->nombre }}</div>
-                            <div class="col-md-6"><strong>Fecha:</strong> {{ $anomalia->created_at->format('d/m/Y H:i') }}</div>
-                            <div class="col-md-6 mt-2"><strong>Tipo de equipo:</strong> {{ $anomalia->tipo_equipo }}</div>
-                            <div class="col-md-6 mt-2"><strong>Gravedad:</strong> <span class="gravedad-badge gravedad-{{ $anomalia->gravedad }}">{{ $anomalia->gravedad }}</span></div>
-                          </div>
-                          <hr>
-                          <p><strong>Descripción:</strong></p>
-                          <p class="text-muted">{{ $anomalia->descripcion }}</p>
-                          @if($anomalia->foto)
-                            <p><strong>Evidencia fotográfica:</strong></p>
-                            <img src="{{ asset('storage/'.$anomalia->foto) }}" alt="Foto anomalía" style="max-width:100%;border-radius:12px;border:1px solid rgba(0,0,0,.08);">
-                          @endif
-                        </div>
-                        <div class="modal-footer bg-light">
-                          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cerrar</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 @empty
                   <tr>
                     <td colspan="7" class="text-center text-muted py-4">No hay anomalías registradas.</td>

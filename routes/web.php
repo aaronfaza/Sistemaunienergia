@@ -41,6 +41,12 @@ Route::middleware(['auth', 'rol.restriccion'])->group(function () {
 
     Route::patch('/anomalias/{anomalia}/estado', [AnomaliaController::class, 'updateEstado'])
         ->name('anomalias.update_estado');
+    Route::get('/anomalias/{anomalia}', [AnomaliaController::class, 'show'])
+        ->name('anomalias.show');
+
+    Route::get('/anomalias/{anomalia}/pdf', [AnomaliaController::class, 'pdf'])
+        ->name('anomalias.pdf');
+
 
     // Ruta para imprimir PDF de requerimientos
     Route::get('/requerimientos/{id}/pdf', [RequerimientoController::class, 'imprimir'])
