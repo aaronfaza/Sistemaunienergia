@@ -108,9 +108,26 @@
     .is-primary .stat-icon{ background:rgba(13,110,253,.12); color:#0d6efd; }
     .is-info .stat-icon{ background:rgba(43,183,246,.12); color:#2bb7f6; }
     .is-success .stat-icon{ background:rgba(24,181,143,.12); color:#18b58f; }
+    .is-danger .stat-icon{ background:rgba(220,53,69,.12); color:#dc3545; }
     .stat-meta{ display:flex; flex-direction:column; color:#25334a; }
     .stat-kpi span{ font-weight:700; font-size:clamp(20px,3.5vw,28px); letter-spacing:-.5px; line-height:1; }
     .stat-label{ font-size:.85rem; opacity:.8; }
+
+    /* ===== Feed de actividad (estilo red social) ===== */
+    .feed-item{ padding-bottom:.85rem; border-bottom:1px solid rgba(0,0,0,.05); }
+    .feed-item:last-child{ border-bottom:none; padding-bottom:0; }
+    .feed-avatar{ width:38px; height:38px; border-radius:50%; object-fit:cover; flex-shrink:0; }
+    .feed-icon-badge{
+      width:38px; height:38px; border-radius:50%; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center; font-size:.9rem;
+    }
+    .feed-icon-primary{ background:rgba(13,110,253,.12); color:#0d6efd; }
+    .feed-icon-info{ background:rgba(43,183,246,.12); color:#2bb7f6; }
+    .feed-icon-success{ background:rgba(24,181,143,.12); color:#18b58f; }
+    .feed-icon-danger{ background:rgba(220,53,69,.12); color:#dc3545; }
+
+    /* ===== Avatares en Últimas conexiones / Cumpleaños ===== */
+    .social-avatar{ width:38px; height:38px; border-radius:50%; object-fit:cover; flex-shrink:0; }
   </style>
 
 <style>
@@ -433,67 +450,54 @@
 
     <div class="container-fluid">
 
-      {{-- KPIs --}}
+      {{-- KPIs (se adaptan según el rol: Requerimientos para admin, Mantenimiento/Anomalías para mecánico y supervisor) --}}
       <div class="dashboard-safe-container kpi-block">
         <div class="row stat-row stat-row-lg-nowrap">
-          <div class="col-12 col-sm-6 col-md-3 mb-3">
-            <div class="stat-card is-primary">
-              <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
-              <div class="stat-meta">
-                <div class="stat-kpi"><span>{{ $kpi['total_mes'] ?? 0 }}</span></div>
-                <div class="stat-label">Requerimientos (mes)</div>
+          @foreach($kpiCards as $card)
+            <div class="col-12 col-sm-6 col-md-3 mb-3">
+              <div class="stat-card {{ $card['color'] }}">
+                <div class="stat-icon"><i class="fas {{ $card['icono'] }}"></i></div>
+                <div class="stat-meta">
+                  <div class="stat-kpi"><span>{{ $card['valor'] }}</span></div>
+                  <div class="stat-label">{{ $card['label'] }}</div>
+                </div>
               </div>
             </div>
-          </div>
-
-          <div class="col-12 col-sm-6 col-md-3 mb-3">
-            <div class="stat-card is-info">
-              <div class="stat-icon"><i class="fas fa-clock"></i></div>
-              <div class="stat-meta">
-                <div class="stat-kpi"><span>{{ $kpi['hoy'] ?? 0 }}</span></div>
-                <div class="stat-label">Hoy</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-sm-6 col-md-3 mb-3">
-            <div class="stat-card is-primary">
-              <div class="stat-icon"><i class="fas fa-building"></i></div>
-              <div class="stat-meta">
-                <div class="stat-kpi"><span>{{ $topArea->area_solicitante ?? '—' }}</span></div>
-                <div class="stat-label">Top área (mes)</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-sm-6 col-md-3 mb-3">
-            <div class="stat-card is-success">
-              <div class="stat-icon"><i class="fas fa-user-check"></i></div>
-              <div class="stat-meta">
-                <div class="stat-kpi"><span>{{ $usuariosActivos ?? 0 }}</span></div>
-                <div class="stat-label">Usuarios activos (30 días)</div>
-              </div>
-            </div>
-          </div>
+          @endforeach
         </div>
       </div>
 
-      {{-- Actividad reciente + Barras por área --}}
+      {{-- Actividad reciente (estilo feed social) + gráfico --}}
       <div class="row">
         <div class="col-lg-6">
           <div class="card card-clean">
             <div class="card-header bg-white"><i class="fas fa-stream mr-1"></i>Actividad reciente</div>
             <div class="card-body">
-              <ul class="list-unstyled mb-0">
-                @forelse($actividad as $a)
-                  <li class="mb-3 d-flex align-items-start">
-                    <i class="fas fa-file-alt mr-2 text-primary mt-1"></i>
-                    <div>
-                      <strong>{{ $a->codigo }}</strong> • {{ $a->area_solicitante }}
+              <ul class="list-unstyled mb-0 feed-lista">
+                @forelse($actividad as $item)
+                  <li class="feed-item mb-3 d-flex align-items-start">
+                    @if($item['foto'])
+                      <img src="{{ asset('storage/'.$item['foto']) }}" alt="{{ $item['usuario'] }}" class="feed-avatar mr-3">
+                    @else
+                      <span class="feed-icon-badge feed-icon-{{ $item['color'] }} mr-3">
+                        <i class="fas {{ $item['icono'] }}"></i>
+                      </span>
+                    @endif
+                    <div class="flex-grow-1">
+                      <div>
+                        <strong>{{ $item['usuario'] }}</strong>
+                        <span class="text-muted">{{ $item['accion'] }}</span>
+                      </div>
+                      <div class="text-muted small">{{ $item['detalle'] }}</div>
                       <div class="text-muted small">
-                        {{ $a->nombre_solicitante }} — {{ \Carbon\Carbon::parse($a->created_at)->diffForHumans() }}
+                        <i class="far fa-clock mr-1"></i>{{ $item['created_at']->diffForHumans() }}
                       </div>
                     </div>
+                    @if($item['url'])
+                      <a href="{{ $item['url'] }}" target="_blank" class="text-muted ml-2" title="Ver">
+                        <i class="fas fa-external-link-alt"></i>
+                      </a>
+                    @endif
                   </li>
                 @empty
                   <li class="text-muted">Sin movimientos recientes</li>
@@ -505,7 +509,9 @@
 
         <div class="col-lg-6">
           <div class="card card-clean">
-            <div class="card-header bg-white"><i class="fas fa-chart-bar mr-1"></i>Requerimientos por área (mes)</div>
+            <div class="card-header bg-white">
+              <i class="fas fa-chart-bar mr-1"></i>{{ $vistaMantenimiento ? 'Mantenimiento por tipo de equipo (mes)' : 'Requerimientos por área (mes)' }}
+            </div>
             <div class="card-body">
               <canvas id="chartAreas"></canvas>
             </div>
@@ -543,7 +549,11 @@
               <ul class="list-unstyled mb-0">
                 @forelse($ultimasConexiones as $u)
                   <li class="mb-3 d-flex align-items-start">
-                    <i class="fas fa-user-circle mr-2 text-info mt-1"></i>
+                    @if($u->foto_perfil)
+                      <img src="{{ asset('storage/'.$u->foto_perfil) }}" alt="{{ $u->name }}" class="social-avatar mr-2">
+                    @else
+                      <img src="https://ui-avatars.com/api/?name={{ urlencode($u->name) }}&background=003366&color=fff&size=38" alt="{{ $u->name }}" class="social-avatar mr-2">
+                    @endif
                     <div>
                       <strong>{{ $u->name }}</strong>
                       <span class="text-muted small">— {{ $u->cargo ?? 'Sin cargo' }}</span>
@@ -569,7 +579,11 @@
                 @forelse($cumpleañosMes as $u)
                   @php $esHoy = $u->fecha_nacimiento->day === now()->day && $u->fecha_nacimiento->month === now()->month; @endphp
                   <li class="mb-3 d-flex align-items-start">
-                    <i class="fas fa-birthday-cake mr-2 {{ $esHoy ? 'text-danger' : 'text-warning' }} mt-1"></i>
+                    @if($u->foto_perfil)
+                      <img src="{{ asset('storage/'.$u->foto_perfil) }}" alt="{{ $u->name }}" class="social-avatar mr-2">
+                    @else
+                      <img src="https://ui-avatars.com/api/?name={{ urlencode($u->name) }}&background=003366&color=fff&size=38" alt="{{ $u->name }}" class="social-avatar mr-2">
+                    @endif
                     <div>
                       <strong>{{ $u->name }}</strong>
                       <span class="text-muted small">— {{ $u->cargo ?? 'Sin cargo' }}</span>
@@ -630,8 +644,9 @@
   const porArea = @json($porArea);
   const porDia  = @json($porDia);
   const eventos = @json($eventos);
+  const etiquetaSerie = @json($vistaMantenimiento ? 'Mantenimiento' : 'Requerimientos');
 
-  // Chart: Barras por área
+  // Chart: Barras por área / tipo de equipo
   (function(){
     const el = document.getElementById('chartAreas');
     if (!el) return;
@@ -639,7 +654,7 @@
       type: 'bar',
       data: {
         labels: porArea.map(x => x.area),
-        datasets: [{ label: 'Requerimientos', data: porArea.map(x => x.total) }]
+        datasets: [{ label: etiquetaSerie, data: porArea.map(x => x.total) }]
       },
       options: { responsive:true, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true } } }
     });
@@ -653,7 +668,7 @@
       type: 'line',
       data: {
         labels: porDia.map(x => x.dia),
-        datasets: [{ label:'Requerimientos', data: porDia.map(x => x.total), tension:.3, fill:false }]
+        datasets: [{ label: etiquetaSerie, data: porDia.map(x => x.total), tension:.3, fill:false }]
       },
       options: { responsive:true, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true } } }
     });
@@ -668,9 +683,9 @@
       height: 'auto',
       headerToolbar: { start: 'title', center: '', end: 'prev,next today' },
       events: eventos.map(e => ({
-        title: `${e.codigo} • ${e.area} • ${e.servicio}`,
+        title: e.titulo,
         start: e.start,
-        url: `{{ url('/requerimientos') }}/${e.id}`
+        url: e.url
       })),
       eventClick: function(info){
         info.jsEvent.preventDefault();
