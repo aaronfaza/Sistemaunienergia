@@ -490,20 +490,22 @@
                         <i class="fas fa-eye mr-1"></i> Ver
                       </a>
 
-                      <button type="button"
-                              class="btn btn-sm btn-outline-brand btn-fw mr-1"
-                              data-toggle="modal" data-target="#editarModal{{ $reporte->id }}">
-                        <i class="fas fa-edit mr-1"></i> Editar
-                      </button>
-
-                      <form action="{{ route('reportes.destroy', $reporte->id) }}" method="POST" class="d-inline"
-                            onsubmit="return confirm('¿Estás seguro de eliminar este reporte?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger btn-fw" title="Eliminar">
-                          <i class="fas fa-trash mr-1"></i> Eliminar
+                      @if(!Auth::user()->esSoloMantenimiento())
+                        <button type="button"
+                                class="btn btn-sm btn-outline-brand btn-fw mr-1"
+                                data-toggle="modal" data-target="#editarModal{{ $reporte->id }}">
+                          <i class="fas fa-edit mr-1"></i> Editar
                         </button>
-                      </form>
+
+                        <form action="{{ route('reportes.destroy', $reporte->id) }}" method="POST" class="d-inline"
+                              onsubmit="return confirm('¿Estás seguro de eliminar este reporte?');">
+                          @csrf
+                          @method('DELETE')
+                          <button type="submit" class="btn btn-sm btn-danger btn-fw" title="Eliminar">
+                            <i class="fas fa-trash mr-1"></i> Eliminar
+                          </button>
+                        </form>
+                      @endif
                     </td>
                   </tr>
                 @empty

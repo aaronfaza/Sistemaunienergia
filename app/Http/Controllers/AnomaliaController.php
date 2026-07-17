@@ -61,6 +61,8 @@ class AnomaliaController extends Controller
 
     public function updateEstado(Request $request, Anomalia $anomalia)
     {
+        abort_if(Auth::user()->esSoloMantenimiento(), 403, 'No tienes permiso para cambiar el estado de una anomalía.');
+
         $request->validate([
             'estado' => 'required|in:Pendiente,En Atención,Resuelta',
         ]);
@@ -73,6 +75,8 @@ class AnomaliaController extends Controller
 
     public function destroy(Anomalia $anomalia)
     {
+        abort_if(Auth::user()->esSoloMantenimiento(), 403, 'No tienes permiso para eliminar anomalías.');
+
         if ($anomalia->foto && Storage::disk('public')->exists($anomalia->foto)) {
             Storage::disk('public')->delete($anomalia->foto);
         }

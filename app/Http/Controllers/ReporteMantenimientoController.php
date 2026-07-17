@@ -125,6 +125,8 @@ class ReporteMantenimientoController extends Controller
 
     public function update(Request $request, ReporteMantenimiento $reporte)
     {
+        abort_if(Auth::user()->esSoloMantenimiento(), 403, 'No tienes permiso para editar reportes.');
+
         $request->validate([
             'nombre' => 'required|string|max:255',
             'titulo' => 'nullable|string|max:255',
@@ -215,6 +217,8 @@ class ReporteMantenimientoController extends Controller
 
     public function destroy(ReporteMantenimiento $reporte)
     {
+        abort_if(Auth::user()->esSoloMantenimiento(), 403, 'No tienes permiso para eliminar reportes.');
+
         // ✅ borrar foto del storage al eliminar
         if ($reporte->foto && Storage::disk('public')->exists($reporte->foto)) {
             Storage::disk('public')->delete($reporte->foto);
