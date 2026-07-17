@@ -457,16 +457,6 @@
           </div>
 
           <div class="col-12 col-sm-6 col-md-3 mb-3">
-            <div class="stat-card is-success">
-              <div class="stat-icon"><i class="fas fa-list-ol"></i></div>
-              <div class="stat-meta">
-                <div class="stat-kpi"><span>{{ number_format($kpi['prom_items'] ?? 0, 1) }}</span></div>
-                <div class="stat-label">Ítems por requerimiento</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-sm-6 col-md-3 mb-3">
             <div class="stat-card is-primary">
               <div class="stat-icon"><i class="fas fa-building"></i></div>
               <div class="stat-meta">
