@@ -253,7 +253,7 @@
                     </div>
                     <div style="margin-top: 4px;">
                     <img
-                    src="{{ public_path('img/logo1.png') }}"
+                    src="{{ public_path('img/Logo1.png') }}"
                     alt="Logo Unienergia ABC"
                     style="height: 20px; vertical-align: middle;"
                     >
@@ -270,10 +270,28 @@
             </td>
 
             <td style="text-align: right; border: none;">
-                <div>
-                    <div style="border-bottom: 1px solid #000; width: 180px; height: 30px; display: inline-block;"></div>
-                    <div style="margin-top: 5px;">Firma del Supervisor Responsable</div>
-                </div>
+                @if($reporte->firmado_supervisor_id && $reporte->supervisorFirmante && file_exists(public_path('storage/'.$reporte->supervisorFirmante->firma_imagen)))
+                    <div style="text-align: center;">
+                        <img src="{{ public_path('storage/'.$reporte->supervisorFirmante->firma_imagen) }}" alt="Firma Supervisor" style="height:90px; max-width:280px;">
+                        <div style="margin-top: 2px; font-weight: bold;">
+                            {{ $reporte->supervisorFirmante->name }}
+                        </div>
+                        <div style="font-size: 10px; color: #333;">
+                            Supervisor de Mantenimiento
+                        </div>
+                        <div style="margin-top: 4px;">
+                            <img src="{{ public_path('img/Logo1.png') }}" alt="Logo Unienergia ABC" style="height: 20px; vertical-align: middle;">
+                        </div>
+                        <div style="margin-top: 3px; font-size: 9.5px; color: #666;">
+                            Firmado el {{ $reporte->firmado_supervisor_en->format('d/m/Y H:i') }}
+                        </div>
+                    </div>
+                @else
+                    <div>
+                        <div style="border-bottom: 1px solid #000; width: 180px; height: 30px; display: inline-block;"></div>
+                        <div style="margin-top: 5px;">Firma del Supervisor Responsable</div>
+                    </div>
+                @endif
             </td>
         </tr>
     </table>

@@ -10,6 +10,7 @@ use App\Exports\ReportesMantenimientoExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Traits\OptimizaFoto;
 
 class ReporteMantenimientoController extends Controller
@@ -226,6 +227,36 @@ class ReporteMantenimientoController extends Controller
 
         $reporte->delete();
         return redirect()->route('reportes.index')->with('success', 'Reporte eliminado correctamente.');
+    }
+
+    /**
+     * Firma local del supervisor: valida su PIN y estampa su firma guardada
+     * (junto al logo de la empresa) en el reporte, sin depender de ningún
+     * servicio externo.
+     */
+    public function firmarSupervisor(Request $request, ReporteMantenimiento $reporte)
+    {
+        abort_if(!Auth::user()->esSupervisorMantenimiento(), 403, 'Solo el supervisor de mantenimiento puede firmar reportes.');
+
+        $request->validate([
+            'pin' => 'required|string',
+        ]);
+
+        $user = Auth::user();
+
+        if (empty($user->firma_pin) || empty($user->firma_imagen)) {
+            return back()->with('error', 'Primero debes configurar tu firma y tu clave de firma.');
+        }
+
+        if (!Hash::check($request->pin, $user->firma_pin)) {
+            return back()->with('error', 'La clave de firma es incorrecta.');
+        }
+
+        $reporte->firmado_supervisor_id = $user->id;
+        $reporte->firmado_supervisor_en = now();
+        $reporte->save();
+
+        return back()->with('success', 'Reporte firmado correctamente.');
     }
 
     public function generarPdf(ReporteMantenimiento $reporte)

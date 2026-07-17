@@ -9,25 +9,27 @@ use Illuminate\Support\Str;
 class RestringirAccesoPorRol
 {
     /**
-     * Nombres de ruta (admiten comodín *) permitidos para el rol "mecanico".
-     * Todo lo demás dentro del área autenticada queda bloqueado para ese rol.
+     * Nombres de ruta (admiten comodín *) permitidos para roles con acceso
+     * limitado a Mantenimiento (mecánico y supervisor de mantenimiento).
+     * Todo lo demás dentro del área autenticada queda bloqueado para ellos.
      */
-    protected array $permitidasParaMecanico = [
+    protected array $permitidasParaMantenimiento = [
         'dashboard',
         'reportes.*',
         'anomalias.*',
         'bienvenida',
         'logout',
+        'firma.*',
     ];
 
     public function handle($request, Closure $next)
     {
         $user = Auth::user();
 
-        if ($user && $user->esSoloMantenimiento()) {
+        if ($user && $user->tieneAccesoLimitadoAMantenimiento()) {
             $routeName = $request->route()?->getName();
 
-            $permitido = $routeName && collect($this->permitidasParaMecanico)
+            $permitido = $routeName && collect($this->permitidasParaMantenimiento)
                 ->contains(fn ($patron) => Str::is($patron, $routeName));
 
             if (!$permitido) {
