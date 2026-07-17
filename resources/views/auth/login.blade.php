@@ -33,14 +33,33 @@
             inset: 0;
             z-index: 0;
             overflow: hidden;
-            background: linear-gradient(160deg, #0b1120 0%, #16264f 45%, #1e3a8a 100%);
+
+            /* Valores por defecto (medianoche); el script los recalcula según la hora real */
+            --sky-top: rgb(11,17,32);
+            --sky-mid: rgb(22,38,79);
+            --sky-bottom: rgb(30,58,138);
+            --sun-op: 0;
+            --moon-op: 1;
+            --stars-op: .9;
+            --horizon-color: 251,146,60;
+            --horizon-op: .18;
+
+            background: linear-gradient(160deg, var(--sky-top) 0%, var(--sky-mid) 45%, var(--sky-bottom) 100%);
             background-size: 140% 140%;
             animation: skyDrift 18s ease-in-out infinite;
+            transition: background 4s linear;
         }
 
         @keyframes skyDrift {
             0%, 100% { background-position: 0% 0%; }
             50%      { background-position: 60% 40%; }
+        }
+
+        .oilfield-scene .stars-wrap {
+            position: absolute;
+            inset: 0;
+            opacity: var(--stars-op);
+            transition: opacity 4s linear;
         }
 
         .oilfield-scene .stars {
@@ -75,7 +94,9 @@
             border-radius: 50%;
             background: radial-gradient(circle at 35% 35%, #fef9c3, #fde68a 55%, rgba(253,230,138,.15) 75%);
             box-shadow: 0 0 60px 18px rgba(253,230,138,.35);
+            opacity: var(--moon-op);
             animation: moonGlow 6s ease-in-out infinite;
+            transition: opacity 4s linear;
         }
 
         @keyframes moonGlow {
@@ -84,7 +105,6 @@
         }
 
         .oilfield-scene .sun {
-            display: none;
             position: absolute;
             top: 8%;
             right: 12%;
@@ -93,36 +113,14 @@
             border-radius: 50%;
             background: radial-gradient(circle at 35% 35%, #fffbeb, #fde047 55%, rgba(250,204,21,.2) 78%);
             box-shadow: 0 0 70px 22px rgba(250,204,21,.45);
+            opacity: var(--sun-op);
             animation: sunGlow 5s ease-in-out infinite;
+            transition: opacity 4s linear;
         }
 
         @keyframes sunGlow {
             0%, 100% { box-shadow: 0 0 70px 22px rgba(250,204,21,.4); }
             50%      { box-shadow: 0 0 95px 30px rgba(250,204,21,.65); }
-        }
-
-        /* ===================================================
-           MODO DÍA — se activa con la clase .is-day (hora local)
-           =================================================== */
-        .oilfield-scene.is-day {
-            background: linear-gradient(160deg, #38bdf8 0%, #7dd3fc 45%, #bae6fd 100%);
-            background-size: 140% 140%;
-        }
-
-        .oilfield-scene.is-day .stars { opacity: 0; }
-        .oilfield-scene.is-day .moon { display: none; }
-        .oilfield-scene.is-day .sun { display: block; }
-
-        .oilfield-scene.is-day .horizon-glow {
-            background: radial-gradient(60% 100% at 50% 100%, rgba(253,224,71,.30), rgba(253,224,71,0) 70%);
-        }
-
-        .oilfield-scene.is-day .cloud {
-            background: rgba(255,255,255,.65);
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .oilfield-scene.is-day .sun { animation: none !important; }
         }
 
         .oilfield-scene .cloud {
@@ -146,8 +144,9 @@
             left: 0; right: 0;
             bottom: 18vh;
             height: 34vh;
-            background: radial-gradient(60% 100% at 50% 100%, rgba(251,146,60,.25), rgba(251,146,60,0) 70%);
+            background: radial-gradient(60% 100% at 50% 100%, rgba(var(--horizon-color), var(--horizon-op)), rgba(var(--horizon-color), 0) 70%);
             pointer-events: none;
+            transition: background 4s linear;
         }
 
         .oilfield-scene .ground {
@@ -535,7 +534,7 @@
 
     <!-- ===== ESCENA DE FONDO: CAMPO PETROLERO (pantalla completa) ===== -->
     <div class="oilfield-scene" aria-hidden="true">
-        <div class="stars"></div>
+        <div class="stars-wrap"><div class="stars"></div></div>
         <div class="moon"></div>
         <div class="sun"></div>
         <div class="cloud cloud-1"></div>
@@ -717,16 +716,79 @@
         © {{ date('Y') }} Empresa de Recursos Energéticos SAC — Todos los derechos reservados
     </footer>
 
-    <!-- ===== Día/Noche según la hora local del navegador ===== -->
+    <!-- ===== Ciclo día/atardecer/noche según la hora local del navegador ===== -->
     <script>
         (function () {
             var scene = document.querySelector('.oilfield-scene');
             if (!scene) return;
 
-            var hora = new Date().getHours();
-            var esDeDia = hora >= 6 && hora < 18; // 06:00–17:59 = día, resto = noche
+            // Paletas clave del ciclo (hora decimal 0–24). Entre cada par de
+            // puntos se interpola suavemente, así el atardecer/amanecer van
+            // cambiando en vez de saltar de golpe entre día y noche.
+            var KEYFRAMES = [
+                { h: 0,    sky: [[11,17,32],  [22,38,79],   [30,58,138]],  sunOp: 0,   moonOp: 1,   starsOp: .9, horizon: [251,146,60],  horizonOp: .18 },
+                { h: 5,    sky: [[11,17,32],  [22,38,79],   [30,58,138]],  sunOp: 0,   moonOp: 1,   starsOp: .9, horizon: [251,146,60],  horizonOp: .18 },
+                { h: 6.5,  sky: [[30,58,138], [249,115,22], [253,230,138]], sunOp: .55, moonOp: .35, starsOp: .3, horizon: [251,146,60],  horizonOp: .42 },
+                { h: 8,    sky: [[56,189,248],[125,211,252],[186,230,253]], sunOp: 1,   moonOp: 0,   starsOp: 0,  horizon: [253,224,71],  horizonOp: .2 },
+                { h: 17,   sky: [[56,189,248],[125,211,252],[186,230,253]], sunOp: 1,   moonOp: 0,   starsOp: 0,  horizon: [253,224,71],  horizonOp: .2 },
+                { h: 18.5, sky: [[49,46,129], [249,115,22], [253,230,138]], sunOp: .5,  moonOp: .35, starsOp: .3, horizon: [251,113,133], horizonOp: .48 },
+                { h: 20,   sky: [[11,17,32],  [22,38,79],   [30,58,138]],  sunOp: 0,   moonOp: 1,   starsOp: .9, horizon: [251,146,60],  horizonOp: .18 },
+                { h: 24,   sky: [[11,17,32],  [22,38,79],   [30,58,138]],  sunOp: 0,   moonOp: 1,   starsOp: .9, horizon: [251,146,60],  horizonOp: .18 }
+            ];
 
-            scene.classList.toggle('is-day', esDeDia);
+            function lerp(a, b, t) { return a + (b - a) * t; }
+            function lerpColor(a, b, t) {
+                return [
+                    Math.round(lerp(a[0], b[0], t)),
+                    Math.round(lerp(a[1], b[1], t)),
+                    Math.round(lerp(a[2], b[2], t))
+                ];
+            }
+
+            function calcular(horaDecimal) {
+                var actual = KEYFRAMES[0];
+                var siguiente = KEYFRAMES[KEYFRAMES.length - 1];
+
+                for (var i = 0; i < KEYFRAMES.length - 1; i++) {
+                    if (horaDecimal >= KEYFRAMES[i].h && horaDecimal <= KEYFRAMES[i + 1].h) {
+                        actual = KEYFRAMES[i];
+                        siguiente = KEYFRAMES[i + 1];
+                        break;
+                    }
+                }
+
+                var rango = siguiente.h - actual.h;
+                var t = rango > 0 ? (horaDecimal - actual.h) / rango : 0;
+
+                return {
+                    skyTop: lerpColor(actual.sky[0], siguiente.sky[0], t),
+                    skyMid: lerpColor(actual.sky[1], siguiente.sky[1], t),
+                    skyBottom: lerpColor(actual.sky[2], siguiente.sky[2], t),
+                    sunOp: lerp(actual.sunOp, siguiente.sunOp, t),
+                    moonOp: lerp(actual.moonOp, siguiente.moonOp, t),
+                    starsOp: lerp(actual.starsOp, siguiente.starsOp, t),
+                    horizon: lerpColor(actual.horizon, siguiente.horizon, t),
+                    horizonOp: lerp(actual.horizonOp, siguiente.horizonOp, t)
+                };
+            }
+
+            function aplicar() {
+                var ahora = new Date();
+                var horaDecimal = ahora.getHours() + ahora.getMinutes() / 60;
+                var v = calcular(horaDecimal);
+
+                scene.style.setProperty('--sky-top', 'rgb(' + v.skyTop.join(',') + ')');
+                scene.style.setProperty('--sky-mid', 'rgb(' + v.skyMid.join(',') + ')');
+                scene.style.setProperty('--sky-bottom', 'rgb(' + v.skyBottom.join(',') + ')');
+                scene.style.setProperty('--sun-op', v.sunOp);
+                scene.style.setProperty('--moon-op', v.moonOp);
+                scene.style.setProperty('--stars-op', v.starsOp);
+                scene.style.setProperty('--horizon-color', v.horizon.join(','));
+                scene.style.setProperty('--horizon-op', v.horizonOp);
+            }
+
+            aplicar();
+            setInterval(aplicar, 60000); // recalcula cada minuto para reflejar el paso real del tiempo
         })();
     </script>
 
