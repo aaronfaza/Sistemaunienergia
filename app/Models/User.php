@@ -25,6 +25,10 @@ class User extends Authenticatable
         'rol',
         'firma_pin',
         'firma_imagen',
+        'direccion',
+        'foto_perfil',
+        'fecha_nacimiento',
+        'fecha_ingreso',
     ];
 
     /**
@@ -71,5 +75,15 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'fecha_nacimiento' => 'date',
+        'fecha_ingreso' => 'date',
     ];
+
+    /**
+     * Edad calculada a partir de la fecha de nacimiento (no se guarda en BD).
+     */
+    public function getEdadAttribute(): ?int
+    {
+        return $this->fecha_nacimiento ? $this->fecha_nacimiento->age : null;
+    }
 }

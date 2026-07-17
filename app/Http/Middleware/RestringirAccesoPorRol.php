@@ -20,6 +20,7 @@ class RestringirAccesoPorRol
         'bienvenida',
         'logout',
         'firma.*',
+        'perfil.*',
     ];
 
     public function handle($request, Closure $next)

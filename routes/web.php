@@ -10,6 +10,7 @@ use App\Http\Controllers\CartaFisController;
 use App\Http\Controllers\LogisticaLoteController;
 use App\Http\Controllers\AnomaliaController;
 use App\Http\Controllers\FirmaSupervisorController;
+use App\Http\Controllers\PerfilController;
 use App\Exports\LogisticaExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -38,6 +39,13 @@ Route::middleware(['auth', 'rol.restriccion'])->group(function () {
     // Firma local del supervisor de mantenimiento
     Route::post('/mi-firma', [FirmaSupervisorController::class, 'guardar'])
         ->name('firma.guardar');
+
+    // Perfil de usuario (disponible para todos los roles)
+    Route::get('/mi-perfil', [PerfilController::class, 'edit'])
+        ->name('perfil.edit');
+
+    Route::post('/mi-perfil', [PerfilController::class, 'update'])
+        ->name('perfil.update');
 
     Route::patch('/reportes/{reporte}/firmar', [ReporteMantenimientoController::class, 'firmarSupervisor'])
         ->name('reportes.firmar');
