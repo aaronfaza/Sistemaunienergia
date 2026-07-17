@@ -300,6 +300,10 @@
               <p class="text-muted small mb-0">{{ Auth::user()->cargo ?? 'Cargo no asignado' }}</p>
             </div>
             <div class="dropdown-divider"></div>
+            <a class="dropdown-item d-flex align-items-center px-3 py-2" href="{{ route('perfil.edit') }}">
+              <i class="fas fa-user-circle mr-2"></i> <span>Mi Perfil</span>
+            </a>
+            <div class="dropdown-divider"></div>
             <a class="dropdown-item d-flex align-items-center px-3 py-2 text-danger" href="{{ route('logout') }}"
                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
               <i class="fas fa-sign-out-alt mr-2"></i> <span>Cerrar sesión</span>
