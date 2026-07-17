@@ -21,7 +21,17 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'cargo',
+        'rol',
     ];
+
+    /**
+     * ¿El usuario solo tiene acceso al módulo de Mantenimiento?
+     */
+    public function esSoloMantenimiento(): bool
+    {
+        return $this->rol === 'mecanico';
+    }
 
     /**
      * The attributes that should be hidden for serialization.

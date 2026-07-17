@@ -334,13 +334,14 @@
               <p class="ml-2 mb-0">Mantenimiento</p>
             </a>
           </li>
+          @if(!Auth::user()->esSoloMantenimiento())
           <li class="nav-item">
             <a href="{{ route('requerimientos.index') }}" class="nav-link {{ request()->routeIs('requerimientos.*') ? 'active' : '' }}">
               <i class="nav-icon fas fa-file-alt" style="color: var(--brand-info);"></i>
               <p class="ml-2 mb-0">Requerimientos</p>
             </a>
           </li>
-          
+
         <li class="nav-item has-treeview">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-folder-open" style="color: var(--brand-info);"></i>
@@ -368,12 +369,13 @@
           </ul>
         </li>
          <li class="nav-item">
-          <a href="{{ route('logistica_lotes.index') }}" 
+          <a href="{{ route('logistica_lotes.index') }}"
             class="nav-link {{ request()->routeIs('logistica_lotes.*') ? 'active' : '' }}">
               <i class="nav-icon fas fa-boxes" style="color: var(--brand-primary-light);"></i>
               <p class="ms-2 mb-0">Logística Lote</p>
           </a>
       </li>
+          @endif
 
         </ul>
       </nav>
@@ -392,6 +394,16 @@
           <div class="alert alert-success alert-dismissible fade show mt-3 shadow-sm" role="alert" style="border-left:4px solid var(--brand-accent);">
             <i class="fas fa-check-circle mr-2" style="color: var(--brand-accent);"></i>
             {{ session('success') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        @endif
+
+        @if(session('error'))
+          <div class="alert alert-danger alert-dismissible fade show mt-3 shadow-sm" role="alert">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            {{ session('error') }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -925,6 +937,29 @@ function replaceInputFile(input, file){
   input.files = dt.files;
 }
 
+/**
+ * Prepara una foto para envío:
+ * - Si pesa mucho o es PNG, la comprime/convierte a JPEG (evita 413 del servidor).
+ * - Si no hace falta comprimir, igual la "clona" a memoria (arrayBuffer -> File nuevo)
+ *   para fijar sus bytes ya y evitar que el navegador pierda acceso al archivo
+ *   original (error ERR_UPLOAD_FILE_CHANGED) si pasa tiempo entre elegir la foto
+ *   y enviar el formulario (ej: mientras se firma).
+ */
+async function prepararFotoParaEnvio(file, maxDim = 1920, quality = 0.82){
+  const shouldCompress = (file.size > 1.5 * 1024 * 1024) || (file.type === 'image/png');
+
+  if (shouldCompress) {
+    return await compressToJpeg(file, maxDim, quality);
+  }
+
+  try {
+    const buf = await file.arrayBuffer();
+    return new File([buf], file.name || 'foto', { type: file.type, lastModified: Date.now() });
+  } catch (e) {
+    return file; // fallback: si algo falla, se envía el original
+  }
+}
+
 /** ===== Estado global (evita submit antes de terminar compresión) ===== */
 let fotoProcessingPromise = null;
 
@@ -950,15 +985,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Mostrar preview inicial
     setPreviewNew(file);
 
-    // Si pesa mucho, comprimimos SIEMPRE antes de enviar
+    // Comprimimos/clonamos SIEMPRE antes de enviar
     fotoProcessingPromise = (async () => {
-      // Umbral: si supera 3.5MB, compress; si es PNG grande, también.
-      const shouldCompress = (file.size > 3.5 * 1024 * 1024) || (file.type === 'image/png');
-      if(!shouldCompress) return;
+      const optimized = await prepararFotoParaEnvio(file);
 
-      const optimized = await compressToJpeg(file, 1920, 0.82);
-
-      // Si se optimizó, reemplazar input y actualizar preview
+      // Reemplazar input y actualizar preview con el archivo ya "fijado" en memoria
       if(optimized && optimized !== file){
         replaceInputFile(inputFoto, optimized);
         setPreviewNew(optimized);
@@ -1177,11 +1208,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 <script>
+  // Foto pendiente de comprimir/clonar por formulario de edición (evita 413 y ERR_UPLOAD_FILE_CHANGED)
+  const fotoProcessingPorForm = new WeakMap();
+
   function previewFoto(event, mode, id) {
     const input = event.target;
     if (!input.files || !input.files[0]) return;
 
     const file = input.files[0];
+
+    if (!file.type || !file.type.startsWith('image/')) {
+      input.value = '';
+      alert('El archivo seleccionado no es una imagen válida.');
+      return;
+    }
+
     const url = URL.createObjectURL(file);
 
     if (mode === 'new') {
@@ -1200,7 +1241,38 @@ document.addEventListener('DOMContentLoaded', () => {
     if (empty) empty.style.display = 'none';
     img.src = url;
     img.style.display = 'block';
+
+    // Comprimimos/clonamos la foto ya, para no depender del archivo original
+    // (que puede quedar inválido si pasa tiempo antes de enviar, ej. al firmar).
+    const form = input.closest('form');
+    if (form && typeof prepararFotoParaEnvio === 'function') {
+      const processing = prepararFotoParaEnvio(file).then((optimized) => {
+        if (optimized && optimized !== file) {
+          replaceInputFile(input, optimized);
+          img.src = URL.createObjectURL(optimized);
+        }
+      });
+      fotoProcessingPorForm.set(form, processing);
+    }
   }
+
+  // Antes de enviar cualquier formulario de edición, esperar a que la foto
+  // termine de comprimirse/clonarse (si aplica).
+  document.addEventListener('submit', function (e) {
+    const form = e.target;
+    const pending = fotoProcessingPorForm.get(form);
+    if (!pending) return;
+
+    e.preventDefault();
+    const btn = form.querySelector('button[type="submit"]');
+    if (btn) { btn.disabled = true; }
+
+    pending.finally(() => {
+      fotoProcessingPorForm.delete(form);
+      if (btn) { btn.disabled = false; }
+      form.requestSubmit ? form.requestSubmit() : form.submit();
+    });
+  }, true);
 
   $(function () {
     $('#notificacionesDropdown').on('click', function () { $('#notiBadge').hide(); });

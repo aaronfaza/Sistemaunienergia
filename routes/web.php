@@ -17,7 +17,7 @@ Route::get('/', function () {
 });
 
 // Área autenticada
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'rol.restriccion'])->group(function () {
 
     // Dashboard (si tu dashboard muestra los reportes existentes)
     Route::get('/dashboard', [ReporteMantenimientoController::class, 'index'])
