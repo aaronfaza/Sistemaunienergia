@@ -58,14 +58,14 @@ class ReporteMantenimientoController extends Controller
             'herramientas' => 'nullable|string',
             'materiales' => 'nullable|string',
             'descripcion_actividad' => 'nullable|string',
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:15360',
             'firma_data' => 'required|string', // si quieres obligatoria
         ]);
 
-        // ✅ Guardar foto (si existe)
+        // ✅ Guardar foto optimizada (si existe): se redimensiona/comprime a ~1MB
         $fotoPath = null;
         if ($request->hasFile('foto')) {
-            $fotoPath = $request->file('foto')->store('reportes_mantenimiento', 'public');
+            $fotoPath = $this->guardarFotoOptimizada($request->file('foto'), 'reportes_mantenimiento');
         }
 
         // ✅ Normalizar herramientas/materiales (vienen como string "a, b, c")
@@ -76,10 +76,6 @@ class ReporteMantenimientoController extends Controller
         $materiales = $request->filled('materiales')
             ? array_values(array_filter(array_map('trim', explode(',', $request->materiales))))
             : [];
-        $fotoPath = null;
-            if ($request->hasFile('foto')) {
-                $fotoPath = $request->file('foto')->store('reportes_fotos', 'public');
-            }
 
             $firmaPath = null;
             if ($request->filled('firma_data')) {
@@ -138,7 +134,7 @@ class ReporteMantenimientoController extends Controller
             'materiales' => 'nullable|string',
             'descripcion_actividad' => 'required|string',
             'firma_data' => 'nullable|string',
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:15360',
         ]);
 
         // ✅ Normalizar herramientas/materiales (string separado por comas)
@@ -150,22 +146,13 @@ class ReporteMantenimientoController extends Controller
             ? array_values(array_filter(array_map('trim', explode(',', $request->materiales))))
             : [];
 
-        // ✅ Si sube nueva foto: borrar anterior + guardar nueva
+        // ✅ Si sube nueva foto: borrar anterior + guardar nueva optimizada (~1MB)
         if ($request->hasFile('foto')) {
             if ($reporte->foto && Storage::disk('public')->exists($reporte->foto)) {
                 Storage::disk('public')->delete($reporte->foto);
             }
-            $reporte->foto = $request->file('foto')->store('reportes_mantenimiento', 'public');
+            $reporte->foto = $this->guardarFotoOptimizada($request->file('foto'), 'reportes_mantenimiento');
         }
-
-
-        // Foto (opcional)
-            if ($request->hasFile('foto')) {
-                if (!empty($reporte->foto)) {
-                    \Storage::disk('public')->delete($reporte->foto);
-                }
-                $reporte->foto = $request->file('foto')->store('reportes_fotos', 'public');
-            }
 
             // Firma (opcional)
             if ($request->filled('firma_data')) {
@@ -240,6 +227,74 @@ class ReporteMantenimientoController extends Controller
         return $pdf->download('reporte_mantenimiento_' . $reporte->id . '.pdf');
     }
 
+
+/**
+ * Redimensiona y comprime una foto subida para que ocupe como máximo ~1MB,
+ * probando calidades JPEG decrecientes hasta bajar del límite (o llegar
+ * al piso de calidad). Si GD no puede leer el archivo, lo guarda tal cual.
+ */
+private function guardarFotoOptimizada($file, string $folder, int $maxDim = 1920, int $maxBytes = 1024 * 1024): string
+{
+    $path = $file->getRealPath();
+    $info = @getimagesize($path);
+
+    if (!$info) {
+        return $file->store($folder, 'public');
+    }
+
+    $imagen = match ($info[2]) {
+        IMAGETYPE_JPEG => imagecreatefromjpeg($path),
+        IMAGETYPE_PNG => imagecreatefrompng($path),
+        IMAGETYPE_WEBP => imagecreatefromwebp($path),
+        default => null,
+    };
+
+    if (!$imagen) {
+        return $file->store($folder, 'public');
+    }
+
+    // Corrige orientación EXIF (fotos de cámara suelen venir "rotadas" a nivel de metadata)
+    if ($info[2] === IMAGETYPE_JPEG && function_exists('exif_read_data')) {
+        $exif = @exif_read_data($path);
+        $orientacion = $exif['Orientation'] ?? null;
+        $imagen = match ($orientacion) {
+            3 => imagerotate($imagen, 180, 0),
+            6 => imagerotate($imagen, -90, 0),
+            8 => imagerotate($imagen, 90, 0),
+            default => $imagen,
+        };
+    }
+
+    // Redimensiona si excede el tamaño máximo permitido
+    $ancho = imagesx($imagen);
+    $alto = imagesy($imagen);
+    $ratio = min($maxDim / $ancho, $maxDim / $alto, 1);
+
+    if ($ratio < 1) {
+        $nuevoAncho = (int) round($ancho * $ratio);
+        $nuevoAlto = (int) round($alto * $ratio);
+        $redimensionada = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
+        imagecopyresampled($redimensionada, $imagen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);
+        imagedestroy($imagen);
+        $imagen = $redimensionada;
+    }
+
+    // Comprime iterativamente en JPEG hasta bajar de $maxBytes (o piso de calidad)
+    $calidad = 85;
+    do {
+        ob_start();
+        imagejpeg($imagen, null, $calidad);
+        $datos = ob_get_clean();
+        $calidad -= 10;
+    } while (strlen($datos) > $maxBytes && $calidad >= 25);
+
+    imagedestroy($imagen);
+
+    $nombreArchivo = trim($folder, '/') . '/' . uniqid('foto_') . '.jpg';
+    Storage::disk('public')->put($nombreArchivo, $datos);
+
+    return $nombreArchivo;
+}
 
 public function backupExcel()
 {

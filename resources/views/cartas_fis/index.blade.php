@@ -377,13 +377,14 @@ textarea:focus {
               <p class="ml-2 mb-0">Mantenimiento</p>
             </a>
           </li>
+          @if(!Auth::user()->esSoloMantenimiento())
           <li class="nav-item">
             <a href="{{ route('requerimientos.index') }}" class="nav-link {{ request()->routeIs('requerimientos.*') ? 'active' : '' }}">
               <i class="nav-icon fas fa-file-alt" style="color: var(--brand-info);"></i>
               <p class="ml-2 mb-0">Requerimientos</p>
             </a>
           </li>
-          
+
         <li class="nav-item has-treeview">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-folder-open" style="color: var(--brand-info);"></i>
@@ -411,12 +412,13 @@ textarea:focus {
           </ul>
         </li>
          <li class="nav-item">
-          <a href="{{ route('logistica_lotes.index') }}" 
+          <a href="{{ route('logistica_lotes.index') }}"
             class="nav-link {{ request()->routeIs('logistica_lotes.*') ? 'active' : '' }}">
               <i class="nav-icon fas fa-boxes" style="color: var(--brand-primary-light);"></i>
               <p class="ms-2 mb-0">Logística Lote</p>
           </a>
       </li>
+          @endif
 
         </ul>
       </nav>
