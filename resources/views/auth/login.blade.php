@@ -83,6 +83,48 @@
             50%      { box-shadow: 0 0 80px 26px rgba(253,230,138,.5); }
         }
 
+        .oilfield-scene .sun {
+            display: none;
+            position: absolute;
+            top: 8%;
+            right: 12%;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #fffbeb, #fde047 55%, rgba(250,204,21,.2) 78%);
+            box-shadow: 0 0 70px 22px rgba(250,204,21,.45);
+            animation: sunGlow 5s ease-in-out infinite;
+        }
+
+        @keyframes sunGlow {
+            0%, 100% { box-shadow: 0 0 70px 22px rgba(250,204,21,.4); }
+            50%      { box-shadow: 0 0 95px 30px rgba(250,204,21,.65); }
+        }
+
+        /* ===================================================
+           MODO DÍA — se activa con la clase .is-day (hora local)
+           =================================================== */
+        .oilfield-scene.is-day {
+            background: linear-gradient(160deg, #38bdf8 0%, #7dd3fc 45%, #bae6fd 100%);
+            background-size: 140% 140%;
+        }
+
+        .oilfield-scene.is-day .stars { opacity: 0; }
+        .oilfield-scene.is-day .moon { display: none; }
+        .oilfield-scene.is-day .sun { display: block; }
+
+        .oilfield-scene.is-day .horizon-glow {
+            background: radial-gradient(60% 100% at 50% 100%, rgba(253,224,71,.30), rgba(253,224,71,0) 70%);
+        }
+
+        .oilfield-scene.is-day .cloud {
+            background: rgba(255,255,255,.65);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .oilfield-scene.is-day .sun { animation: none !important; }
+        }
+
         .oilfield-scene .cloud {
             position: absolute;
             background: rgba(203,213,245,.14);
@@ -495,6 +537,7 @@
     <div class="oilfield-scene" aria-hidden="true">
         <div class="stars"></div>
         <div class="moon"></div>
+        <div class="sun"></div>
         <div class="cloud cloud-1"></div>
         <div class="cloud cloud-2"></div>
         <div class="cloud cloud-3"></div>
@@ -673,6 +716,19 @@
     <footer>
         © {{ date('Y') }} Empresa de Recursos Energéticos SAC — Todos los derechos reservados
     </footer>
+
+    <!-- ===== Día/Noche según la hora local del navegador ===== -->
+    <script>
+        (function () {
+            var scene = document.querySelector('.oilfield-scene');
+            if (!scene) return;
+
+            var hora = new Date().getHours();
+            var esDeDia = hora >= 6 && hora < 18; // 06:00–17:59 = día, resto = noche
+
+            scene.classList.toggle('is-day', esDeDia);
+        })();
+    </script>
 
 </body>
 </html>
