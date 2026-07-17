@@ -15,6 +15,7 @@ class RestringirAccesoPorRol
     protected array $permitidasParaMecanico = [
         'dashboard',
         'reportes.*',
+        'anomalias.*',
         'bienvenida',
         'logout',
     ];

@@ -329,12 +329,29 @@
           </a>
         </li>
 
-          <li class="nav-item">
-            <a href="{{ route('reportes.index') }}" class="nav-link {{ request()->routeIs('reportes.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-tools" style="color: var(--brand-accent);"></i>
-              <p class="ml-2 mb-0">Mantenimiento</p>
-            </a>
-          </li>
+        <li class="nav-item has-treeview {{ request()->routeIs('reportes.*') || request()->routeIs('anomalias.*') ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ request()->routeIs('reportes.*') || request()->routeIs('anomalias.*') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-tools" style="color: var(--brand-accent);"></i>
+            <p>
+              Mantenimiento
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview ml-2">
+            <li class="nav-item">
+              <a href="{{ route('reportes.index') }}" class="nav-link {{ request()->routeIs('reportes.*') ? 'active' : '' }}">
+                <i class="fas fa-clipboard-list nav-icon" style="color: var(--brand-accent);"></i>
+                <p>Reportes</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('anomalias.index') }}" class="nav-link {{ request()->routeIs('anomalias.*') ? 'active' : '' }}">
+                <i class="fas fa-exclamation-triangle nav-icon" style="color: var(--brand-danger);"></i>
+                <p>Anomalías</p>
+              </a>
+            </li>
+          </ul>
+        </li>
           @if(!Auth::user()->esSoloMantenimiento())
           <li class="nav-item">
             <a href="{{ route('requerimientos.index') }}" class="nav-link {{ request()->routeIs('requerimientos.*') ? 'active' : '' }}">
