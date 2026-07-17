@@ -352,7 +352,7 @@
             </li>
           </ul>
         </li>
-          @if(!Auth::user()->esSoloMantenimiento())
+          @if(!Auth::user()->tieneAccesoLimitadoAMantenimiento())
           <li class="nav-item">
             <a href="{{ route('requerimientos.index') }}" class="nav-link {{ request()->routeIs('requerimientos.*') ? 'active' : '' }}">
               <i class="nav-icon fas fa-file-alt" style="color: var(--brand-info);"></i>
