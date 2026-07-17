@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardWelcomeController;
 use App\Http\Controllers\ControlCartaController;
 use App\Http\Controllers\CartaFisController;
 use App\Http\Controllers\LogisticaLoteController;
+use App\Http\Controllers\AnomaliaController;
 use App\Exports\LogisticaExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -32,6 +33,14 @@ Route::middleware(['auth', 'rol.restriccion'])->group(function () {
     // PDF de reporte
     Route::get('/reportes/{id}/pdf', [ReporteMantenimientoController::class, 'pdf'])
         ->name('reportes.pdf');
+
+    // Anomalías (sub-módulo de Mantenimiento: reporte de anomalías en pozos)
+    Route::resource('anomalias', AnomaliaController::class)
+        ->only(['index', 'store', 'destroy'])
+        ->parameters(['anomalias' => 'anomalia']);
+
+    Route::patch('/anomalias/{anomalia}/estado', [AnomaliaController::class, 'updateEstado'])
+        ->name('anomalias.update_estado');
 
     // Ruta para imprimir PDF de requerimientos
     Route::get('/requerimientos/{id}/pdf', [RequerimientoController::class, 'imprimir'])
