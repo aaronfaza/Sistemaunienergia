@@ -340,33 +340,48 @@
                     <td><span class="gravedad-badge gravedad-{{ $anomalia->gravedad }}">{{ $anomalia->gravedad }}</span></td>
                     <td>{{ $anomalia->created_at->format('d/m/Y H:i') }}</td>
                     <td>
-                      <form action="{{ route('anomalias.update_estado', $anomalia->id) }}" method="POST">
-                        @csrf
-                        @method('PATCH')
-                        <select name="estado" onchange="this.form.submit()"
-                          class="estado-select
-                            @if($anomalia->estado === 'Pendiente') estado-Pendiente
-                            @elseif($anomalia->estado === 'En Atención') estado-EnAtencion
-                            @else estado-Resuelta
-                            @endif">
-                          <option value="Pendiente" {{ $anomalia->estado == 'Pendiente' ? 'selected' : '' }}>🟡 Pendiente</option>
-                          <option value="En Atención" {{ $anomalia->estado == 'En Atención' ? 'selected' : '' }}>🔵 En Atención</option>
-                          <option value="Resuelta" {{ $anomalia->estado == 'Resuelta' ? 'selected' : '' }}>🟢 Resuelta</option>
-                        </select>
-                      </form>
+                      @if(Auth::user()->esSoloMantenimiento())
+                        <span class="estado-select
+                          @if($anomalia->estado === 'Pendiente') estado-Pendiente
+                          @elseif($anomalia->estado === 'En Atención') estado-EnAtencion
+                          @else estado-Resuelta
+                          @endif">
+                          @if($anomalia->estado === 'Pendiente') 🟡 Pendiente
+                          @elseif($anomalia->estado === 'En Atención') 🔵 En Atención
+                          @else 🟢 Resuelta
+                          @endif
+                        </span>
+                      @else
+                        <form action="{{ route('anomalias.update_estado', $anomalia->id) }}" method="POST">
+                          @csrf
+                          @method('PATCH')
+                          <select name="estado" onchange="this.form.submit()"
+                            class="estado-select
+                              @if($anomalia->estado === 'Pendiente') estado-Pendiente
+                              @elseif($anomalia->estado === 'En Atención') estado-EnAtencion
+                              @else estado-Resuelta
+                              @endif">
+                            <option value="Pendiente" {{ $anomalia->estado == 'Pendiente' ? 'selected' : '' }}>🟡 Pendiente</option>
+                            <option value="En Atención" {{ $anomalia->estado == 'En Atención' ? 'selected' : '' }}>🔵 En Atención</option>
+                            <option value="Resuelta" {{ $anomalia->estado == 'Resuelta' ? 'selected' : '' }}>🟢 Resuelta</option>
+                          </select>
+                        </form>
+                      @endif
                     </td>
                     <td>
                       <button type="button" class="btn btn-sm btn-info btn-fw mr-1" data-toggle="modal" data-target="#verAnomalia{{ $anomalia->id }}">
                         <i class="fas fa-eye mr-1"></i> Ver
                       </button>
-                      <form action="{{ route('anomalias.destroy', $anomalia->id) }}" method="POST" class="d-inline"
-                            onsubmit="return confirm('¿Eliminar esta anomalía?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger btn-fw" title="Eliminar">
-                          <i class="fas fa-trash mr-1"></i> Eliminar
-                        </button>
-                      </form>
+                      @if(!Auth::user()->esSoloMantenimiento())
+                        <form action="{{ route('anomalias.destroy', $anomalia->id) }}" method="POST" class="d-inline"
+                              onsubmit="return confirm('¿Eliminar esta anomalía?');">
+                          @csrf
+                          @method('DELETE')
+                          <button type="submit" class="btn btn-sm btn-danger btn-fw" title="Eliminar">
+                            <i class="fas fa-trash mr-1"></i> Eliminar
+                          </button>
+                        </form>
+                      @endif
                     </td>
                   </tr>
 
