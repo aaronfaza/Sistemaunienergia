@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Requerimiento;
 use App\Models\DetalleRequerimiento;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -104,6 +105,20 @@ class DashboardWelcomeController extends Controller
         // Notificaciones del dropdown (últimos 5)
         $notificaciones = Requerimiento::latest('created_at')->take(5)->get();
 
+        // ===== Usuarios: activos, últimas conexiones y cumpleaños =====
+        $usuariosActivos = User::where('last_login_at', '>=', Carbon::now()->subDays(30))->count();
+
+        $ultimasConexiones = User::whereNotNull('last_login_at')
+            ->orderByDesc('last_login_at')
+            ->limit(8)
+            ->get(['id', 'name', 'cargo', 'last_login_at']);
+
+        $cumpleañosMes = User::whereNotNull('fecha_nacimiento')
+            ->whereMonth('fecha_nacimiento', $hoy->month)
+            ->get(['id', 'name', 'cargo', 'fecha_nacimiento'])
+            ->sortBy(fn ($u) => $u->fecha_nacimiento->day)
+            ->values();
+
         return view('bienvenida', compact(
             'kpi',
             'topArea',
@@ -111,7 +126,10 @@ class DashboardWelcomeController extends Controller
             'porArea',
             'porDia',
             'eventos',
-            'notificaciones'
+            'notificaciones',
+            'usuariosActivos',
+            'ultimasConexiones',
+            'cumpleañosMes'
         ));
     }
 }

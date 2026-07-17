@@ -77,6 +77,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'fecha_nacimiento' => 'date',
         'fecha_ingreso' => 'date',
+        'last_login_at' => 'datetime',
     ];
 
     /**
