@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Requerimiento;
-use App\Models\DetalleRequerimiento;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -23,19 +22,9 @@ class DashboardWelcomeController extends Controller
 
         $hoyCount = Requerimiento::whereDate('created_at', $hoy)->count();
 
-        // Promedio de ítems por requerimiento en el mes (seguro ante BD vacía)
-        $itemsPorReq = DetalleRequerimiento::join('requerimientos', 'requerimientos.id', '=', 'detalle_requerimientos.requerimiento_id')
-            ->whereBetween('requerimientos.created_at', [$inicioMes, $finMes])
-            ->groupBy('requerimientos.id')
-            ->select('requerimientos.id', DB::raw('COUNT(detalle_requerimientos.id) as cnt'))
-            ->pluck('cnt');
-
-        $promItems = $itemsPorReq->count() ? round($itemsPorReq->avg(), 1) : 0.0;
-
         $kpi = [
             'total_mes'  => $totalMes,
             'hoy'        => $hoyCount,
-            'prom_items' => $promItems,
         ];
 
         // Top área del mes
