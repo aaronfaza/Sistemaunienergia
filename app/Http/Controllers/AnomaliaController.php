@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Anomalia;
 use App\Traits\OptimizaFoto;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -71,6 +72,20 @@ class AnomaliaController extends Controller
         $anomalia->save();
 
         return back()->with('success', 'Estado actualizado correctamente.');
+    }
+
+    public function show(Anomalia $anomalia)
+    {
+        $pdf = Pdf::loadView('anomalias.pdf', compact('anomalia'));
+        return $pdf->stream("anomalia_{$anomalia->id}.pdf");
+    }
+
+    public function pdf(Anomalia $anomalia)
+    {
+        abort_if(Auth::user()->esSoloMantenimiento(), 403, 'No tienes permiso para descargar este reporte.');
+
+        $pdf = Pdf::loadView('anomalias.pdf', compact('anomalia'));
+        return $pdf->download('anomalia_' . $anomalia->id . '.pdf');
     }
 
     public function destroy(Anomalia $anomalia)
