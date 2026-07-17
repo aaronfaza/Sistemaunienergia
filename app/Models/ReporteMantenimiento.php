@@ -34,5 +34,11 @@ class ReporteMantenimiento extends Model
     protected $casts = [
         'herramientas' => 'array',
         'materiales' => 'array',
+        'firmado_supervisor_en' => 'datetime',
     ];
+
+    public function supervisorFirmante()
+    {
+        return $this->belongsTo(User::class, 'firmado_supervisor_id');
+    }
 }

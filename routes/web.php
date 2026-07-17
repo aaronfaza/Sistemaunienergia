@@ -9,6 +9,7 @@ use App\Http\Controllers\ControlCartaController;
 use App\Http\Controllers\CartaFisController;
 use App\Http\Controllers\LogisticaLoteController;
 use App\Http\Controllers\AnomaliaController;
+use App\Http\Controllers\FirmaSupervisorController;
 use App\Exports\LogisticaExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -34,6 +35,13 @@ Route::middleware(['auth', 'rol.restriccion'])->group(function () {
     Route::get('/reportes/{id}/pdf', [ReporteMantenimientoController::class, 'pdf'])
         ->name('reportes.pdf');
 
+    // Firma local del supervisor de mantenimiento
+    Route::post('/mi-firma', [FirmaSupervisorController::class, 'guardar'])
+        ->name('firma.guardar');
+
+    Route::patch('/reportes/{reporte}/firmar', [ReporteMantenimientoController::class, 'firmarSupervisor'])
+        ->name('reportes.firmar');
+
     // Anomalías (sub-módulo de Mantenimiento: reporte de anomalías en pozos)
     Route::resource('anomalias', AnomaliaController::class)
         ->only(['index', 'store', 'destroy'])
@@ -41,12 +49,12 @@ Route::middleware(['auth', 'rol.restriccion'])->group(function () {
 
     Route::patch('/anomalias/{anomalia}/estado', [AnomaliaController::class, 'updateEstado'])
         ->name('anomalias.update_estado');
+
     Route::get('/anomalias/{anomalia}', [AnomaliaController::class, 'show'])
         ->name('anomalias.show');
 
     Route::get('/anomalias/{anomalia}/pdf', [AnomaliaController::class, 'pdf'])
         ->name('anomalias.pdf');
-
 
     // Ruta para imprimir PDF de requerimientos
     Route::get('/requerimientos/{id}/pdf', [RequerimientoController::class, 'imprimir'])

@@ -298,6 +298,12 @@
               <strong class="text-dark d-block">{{ Auth::user()->name }}</strong>
               <p class="text-muted small mb-0">Usuario activo</p>
             </div>
+            @if(Auth::user()->esSupervisorMantenimiento())
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item d-flex align-items-center px-3 py-2" href="#" data-toggle="modal" data-target="#modalConfigurarFirma">
+                <i class="fas fa-signature mr-2"></i> <span>Configurar mi firma</span>
+              </a>
+            @endif
             <div class="dropdown-divider"></div>
             <a class="dropdown-item d-flex align-items-center px-3 py-2 text-danger" href="{{ route('logout') }}"
                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -506,6 +512,18 @@
                           </button>
                         </form>
                       @endif
+
+                      @if(Auth::user()->esSupervisorMantenimiento())
+                        @if($reporte->firmado_supervisor_id)
+                          <span class="badge badge-success" title="Firmado el {{ $reporte->firmado_supervisor_en->format('d/m/Y H:i') }}">
+                            <i class="fas fa-check-circle mr-1"></i> Firmado
+                          </span>
+                        @else
+                          <button type="button" class="btn btn-sm btn-primary btn-fw" data-toggle="modal" data-target="#modalFirmar{{ $reporte->id }}">
+                            <i class="fas fa-signature mr-1"></i> Firmar
+                          </button>
+                        @endif
+                      @endif
                     </td>
                   </tr>
                 @empty
@@ -534,6 +552,82 @@
 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
   @csrf
 </form>
+
+@if(Auth::user()->esSupervisorMantenimiento())
+<!-- ========== Modal Configurar Firma (Supervisor) ========== -->
+<div class="modal fade" id="modalConfigurarFirma" tabindex="-1" role="dialog" aria-labelledby="modalConfigurarFirmaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+    <form id="formConfigurarFirma" method="POST" action="{{ route('firma.guardar') }}" novalidate>
+      @csrf
+      <div class="modal-content shadow-sm border-0">
+        <div class="modal-header bg-white border-bottom">
+          <h5 class="modal-title font-weight-semibold" id="modalConfigurarFirmaLabel" style="color:#333;">
+            ✍️ Configurar mi firma
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          @if($errors->any())
+            <div class="alert alert-danger">
+              <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                  <li>{{ $error }}</li>
+                @endforeach
+              </ul>
+            </div>
+          @endif
+
+          @if(Auth::user()->firma_imagen)
+            <div class="mb-3">
+              <label class="font-weight-bold d-block">Firma actual guardada:</label>
+              <img src="{{ asset('storage/'.Auth::user()->firma_imagen) }}" alt="Firma actual" style="max-height:80px;border:1px solid rgba(0,0,0,.1);border-radius:8px;padding:6px;background:#fff;">
+              <div class="text-muted small mt-1">Si dibujas y guardas de nuevo, esta firma se reemplaza.</div>
+            </div>
+          @endif
+
+          <div class="signature-card mb-3">
+            <div class="signature-head">
+              <div>
+                <p class="signature-title">Dibuja tu firma</p>
+                <p class="signature-hint">Con mouse o pantalla táctil.</p>
+              </div>
+            </div>
+            <div class="signature-wrap">
+              <canvas id="firmaCanvasSupervisor" class="signature-canvas"></canvas>
+            </div>
+            <input type="hidden" name="firma_data" id="firmaDataSupervisor">
+            <div class="signature-actions mt-2">
+              <button type="button" class="btn btn-outline-secondary btn-sm" id="firmaClearSupervisor">Limpiar</button>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="col-md-6 mb-3">
+              <label>Clave de firma (mínimo 4 caracteres)</label>
+              <input type="password" name="pin" class="form-control shadow-sm" minlength="4" required autocomplete="new-password">
+              <small class="text-muted">Se te pedirá cada vez que firmes un reporte. No es tu contraseña de acceso.</small>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label>Confirmar clave de firma</label>
+              <input type="password" name="pin_confirmation" class="form-control shadow-sm" minlength="4" required autocomplete="new-password">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-brand btn-fw">
+            <i class="fas fa-save mr-1"></i> Guardar firma
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+@endif
 
 <!-- ========== Modales Editar (con FOTO) ========== -->
 @foreach($reportes as $reporte)
@@ -715,6 +809,46 @@
     </form>
   </div>
 </div>
+
+@if(Auth::user()->esSupervisorMantenimiento() && !$reporte->firmado_supervisor_id)
+<!-- Modal Firmar (Supervisor) -->
+<div class="modal fade" id="modalFirmar{{ $reporte->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form method="POST" action="{{ route('reportes.firmar', $reporte->id) }}">
+      @csrf
+      @method('PATCH')
+      <div class="modal-content shadow-sm border-0">
+        <div class="modal-header bg-white border-bottom">
+          <h5 class="modal-title font-weight-semibold" style="color:#333;">
+            ✍️ Firmar Reporte de {{ $reporte->nombre }}
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          @if(empty(Auth::user()->firma_pin) || empty(Auth::user()->firma_imagen))
+            <div class="alert alert-warning mb-0">
+              Todavía no configuras tu firma. Ve a tu menú de usuario y elige <strong>"Configurar mi firma"</strong> antes de firmar reportes.
+            </div>
+          @else
+            <label>Ingresa tu clave de firma</label>
+            <input type="password" name="pin" class="form-control shadow-sm" required autocomplete="current-password" autofocus>
+          @endif
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+          @if(!empty(Auth::user()->firma_pin) && !empty(Auth::user()->firma_imagen))
+            <button type="submit" class="btn btn-brand btn-fw">
+              <i class="fas fa-signature mr-1"></i> Confirmar Firma
+            </button>
+          @endif
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+@endif
 @endforeach
 
 <!-- ========== Modal Agregar (con FOTO optimizada) ========== -->
@@ -1194,12 +1328,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // --- CONFIGURAR FIRMA (Supervisor) ---
+  function wireFirmaSupervisor() {
+    const pad = initPad("firmaCanvasSupervisor", "firmaDataSupervisor");
+    if (!pad) return;
+
+    document.getElementById("firmaClearSupervisor")?.addEventListener("click", () => {
+      pad.clear();
+      document.getElementById("firmaDataSupervisor").value = "";
+    });
+
+    const form = document.getElementById("formConfigurarFirma");
+    if (form && !form.dataset.wired) {
+      form.dataset.wired = "1";
+      form.addEventListener("submit", (e) => {
+        if (pad.isEmpty()) {
+          e.preventDefault();
+          alert("Dibuja tu firma antes de guardar.");
+          return;
+        }
+        document.getElementById("firmaDataSupervisor").value = pad.toDataURL("image/png");
+      });
+    }
+  }
+
   // IMPORTANTE: Inicializar cuando el modal YA está visible
   $('#modalAgregar').on('shown.bs.modal', function () {
     wireNewSignature();
     // Recalibrar al abrir (precisión)
     const pad = signaturePads.get("firmaCanvasNew");
     if (pad) resizeCanvasForSignaturePad(document.getElementById("firmaCanvasNew"), pad);
+  });
+
+  $('#modalConfigurarFirma').on('shown.bs.modal', function () {
+    wireFirmaSupervisor();
+    const pad = signaturePads.get("firmaCanvasSupervisor");
+    if (pad) resizeCanvasForSignaturePad(document.getElementById("firmaCanvasSupervisor"), pad);
   });
 
   // Para modales de editar (muchos)
