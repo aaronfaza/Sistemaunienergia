@@ -379,6 +379,7 @@ textarea:focus {
           </a>
         </li>
 
+        @if(Auth::user()->puedeVerMantenimiento())
         <li class="nav-item has-treeview {{ request()->routeIs('reportes.*') || request()->routeIs('anomalias.*') ? 'menu-open' : '' }}">
           <a href="#" class="nav-link {{ request()->routeIs('reportes.*') || request()->routeIs('anomalias.*') ? 'active' : '' }}">
             <i class="nav-icon fas fa-tools" style="color: var(--brand-accent);"></i>
@@ -402,7 +403,16 @@ textarea:focus {
             </li>
           </ul>
         </li>
-          @if(!Auth::user()->tieneAccesoLimitadoAMantenimiento())
+        @endif
+
+        <li class="nav-item">
+          <a href="{{ route('boletas.index') }}" class="nav-link {{ request()->routeIs('boletas.*') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-file-invoice-dollar" style="color: var(--brand-accent);"></i>
+            <p class="ml-2 mb-0">{{ Auth::user()->puedeGestionarBoletas() ? 'Gestionar Boletas' : 'Mis Boletas' }}</p>
+          </a>
+        </li>
+
+          @if(Auth::user()->tieneAccesoCompleto())
           <li class="nav-item">
             <a href="{{ route('requerimientos.index') }}" class="nav-link {{ request()->routeIs('requerimientos.*') ? 'active' : '' }}">
               <i class="nav-icon fas fa-file-alt" style="color: var(--brand-info);"></i>

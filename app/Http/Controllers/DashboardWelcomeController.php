@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Requerimiento;
 use App\Models\ReporteMantenimiento;
 use App\Models\Anomalia;
+use App\Models\Boleta;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -19,14 +20,18 @@ class DashboardWelcomeController extends Controller
         $inicioMes = Carbon::now()->startOfMonth();
         $finMes    = Carbon::now()->endOfMonth();
 
-        // El mecánico y el supervisor de mantenimiento solo trabajan con
-        // Mantenimiento/Anomalías; el resto (admin) ve Requerimientos, igual
-        // que antes. La "Bienvenida" se adapta al caso de uso de cada uno.
+        // Cada rol ve la "Bienvenida" adaptada a su propio caso de uso:
+        // mecánico/supervisor -> Mantenimiento y Anomalías; RRHH -> Boletas;
+        // el resto (admin) -> Requerimientos, igual que antes.
         $vistaMantenimiento = Auth::user()->tieneAccesoLimitadoAMantenimiento();
+        $vistaRRHH = Auth::user()->esRRHH();
 
         if ($vistaMantenimiento) {
             [$kpiCards, $actividad, $porArea, $porDia, $eventos, $notificaciones] =
                 $this->datosMantenimiento($hoy, $inicioMes, $finMes);
+        } elseif ($vistaRRHH) {
+            [$kpiCards, $actividad, $porArea, $porDia, $eventos, $notificaciones] =
+                $this->datosRRHH($hoy, $inicioMes, $finMes);
         } else {
             [$kpiCards, $actividad, $porArea, $porDia, $eventos, $notificaciones] =
                 $this->datosRequerimientos($hoy, $inicioMes, $finMes);
@@ -64,7 +69,8 @@ class DashboardWelcomeController extends Controller
             'usuariosActivos',
             'ultimasConexiones',
             'cumpleañosMes',
-            'vistaMantenimiento'
+            'vistaMantenimiento',
+            'vistaRRHH'
         ));
     }
 
@@ -206,6 +212,54 @@ class DashboardWelcomeController extends Controller
             ]);
 
         $notificaciones = Anomalia::latest('created_at')->take(5)->get();
+
+        return [$kpiCards, $actividad, $porArea, $porDia, $eventos, $notificaciones];
+    }
+
+    /**
+     * Datos para RRHH: su único caso de uso es Boletas de pago.
+     */
+    private function datosRRHH($hoy, $inicioMes, $finMes): array
+    {
+        $totalBoletasMes = Boleta::whereBetween('created_at', [$inicioMes, $finMes])->count();
+        $totalTrabajadores = User::count();
+        $conBoletaEsteMes = Boleta::whereBetween('created_at', [$inicioMes, $finMes])
+            ->distinct('user_id')
+            ->count('user_id');
+        $sinBoletaEsteMes = max($totalTrabajadores - $conBoletaEsteMes, 0);
+
+        $kpiCards = [
+            ['icono' => 'fa-file-invoice-dollar', 'color' => 'is-primary', 'valor' => $totalBoletasMes, 'label' => 'Boletas subidas (mes)'],
+            ['icono' => 'fa-users', 'color' => 'is-info', 'valor' => $totalTrabajadores, 'label' => 'Trabajadores registrados'],
+            ['icono' => 'fa-exclamation-triangle', 'color' => 'is-danger', 'valor' => $sinBoletaEsteMes, 'label' => 'Sin boleta este mes'],
+        ];
+
+        $nombresUsuarios = $this->mapaFotosPorNombre();
+
+        $actividad = Boleta::with('trabajador')
+            ->latest('created_at')->limit(8)->get()
+            ->map(fn ($b) => $this->itemFeed(
+                'fa-file-invoice-dollar',
+                'primary',
+                $b->subido_por ?? 'RRHH',
+                $nombresUsuarios[$b->subido_por] ?? null,
+                'subió la boleta de ' . ($b->trabajador->name ?? 'un trabajador'),
+                'Periodo: ' . $b->periodo,
+                $b->created_at,
+                asset('storage/' . $b->archivo)
+            ));
+
+        $porArea = Boleta::whereBetween('created_at', [$inicioMes, $finMes])
+            ->select('periodo as area', DB::raw('COUNT(*) as total'))
+            ->groupBy('area')
+            ->orderByDesc('total')
+            ->get();
+
+        $porDia = $this->serieDiaria(Boleta::class);
+
+        $eventos = collect();
+
+        $notificaciones = Boleta::latest('created_at')->take(5)->get();
 
         return [$kpiCards, $actividad, $porArea, $porDia, $eventos, $notificaciones];
     }

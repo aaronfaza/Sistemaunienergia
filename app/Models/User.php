@@ -58,6 +58,42 @@ class User extends Authenticatable
     }
 
     /**
+     * ¿Es el coordinador de Recursos Humanos? Su único caso de uso es
+     * gestionar Boletas (subir la boleta de pago de cada trabajador).
+     */
+    public function esRRHH(): bool
+    {
+        return $this->rol === 'rrhh';
+    }
+
+    /**
+     * ¿Puede ver el módulo de Mantenimiento (Reportes + Anomalías) en el menú?
+     * Admin, mecánico y supervisor sí; RRHH no (no es su caso de uso).
+     */
+    public function puedeVerMantenimiento(): bool
+    {
+        return in_array($this->rol, ['admin', 'mecanico', 'supervisor'], true);
+    }
+
+    /**
+     * ¿Tiene acceso completo a todos los módulos (Requerimientos, Control
+     * Cartas, Logística, etc.)? Solo el rol "admin".
+     */
+    public function tieneAccesoCompleto(): bool
+    {
+        return $this->rol === 'admin';
+    }
+
+    /**
+     * ¿Puede gestionar boletas de todos los trabajadores (subir/eliminar)?
+     * RRHH y admin. El resto solo ve las suyas.
+     */
+    public function puedeGestionarBoletas(): bool
+    {
+        return $this->esRRHH() || $this->tieneAccesoCompleto();
+    }
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>

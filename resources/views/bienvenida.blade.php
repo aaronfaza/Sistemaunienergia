@@ -292,7 +292,7 @@
             @forelse(($notificaciones ?? collect()) as $notificacion)
               <div class="dropdown-item">
                 <div class="d-flex flex-column">
-                  <span class="font-weight-bold text-primary">{{ $notificacion->titulo ?? ('Requerimiento '.$notificacion->codigo) }}</span>
+                  <span class="font-weight-bold text-primary">{{ $notificacion->titulo ?? $notificacion->codigo ?? $notificacion->pozo ?? $notificacion->periodo ?? 'Nuevo registro' }}</span>
                   <small class="text-muted">{{ \Carbon\Carbon::parse($notificacion->created_at)->format('d/m/Y H:i') }}</small>
                 </div>
               </div>
@@ -358,6 +358,7 @@
           </a>
         </li>
 
+        @if(Auth::user()->puedeVerMantenimiento())
         <li class="nav-item has-treeview {{ request()->routeIs('reportes.*') || request()->routeIs('anomalias.*') ? 'menu-open' : '' }}">
           <a href="#" class="nav-link {{ request()->routeIs('reportes.*') || request()->routeIs('anomalias.*') ? 'active' : '' }}">
             <i class="nav-icon fas fa-tools" style="color: var(--brand-accent);"></i>
@@ -381,7 +382,16 @@
             </li>
           </ul>
         </li>
-          @if(!Auth::user()->tieneAccesoLimitadoAMantenimiento())
+        @endif
+
+        <li class="nav-item">
+          <a href="{{ route('boletas.index') }}" class="nav-link {{ request()->routeIs('boletas.*') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-file-invoice-dollar" style="color: var(--brand-accent);"></i>
+            <p class="ml-2 mb-0">{{ Auth::user()->puedeGestionarBoletas() ? 'Gestionar Boletas' : 'Mis Boletas' }}</p>
+          </a>
+        </li>
+
+          @if(Auth::user()->tieneAccesoCompleto())
           <li class="nav-item">
             <a href="{{ route('requerimientos.index') }}" class="nav-link {{ request()->routeIs('requerimientos.*') ? 'active' : '' }}">
               <i class="nav-icon fas fa-file-alt" style="color: var(--brand-info);"></i>
@@ -510,7 +520,7 @@
         <div class="col-lg-6">
           <div class="card card-clean">
             <div class="card-header bg-white">
-              <i class="fas fa-chart-bar mr-1"></i>{{ $vistaMantenimiento ? 'Mantenimiento por tipo de equipo (mes)' : 'Requerimientos por área (mes)' }}
+              <i class="fas fa-chart-bar mr-1"></i>{{ $vistaMantenimiento ? 'Mantenimiento por tipo de equipo (mes)' : ($vistaRRHH ? 'Boletas por periodo (mes)' : 'Requerimientos por área (mes)') }}
             </div>
             <div class="card-body">
               <canvas id="chartAreas"></canvas>
@@ -644,7 +654,7 @@
   const porArea = @json($porArea);
   const porDia  = @json($porDia);
   const eventos = @json($eventos);
-  const etiquetaSerie = @json($vistaMantenimiento ? 'Mantenimiento' : 'Requerimientos');
+  const etiquetaSerie = @json($vistaMantenimiento ? 'Mantenimiento' : ($vistaRRHH ? 'Boletas' : 'Requerimientos'));
 
   // Chart: Barras por área / tipo de equipo
   (function(){

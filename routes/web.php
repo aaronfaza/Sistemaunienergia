@@ -11,6 +11,7 @@ use App\Http\Controllers\LogisticaLoteController;
 use App\Http\Controllers\AnomaliaController;
 use App\Http\Controllers\FirmaSupervisorController;
 use App\Http\Controllers\PerfilController;
+use App\Http\Controllers\BoletaController;
 use App\Exports\LogisticaExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -46,6 +47,11 @@ Route::middleware(['auth', 'rol.restriccion'])->group(function () {
 
     Route::post('/mi-perfil', [PerfilController::class, 'update'])
         ->name('perfil.update');
+
+    // Boletas de pago (RRHH gestiona todas; cada usuario ve solo las suyas)
+    Route::resource('boletas', BoletaController::class)
+        ->only(['index', 'store', 'destroy'])
+        ->parameters(['boletas' => 'boleta']);
 
     Route::patch('/reportes/{reporte}/firmar', [ReporteMantenimientoController::class, 'firmarSupervisor'])
         ->name('reportes.firmar');
