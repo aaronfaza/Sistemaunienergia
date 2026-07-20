@@ -350,7 +350,7 @@
                     <td>{{ $anomalia->pozo }}</td>
                     <td>{{ $anomalia->tipo_equipo }}</td>
                     <td><span class="gravedad-badge gravedad-{{ $anomalia->gravedad }}">{{ $anomalia->gravedad }}</span></td>
-                    <td>{{ $anomalia->created_at->format('d/m/Y H:i') }}</td>
+                    <td>{{ $anomalia->fecha ? $anomalia->fecha->format('d/m/Y') : $anomalia->created_at->format('d/m/Y') }}</td>
                     <td>
                       @if(Auth::user()->esSoloMantenimiento())
                         <span class="estado-select
@@ -448,6 +448,11 @@
 
           <div class="form-row">
             <div class="col-md-6 mb-3">
+              <label>Fecha de la anomalía</label>
+              <input type="date" name="fecha" class="form-control shadow-sm" value="{{ date('Y-m-d') }}" required>
+            </div>
+
+            <div class="col-md-6 mb-3">
               <label>Pozo / Ubicación</label>
               <input type="text" name="pozo" class="form-control shadow-sm" placeholder="Ej: Pozo 14 - Batería Norte" required>
             </div>
@@ -488,6 +493,11 @@
             <div class="col-md-12 mb-3">
               <label>Descripción de la anomalía</label>
               <textarea name="descripcion" class="form-control shadow-sm" rows="4" placeholder="Describe qué encontraste: ruido anormal, fuga, vibración, sobrecalentamiento, etc." required></textarea>
+            </div>
+
+            <div class="col-md-12 mb-3">
+              <label>Sugerencia / Acción recomendada</label>
+              <textarea name="sugerencia" class="form-control shadow-sm" rows="3" placeholder="Ej: Programar cambio de rodamientos, revisar alineación, etc. (opcional)"></textarea>
             </div>
 
             <!-- FOTO -->

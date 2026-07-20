@@ -121,7 +121,7 @@
     <table>
         <tr>
             <td><strong>Reportado por:</strong> {{ $anomalia->nombre }}</td>
-            <td><strong>Fecha del reporte:</strong> {{ $anomalia->created_at->format('d/m/Y H:i') }}</td>
+            <td><strong>Fecha de la anomalía:</strong> {{ $anomalia->fecha ? $anomalia->fecha->format('d/m/Y') : '—' }}</td>
             <td><strong>Estado:</strong> {{ $anomalia->estado }}</td>
         </tr>
         <tr>
@@ -153,6 +153,15 @@
         <tr>
             <td style="height: 60px; vertical-align: top;">
                 {{ $anomalia->descripcion }}
+            </td>
+        </tr>
+    </table>
+
+    <div class="section-title">Sugerencia / Acción recomendada</div>
+    <table>
+        <tr>
+            <td style="height: 40px; vertical-align: top;">
+                {{ $anomalia->sugerencia ?: 'Sin sugerencia registrada.' }}
             </td>
         </tr>
     </table>
