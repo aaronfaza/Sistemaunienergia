@@ -35,10 +35,12 @@ class AnomaliaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'fecha' => 'required|date',
             'pozo' => 'required|string|max:255',
             'tipo_equipo' => 'required|string|max:255',
             'gravedad' => 'required|in:Baja,Media,Alta,Crítica',
             'descripcion' => 'required|string',
+            'sugerencia' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:15360',
         ]);
 
@@ -49,10 +51,12 @@ class AnomaliaController extends Controller
 
         Anomalia::create([
             'nombre' => Auth::user()->name,
+            'fecha' => $request->fecha,
             'pozo' => $request->pozo,
             'tipo_equipo' => $request->tipo_equipo,
             'gravedad' => $request->gravedad,
             'descripcion' => $request->descripcion,
+            'sugerencia' => $request->sugerencia,
             'foto' => $fotoPath,
             'estado' => 'Pendiente',
         ]);

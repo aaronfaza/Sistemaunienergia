@@ -11,11 +11,17 @@ class Anomalia extends Model
 
     protected $fillable = [
         'nombre',
+        'fecha',
         'pozo',
         'tipo_equipo',
         'gravedad',
         'descripcion',
+        'sugerencia',
         'foto',
         'estado',
+    ];
+
+    protected $casts = [
+        'fecha' => 'date',
     ];
 }
