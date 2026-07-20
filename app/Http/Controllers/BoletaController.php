@@ -21,10 +21,20 @@ class BoletaController extends Controller
                 $query->where('user_id', $request->trabajador);
             }
 
+            if ($request->filled('tipo')) {
+                $query->where('tipo', $request->tipo);
+            }
+
             $boletas = $query->get();
             $trabajadores = User::orderBy('name')->get(['id', 'name', 'cargo']);
         } else {
-            $boletas = Boleta::where('user_id', Auth::id())->orderByDesc('id')->get();
+            $query = Boleta::where('user_id', Auth::id())->orderByDesc('id');
+
+            if ($request->filled('tipo')) {
+                $query->where('tipo', $request->tipo);
+            }
+
+            $boletas = $query->get();
             $trabajadores = collect();
         }
 
@@ -35,17 +45,37 @@ class BoletaController extends Controller
     {
         abort_if(!Auth::user()->puedeGestionarBoletas(), 403, 'No tienes permiso para subir boletas.');
 
-        $request->validate([
+        $tipo = $request->input('tipo');
+        $mesesPorTipo = [
+            'cts' => ['05', '11'],
+            'gratificacion' => ['07', '12'],
+        ];
+
+        $rules = [
             'user_id' => 'required|exists:users,id',
-            'periodo' => 'required|string|max:255',
+            'tipo' => 'required|in:mensual,cts,gratificacion',
             'archivo' => 'required|file|mimes:pdf,jpg,jpeg,png|max:15360',
-        ]);
+        ];
+
+        if ($tipo === 'mensual') {
+            $rules['periodo'] = 'required|date_format:Y-m';
+        } else {
+            $rules['anio'] = 'required|digits:4';
+            $rules['mes_fijo'] = 'required|in:'.implode(',', $mesesPorTipo[$tipo] ?? []);
+        }
+
+        $data = $request->validate($rules);
+
+        $periodo = $tipo === 'mensual'
+            ? $data['periodo']
+            : $data['anio'].'-'.$data['mes_fijo'];
 
         $ruta = $request->file('archivo')->store('boletas', 'public');
 
         Boleta::create([
-            'user_id' => $request->user_id,
-            'periodo' => $request->periodo,
+            'user_id' => $data['user_id'],
+            'tipo' => $tipo,
+            'periodo' => $periodo,
             'archivo' => $ruta,
             'subido_por' => Auth::user()->name,
         ]);

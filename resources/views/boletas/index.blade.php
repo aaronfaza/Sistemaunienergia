@@ -313,6 +313,30 @@
                 @endforeach
               </select>
             </div>
+            <div class="form-group mr-2 mb-2">
+              <select name="tipo" class="form-control">
+                <option value="">Todos los tipos</option>
+                @foreach(\App\Models\Boleta::TIPOS as $valor => $etiqueta)
+                  <option value="{{ $valor }}" {{ request('tipo') == $valor ? 'selected' : '' }}>{{ $etiqueta }}</option>
+                @endforeach
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-fw mb-2">
+              <i class="fas fa-search mr-1"></i> Filtrar
+            </button>
+          </form>
+        </div>
+      @else
+        <div class="filters-row mb-3">
+          <form action="{{ route('boletas.index') }}" method="GET" class="form-inline">
+            <div class="form-group mr-2 mb-2">
+              <select name="tipo" class="form-control">
+                <option value="">Todos los tipos</option>
+                @foreach(\App\Models\Boleta::TIPOS as $valor => $etiqueta)
+                  <option value="{{ $valor }}" {{ request('tipo') == $valor ? 'selected' : '' }}>{{ $etiqueta }}</option>
+                @endforeach
+              </select>
+            </div>
             <button type="submit" class="btn btn-primary btn-fw mb-2">
               <i class="fas fa-search mr-1"></i> Filtrar
             </button>
@@ -335,6 +359,7 @@
                   @if($puedeGestionar)
                     <th>Trabajador</th>
                   @endif
+                  <th>Tipo</th>
                   <th>Periodo</th>
                   <th>Subida por</th>
                   <th>Fecha de subida</th>
@@ -347,7 +372,17 @@
                     @if($puedeGestionar)
                       <td>{{ $boleta->trabajador->name ?? '—' }}</td>
                     @endif
-                    <td>{{ $boleta->periodo }}</td>
+                    <td>
+                      @php
+                        $badgeClase = [
+                          'mensual' => 'badge-info',
+                          'cts' => 'badge-success',
+                          'gratificacion' => 'badge-warning',
+                        ][$boleta->tipo] ?? 'badge-secondary';
+                      @endphp
+                      <span class="badge {{ $badgeClase }}">{{ $boleta->tipo_label }}</span>
+                    </td>
+                    <td>{{ $boleta->periodo_formateado }}</td>
                     <td>{{ $boleta->subido_por ?? '—' }}</td>
                     <td>{{ $boleta->created_at->format('d/m/Y H:i') }}</td>
                     <td>
@@ -371,7 +406,7 @@
                   </tr>
                 @empty
                   <tr>
-                    <td colspan="{{ $puedeGestionar ? 5 : 4 }}" class="text-center text-muted py-4">
+                    <td colspan="{{ $puedeGestionar ? 6 : 5 }}" class="text-center text-muted py-4">
                       {{ $puedeGestionar ? 'No hay boletas registradas todavía.' : 'Todavía no tienes boletas de pago registradas.' }}
                     </td>
                   </tr>
@@ -420,8 +455,29 @@
           </div>
 
           <div class="mb-3">
+            <label>Tipo de boleta</label>
+            <select name="tipo" id="tipoBoleta" class="form-control shadow-sm" required>
+              <option value="mensual">Mensual</option>
+              <option value="cts">CTS</option>
+              <option value="gratificacion">Gratificación</option>
+            </select>
+          </div>
+
+          <div class="mb-3" id="grupoPeriodoMensual">
             <label>Periodo (mes de la boleta)</label>
-            <input type="month" name="periodo" class="form-control shadow-sm" value="{{ date('Y-m') }}" required>
+            <input type="month" name="periodo" class="form-control shadow-sm" value="{{ date('Y-m') }}">
+          </div>
+
+          <div class="mb-3 d-none" id="grupoPeriodoFijo">
+            <label id="labelPeriodoFijo">Periodo</label>
+            <div class="form-row">
+              <div class="col-6">
+                <select name="mes_fijo" id="mesFijo" class="form-control shadow-sm"></select>
+              </div>
+              <div class="col-6">
+                <select name="anio" id="anioFijo" class="form-control shadow-sm"></select>
+              </div>
+            </div>
           </div>
 
           <div class="mb-3">
@@ -448,6 +504,62 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+
+@if($puedeGestionar)
+<script>
+  $(function () {
+    var mesesPorTipo = {
+      cts: [['05', 'Mayo'], ['11', 'Noviembre']],
+      gratificacion: [['07', 'Julio'], ['12', 'Diciembre']]
+    };
+
+    var $tipo = $('#tipoBoleta');
+    var $grupoMensual = $('#grupoPeriodoMensual');
+    var $grupoFijo = $('#grupoPeriodoFijo');
+    var $periodoMensual = $grupoMensual.find('input[name="periodo"]');
+    var $mesFijo = $('#mesFijo');
+    var $anioFijo = $('#anioFijo');
+
+    function poblarAnios() {
+      var actual = new Date().getFullYear();
+      $anioFijo.empty();
+      for (var a = actual + 1; a >= actual - 3; a--) {
+        $anioFijo.append($('<option>').val(a).text(a));
+      }
+      $anioFijo.val(actual);
+    }
+
+    function actualizarFormulario() {
+      var tipo = $tipo.val();
+
+      if (tipo === 'mensual') {
+        $grupoMensual.removeClass('d-none');
+        $grupoFijo.addClass('d-none');
+        $periodoMensual.prop('required', true);
+        $mesFijo.prop('required', false);
+        $anioFijo.prop('required', false);
+        return;
+      }
+
+      $grupoMensual.addClass('d-none');
+      $grupoFijo.removeClass('d-none');
+      $periodoMensual.prop('required', false);
+      $mesFijo.prop('required', true);
+      $anioFijo.prop('required', true);
+
+      $mesFijo.empty();
+      (mesesPorTipo[tipo] || []).forEach(function (par) {
+        $mesFijo.append($('<option>').val(par[0]).text(par[1]));
+      });
+
+      poblarAnios();
+    }
+
+    $tipo.on('change', actualizarFormulario);
+    actualizarFormulario();
+  });
+</script>
+@endif
 
 <script>
   $(function () {
