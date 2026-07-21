@@ -13,6 +13,9 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
 
+  <!-- Fuente para títulos -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+
   <!-- FullCalendar (CSS correcto v6) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css">
 
@@ -20,181 +23,236 @@
   <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css"> -->
 
   <style>
+    /* ===== Paleta corporativa (ajusta aquí) ===== */
     :root{
-      /* Paleta corporativa sobria — sin gradientes, sin tonos oscuros de fondo */
-      --brand-primary:#1F3A5F;
-      --brand-primary-dark:#16283F;
-      --brand-accent:#2F6F4E;
-      --brand-info:#0E7490;
-      --brand-danger:#B91C1C;
-      --brand-warning:#B45309;
-      --text-on-brand:#ffffff;
-      --header-h:52px;
-      --footer-h:40px;
+      --brand-primary: #003366;   /* azul corporativo */
+      --brand-primary-dark: #002B5C;
+      --brand-accent: #00A86B;    /* verde acento */
+      --brand-accent-dark: #038b5a;
+      --brand-info: #17a2b8;      /* info */
+      --brand-danger: #dc3545;    /* danger */
+      --sidebar-bg: #121212;      /* fondo cabecera sidebar */
+      --sidebar-main: #1F1F1F;    /* fondo cuerpo sidebar */
+      --text-on-brand: #ffffff;
 
-      --page-bg:#F3F4F6;
-      --surface:#ffffff;
-      --border:#D9DCE1;
-      --border-strong:#C4C9D2;
-      --text-primary:#1F2937;
-      --text-secondary:#6B7280;
-
-      --sidebar-bg:#ffffff;
-      --sidebar-border:#D9DCE1;
-      --sidebar-text:#3F4A5A;
-      --sidebar-text-active:var(--brand-primary);
+      /* Alturas para layout sticky */
+      --header-h: 56px;  /* ajusta si tu navbar es más alto */
+      --footer-h: 44px;  /* pon 0 si no quieres footer fijo */
     }
 
-    * { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
-
-    html, body{ height:100%; overflow:hidden; }
-    .wrapper{ height:100vh; overflow:hidden; }
-
-    .navbar-uni{ background:var(--brand-primary); border-bottom:1px solid var(--brand-primary-dark); }
-    .navbar-uni .nav-link, .navbar-uni .navbar-brand{ color:var(--text-on-brand); }
-    .main-header{ position:sticky; top:0; z-index:1035; height:var(--header-h); }
-
-    /* ===== Sidebar claro, sobrio ===== */
-    .main-sidebar{
-      background:var(--sidebar-bg) !important;
-      border-right:1px solid var(--sidebar-border);
-      display:flex;
-      flex-direction:column;
+    /* ========== LAYOUT: navbar/sidebar fijos y scroll SOLO en el contenido ========== */
+    html, body{
+      height: 100%;
+      overflow: hidden; /* bloquea scroll global */
     }
-    .brand-area{ background:var(--sidebar-bg); border-bottom:1px solid var(--sidebar-border); }
-    .brand-area .brand-text{ color:var(--brand-primary); font-weight:600; letter-spacing:.2px; }
-    .sidebar{ flex:1 1 auto; display:flex; flex-direction:column; min-height:0; padding-bottom:0!important; }
-    .sidebar-scroll{ flex:1 1 auto; overflow-y:auto; }
+    .wrapper{ height: 100vh; overflow: hidden; }
 
-    .nav-sidebar .nav-link{
-      color:var(--sidebar-text) !important;
-      border-radius:2px;
-      margin:1px 8px;
-      font-weight:500;
-      font-size:.88rem;
-    }
-    .nav-sidebar .nav-link.active{
-      background:#EAEEF3 !important;
-      color:var(--sidebar-text-active) !important;
-      font-weight:600;
-      box-shadow:inset 3px 0 0 var(--brand-primary);
-    }
-    .nav-sidebar .nav-link:hover{ background:#F3F4F6 !important; color:var(--sidebar-text-active) !important; }
-    .nav-sidebar .nav-treeview .nav-link{ margin-left:16px; }
-    .nav-sidebar .nav-link p, .nav-sidebar .nav-link .right{ color:inherit; }
+    /* Navbar */
+    .navbar-uni { background-color: var(--brand-primary); box-shadow: 0 2px 4px rgba(0,0,0,.2); }
+    .navbar-uni .nav-link, .navbar-uni .navbar-brand { color: var(--text-on-brand); }
+    .navbar-uni .nav-link:hover { opacity: .9; }
+    .main-header{ position: sticky; top: 0; z-index: 1035; height: var(--header-h); }
 
-    /* ===== Pie del sidebar: usuario + Cerrar sesión ===== */
-    .sidebar-user-footer{
-      flex-shrink:0;
-      border-top:1px solid var(--sidebar-border);
-      background:#FAFAFB;
-      padding:12px 14px;
+    /* Sidebar */
+    .main-sidebar { background-color: var(--sidebar-main) !important; }
+    .brand-area { background-color: var(--sidebar-bg); }
+    .brand-area .brand-text { color: var(--text-on-brand); }
+    .nav-sidebar .nav-link { color: #eaeaea !important; border-radius: .35rem; margin: 0 .25rem; }
+    .nav-sidebar .nav-link.active {
+      background: linear-gradient(90deg, var(--brand-primary) 0%, var(--brand-primary-dark) 100%);
+      color: #fff !important;
     }
-    .sidebar-user-footer .avatar{
-      width:34px; height:34px; border-radius:2px; object-fit:cover; flex-shrink:0;
-    }
-    .sidebar-user-footer .nombre{ font-size:.83rem; font-weight:600; color:var(--text-primary); line-height:1.2; }
-    .sidebar-user-footer .cargo{ font-size:.72rem; color:var(--text-secondary); line-height:1.2; }
-    .sidebar-logout-btn{
-      display:flex; align-items:center; justify-content:center; gap:.4rem;
-      width:100%; margin-top:8px; padding:.4rem; border-radius:2px;
-      background:var(--surface); color:var(--brand-danger); font-weight:600; font-size:.8rem;
-      border:1px solid var(--border); text-decoration:none;
-    }
-    .sidebar-logout-btn:hover{ background:#FEF2F2; border-color:#F3C6C6; color:var(--brand-danger); text-decoration:none; }
+    .nav-sidebar .nav-link:hover { background-color: rgba(255,255,255,.08) !important; color: #fff !important; }
+    .nav-icon.text-info { color: var(--brand-info) !important; }
+    .nav-icon.text-success { color: var(--brand-accent) !important; }
 
+    /* Contenido: ÚNICO que scrollea */
     .content-wrapper{
-      background-color:var(--page-bg);
-      height:calc(100vh - var(--header-h) - var(--footer-h));
-      overflow:auto;
-      -webkit-overflow-scrolling:touch;
+      background-color:#f8f9fa;
+      height: calc(100vh - var(--header-h) - var(--footer-h));
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
     }
-    .main-footer{ position:sticky; bottom:0; z-index:1020; background:var(--surface); border-top:1px solid var(--border); font-size:.8rem; color:var(--text-secondary); }
 
-    @media (min-width:992px){ :root{ --header-h:56px; } }
+    /* Footer fijo abajo (quítalo si no lo quieres fijo) */
+    .main-footer{
+      position: sticky; bottom: 0; z-index: 1020; background:#fff;
+    }
 
-    .card-clean{ border-radius:4px; border:1px solid var(--border); box-shadow:none; }
-    .card-clean .card-header{ background:var(--surface); font-weight:600; letter-spacing:.1px; border-bottom:1px solid var(--border); }
+    @media (min-width: 992px){
+      :root{ --header-h: 64px; } /* header un poco más alto en desktop */
+    }
 
-    .btn{ border-radius:3px!important; font-weight:600; font-size:.85rem; box-shadow:none!important; transition:background-color .12s ease; }
-    .btn-brand{ background:var(--brand-primary); border:1px solid var(--brand-primary-dark); color:#fff!important; }
-    .btn-brand:hover{ background:var(--brand-primary-dark); color:#fff; }
-    .btn-primary{ background:var(--brand-primary); border:1px solid var(--brand-primary-dark); }
-    .btn-primary:hover{ background:var(--brand-primary-dark); }
-    .btn-info{ background:var(--surface); border:1px solid var(--brand-info); color:var(--brand-info); }
-    .btn-info:hover{ background:#ECFAFB; color:var(--brand-info); }
-    .btn-warning{ background:var(--surface); border:1px solid #F5D08A; color:var(--brand-warning); }
-    .btn-warning:hover{ background:#FFFBEB; color:var(--brand-warning); }
-    .btn-danger{ background:var(--surface); border:1px solid #F3C6C6; color:var(--brand-danger); }
-    .btn-danger:hover{ background:#FEF2F2; color:var(--brand-danger); }
-    .btn-outline-secondary{ border-radius:3px!important; }
-    .btn-fw{ font-weight:600; }
+    /* Tipografía de títulos */
+    .heading-font { font-family: 'Montserrat', sans-serif; }
 
-    /* ===== KPI cards — planas, con borde, sin sombra ===== */
+    /* Cards limpias */
+    .card-clean { border: 1px solid rgba(0,0,0,.06); box-shadow: 0 2px 10px rgba(0,0,0,.04); }
+
+    /* ===== KPI Cards ===== */
     .dashboard-safe-container{ padding-left:clamp(16px,4vw,36px); padding-right:clamp(16px,4vw,36px); }
     .stat-row{ margin-left:-8px; margin-right:-8px; }
     .stat-row > [class*="col-"]{ padding-left:8px; padding-right:8px; }
     @media (min-width: 992px){ .stat-row-lg-nowrap{ flex-wrap:nowrap!important; } }
+
     .stat-card{
-      display:flex; align-items:center; gap:12px;
-      padding:12px 14px; border-radius:4px; min-height:76px;
-      background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--border-strong);
+      display:flex; align-items:center; gap:14px;
+      padding:14px 16px; border-radius:14px; min-height:96px;
+      background:linear-gradient(180deg,#fff,#fbfcff);
+      border:1px solid #eef2f7; box-shadow:0 6px 16px rgba(20,30,58,0.1);
+      transition:transform .2s ease, box-shadow .2s ease;
     }
-    .stat-card.is-primary{ border-left-color:var(--brand-primary); }
-    .stat-card.is-info{ border-left-color:var(--brand-info); }
-    .stat-card.is-success{ border-left-color:var(--brand-accent); }
-    .stat-card.is-warning{ border-left-color:var(--brand-warning); }
-    .stat-card.is-danger{ border-left-color:var(--brand-danger); }
-    .stat-icon{ width:34px; height:34px; border-radius:3px; display:grid; place-items:center; flex-shrink:0; background:var(--page-bg); }
-    .stat-icon i{ font-size:16px; }
-    .is-primary .stat-icon{ color:var(--brand-primary); }
-    .is-info .stat-icon{ color:var(--brand-info); }
-    .is-success .stat-icon{ color:var(--brand-accent); }
-    .is-warning .stat-icon{ color:var(--brand-warning); }
-    .is-danger .stat-icon{ color:var(--brand-danger); }
-    .stat-meta{ display:flex; flex-direction:column; color:var(--text-primary); }
-    .stat-kpi span{ font-weight:700; font-size:clamp(18px,2.4vw,22px); line-height:1.1; }
-    .stat-label{ font-size:.78rem; color:var(--text-secondary); }
+    .stat-card:hover{ transform:translateY(-2px); box-shadow:0 12px 28px rgba(20,30,58,0.12); }
+    .stat-icon{ width:48px; height:48px; border-radius:12px; display:grid; place-items:center; background:#eef4ff; }
+    .stat-icon i{ font-size:20px; }
+    .is-primary .stat-icon{ background:rgba(13,110,253,.12); color:#0d6efd; }
+    .is-info .stat-icon{ background:rgba(43,183,246,.12); color:#2bb7f6; }
+    .is-success .stat-icon{ background:rgba(24,181,143,.12); color:#18b58f; }
+    .is-danger .stat-icon{ background:rgba(220,53,69,.12); color:#dc3545; }
+    .stat-meta{ display:flex; flex-direction:column; color:#25334a; }
+    .stat-kpi span{ font-weight:700; font-size:clamp(20px,3.5vw,28px); letter-spacing:-.5px; line-height:1; }
+    .stat-label{ font-size:.85rem; opacity:.8; }
 
-    table thead th{
-      background:#F3F4F6!important; border:1px solid var(--border)!important; font-size:.72rem;
-      text-transform:uppercase; letter-spacing:.05em; color:var(--text-secondary); padding:.55rem .7rem; white-space:nowrap;
-    }
-    table tbody tr{ background:var(--surface); }
-    table tbody tr:hover{ background:#F8FAFC; }
-    table tbody td{ border:1px solid var(--border)!important; vertical-align:middle; padding:.55rem .7rem; font-size:.86rem; color:var(--text-primary); }
-
-    .filters-row{ background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:.75rem 1rem; }
-
-    .modal-content{ border-radius:4px!important; box-shadow:0 2px 12px rgba(0,0,0,.15); }
-    .modal-header, .modal-footer{ border-color:var(--border); }
-
-    .form-control, .custom-select{ border-radius:3px; font-size:.86rem; border-color:var(--border-strong); }
-    .form-control:focus, .custom-select:focus{ border-color:var(--brand-primary); box-shadow:0 0 0 2px rgba(31,58,95,.12); }
-    label{ font-size:.82rem; font-weight:600; color:var(--text-primary); }
-
-    .empty-state{ padding:2rem 1rem; text-align:center; color:var(--text-secondary); }
-    .empty-state i{ font-size:1.8rem; color:var(--border-strong); display:block; margin-bottom:.5rem; }
-
-    .badge{ font-weight:600; padding:.3rem .5rem; border-radius:3px; font-size:.72rem; }
-
-    /* ===== Feed de actividad reciente (estilo tarjeta plana, sin sombras) ===== */
-    .feed-item{ padding-bottom:.85rem; border-bottom:1px solid var(--border); }
+    /* ===== Feed de actividad (estilo red social) ===== */
+    .feed-item{ padding-bottom:.85rem; border-bottom:1px solid rgba(0,0,0,.05); }
     .feed-item:last-child{ border-bottom:none; padding-bottom:0; }
-    .feed-avatar{ width:38px; height:38px; border-radius:3px; object-fit:cover; flex-shrink:0; }
+    .feed-avatar{ width:38px; height:38px; border-radius:50%; object-fit:cover; flex-shrink:0; }
     .feed-icon-badge{
-      width:38px; height:38px; border-radius:3px; flex-shrink:0;
+      width:38px; height:38px; border-radius:50%; flex-shrink:0;
       display:flex; align-items:center; justify-content:center; font-size:.9rem;
-      background:var(--page-bg);
     }
-    .feed-icon-primary{ color:var(--brand-primary); }
-    .feed-icon-info{ color:var(--brand-info); }
-    .feed-icon-success{ color:var(--brand-accent); }
-    .feed-icon-danger{ color:var(--brand-danger); }
+    .feed-icon-primary{ background:rgba(13,110,253,.12); color:#0d6efd; }
+    .feed-icon-info{ background:rgba(43,183,246,.12); color:#2bb7f6; }
+    .feed-icon-success{ background:rgba(24,181,143,.12); color:#18b58f; }
+    .feed-icon-danger{ background:rgba(220,53,69,.12); color:#dc3545; }
 
     /* ===== Avatares en Últimas conexiones / Cumpleaños ===== */
-    .social-avatar{ width:38px; height:38px; border-radius:3px; object-fit:cover; flex-shrink:0; }
+    .social-avatar{ width:38px; height:38px; border-radius:50%; object-fit:cover; flex-shrink:0; }
   </style>
+
+<style>
+/* ===========================
+   UX/UI MODERNO – UNIENERGIA
+   =========================== */
+
+/* ===== BOTONES CORPORATIVOS ===== */
+.btn-brand {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #fff !important;
+  border: none;
+  border-radius: 999px;
+  padding: 0.55rem 1.2rem;
+  font-weight: 600;
+  letter-spacing: .2px;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, .35);
+  transition: all .25s ease;
+}
+.btn-brand:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px rgba(37, 99, 235, .45);
+}
+
+/* ===== KPI CARDS – MÁS INNOVADOR ===== */
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+  border: 1px solid rgba(0,0,0,.04);
+}
+.stat-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(37,99,235,.12), transparent 60%);
+  opacity: .6;
+  pointer-events: none;
+}
+.stat-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12%;
+  bottom: 12%;
+  width: 4px;
+  border-radius: 6px;
+}
+.stat-card.is-primary::before { background: #2563eb; }
+.stat-card.is-info::before    { background: #0ea5e9; }
+.stat-card.is-success::before { background: #10b981; }
+
+/* ===== ICONOS KPI ===== */
+.stat-icon {
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  box-shadow: inset 0 0 0 1px rgba(37,99,235,.15);
+}
+.stat-icon i {
+  font-size: 1.15rem;
+}
+
+/* ===== CARDS GENERALES (ACTIVIDAD, GRÁFICOS) ===== */
+.card-clean {
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,.05);
+  box-shadow: 0 10px 26px rgba(15,23,42,.06);
+  overflow: hidden;
+}
+.card-clean .card-header {
+  background: linear-gradient(180deg, #ffffff, #f9fafb);
+  font-weight: 600;
+  border-bottom: 1px solid rgba(0,0,0,.05);
+}
+
+/* ===== LISTA ACTIVIDAD ===== */
+.card-clean ul li {
+  padding: .35rem 0;
+}
+.card-clean ul li i {
+  opacity: .85;
+}
+
+/* ===== SIDEBAR MÁS MODERNA ===== */
+.nav-sidebar .nav-link {
+  padding: .55rem .9rem;
+  font-size: .9rem;
+  transition: all .2s ease;
+}
+.nav-sidebar .nav-link.active {
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.12),
+              0 6px 18px rgba(0,0,0,.25);
+}
+.nav-sidebar .nav-link p {
+  margin-left: .6rem;
+}
+
+/* ===== DROPDOWNS MÁS ELEGANTES ===== */
+.dropdown-menu {
+  border-radius: 14px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.15);
+}
+
+/* ===== FOOTER ===== */
+.main-footer {
+  background: linear-gradient(90deg, #020617, #0f172a);
+  color: #cbd5f5;
+  border-top: none;
+}
+
+/* ===== SCROLL MÁS SUAVE ===== */
+.content-wrapper {
+  scroll-behavior: smooth;
+}
+.nav-treeview .nav-link {
+  font-size: .85rem;
+  opacity: .85;
+}
+
+.nav-treeview .nav-link.active {
+  background: linear-gradient(90deg, rgba(0,168,107,.18), transparent);
+  color: var(--brand-accent) !important;
+}
+
+</style>
 
 </head>
 
@@ -202,39 +260,39 @@
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
 <div class="wrapper">
 
-  <!-- Navbar -->
+ <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-uni">
     <div class="container-fluid d-flex justify-content-between align-items-center">
       <ul class="navbar-nav d-flex align-items-center">
         <li class="nav-item">
           <a class="nav-link" data-widget="pushmenu" href="#" role="button" aria-label="Abrir menú">
-            <i class="fas fa-bars"></i>
+            <i class="fas fa-bars fa-lg"></i>
           </a>
         </li>
         <li class="nav-item d-flex align-items-center ml-2">
-          <img src="{{ asset('img/logo.png.png') }}" alt="Logo" style="width:22px;height:22px;">
+          <img src="{{ asset('img/logo.png.png') }}" alt="Logo" style="width:25px;height:25px;">
         </li>
       </ul>
 
       <!-- Notificaciones + Perfil -->
       <ul class="navbar-nav ml-auto d-flex align-items-center">
         <!-- Notificaciones -->
-        <li class="nav-item dropdown mr-2">
+        <li class="nav-item dropdown mr-3">
           <a class="nav-link position-relative" href="#" id="notificacionesDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-bell text-white"></i>
+            <i class="fas fa-bell fa-lg text-white"></i>
             @if(isset($notificaciones) && $notificaciones->count() > 0)
-              <span id="notiBadge" class="badge badge-danger position-absolute" style="top:-2px;right:-6px;font-size:.6rem;">
+              <span id="notiBadge" class="badge badge-danger position-absolute" style="top:-4px;right:-8px;font-size:.65rem;">
                 {{ $notificaciones->count() }}
               </span>
             @endif
           </a>
-          <div class="dropdown-menu dropdown-menu-right shadow-sm border" aria-labelledby="notificacionesDropdown" style="min-width:300px;max-height:380px;overflow-y:auto;border-radius:4px;">
-            <h6 class="dropdown-header font-weight-bold text-dark">Últimos registros</h6>
+          <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" aria-labelledby="notificacionesDropdown" style="min-width:300px;max-height:400px;overflow-y:auto;">
+            <h6 class="dropdown-header font-weight-bold text-dark">🔔 Últimos registros</h6>
             <div class="dropdown-divider"></div>
             @forelse(($notificaciones ?? collect()) as $notificacion)
               <div class="dropdown-item">
                 <div class="d-flex flex-column">
-                  <span class="font-weight-bold" style="color:var(--brand-primary);">{{ $notificacion->titulo ?? $notificacion->codigo ?? $notificacion->pozo ?? $notificacion->periodo ?? 'Nuevo registro' }}</span>
+                  <span class="font-weight-bold text-primary">{{ $notificacion->titulo ?? $notificacion->codigo ?? $notificacion->pozo ?? $notificacion->periodo ?? 'Nuevo registro' }}</span>
                   <small class="text-muted">{{ \Carbon\Carbon::parse($notificacion->created_at)->format('d/m/Y H:i') }}</small>
                 </div>
               </div>
@@ -246,21 +304,22 @@
 
         <!-- Usuario -->
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle d-flex align-items-center px-2 py-1 text-white"
-             href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle d-flex align-items-center px-3 py-2 rounded-pill shadow-sm text-white"
+             href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-expanded="false"
+             style="background-color: var(--brand-primary-dark);">
             @if(Auth::user()->foto_perfil)
-              <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" style="width:28px;height:28px;border-radius:2px;object-fit:cover;">
+              <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="rounded-circle" width="32" height="32" style="object-fit:cover;">
             @else
-              <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=1F3A5F&color=fff&size=28" alt="Avatar" style="width:28px;height:28px;border-radius:2px;">
+              <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=32" alt="Avatar" class="rounded-circle" width="32" height="32">
             @endif
             <span class="d-none d-md-inline font-weight-semibold ml-2">{{ Auth::user()->name }}</span>
           </a>
-          <div class="dropdown-menu dropdown-menu-right shadow-sm border" style="border-radius:4px;min-width:230px;">
+          <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" style="border-radius:12px;min-width:240px;">
             <div class="dropdown-item text-center bg-light py-3">
               @if(Auth::user()->foto_perfil)
-                <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="mb-2" style="width:56px;height:56px;border-radius:3px;object-fit:cover;">
+                <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="rounded-circle mb-2" style="width:64px;height:64px;object-fit:cover;">
               @else
-                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=1F3A5F&color=fff&size=56" alt="Avatar" class="mb-2" style="border-radius:3px;">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=64" alt="Avatar" class="rounded-circle mb-2">
               @endif
               <strong class="text-dark d-block">{{ Auth::user()->name }}</strong>
               <p class="text-muted small mb-0">{{ Auth::user()->cargo ?? 'Cargo no asignado' }}</p>
@@ -281,20 +340,20 @@
   </nav>
 
 <!-- Sidebar -->
-  <aside class="main-sidebar">
-    <a href="#" class="brand-link text-center brand-area d-block py-3">
-      <img src="{{ asset('img/logo.png.png') }}" style="width:22px;height:22px;margin-right:8px;">
-      <span class="brand-text">UNIENERGIA ABC</span>
+  <aside class="main-sidebar elevation-4">
+    <a href="#" class="brand-link text-center brand-area">
+      <img src="{{ asset('img/logo.png.png') }}" style="width:25px;height:25px;margin-right:8px;">
+      <span class="brand-text font-weight-bold">UNIENERGIA ABC</span>
     </a>
     <div class="sidebar">
-      <nav class="mt-3 sidebar-scroll">
+      <nav class="mt-3">
         <ul class="nav nav-pills nav-sidebar flex-column"
     data-widget="treeview"
     data-accordion="true">
            <li class="nav-item">
-          <a href="{{ route('bienvenida') }}"
+          <a href="{{ route('bienvenida') }}" 
              class="nav-link {{ request()->routeIs('bienvenida') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-home"></i>
+            <i class="nav-icon fas fa-home" style="color: var(--brand-secondary);"></i>
             <p class="ml-2 mb-0">Bienvenida</p>
           </a>
         </li>
@@ -302,7 +361,7 @@
         @if(Auth::user()->puedeVerMantenimiento())
         <li class="nav-item has-treeview {{ request()->routeIs('reportes.*') || request()->routeIs('anomalias.*') ? 'menu-open' : '' }}">
           <a href="#" class="nav-link {{ request()->routeIs('reportes.*') || request()->routeIs('anomalias.*') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-tools"></i>
+            <i class="nav-icon fas fa-tools" style="color: var(--brand-accent);"></i>
             <p>
               Mantenimiento
               <i class="right fas fa-angle-left"></i>
@@ -311,13 +370,13 @@
           <ul class="nav nav-treeview ml-2">
             <li class="nav-item">
               <a href="{{ route('reportes.index') }}" class="nav-link {{ request()->routeIs('reportes.*') ? 'active' : '' }}">
-                <i class="fas fa-clipboard-list nav-icon"></i>
+                <i class="fas fa-clipboard-list nav-icon" style="color: var(--brand-accent);"></i>
                 <p>Reportes</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="{{ route('anomalias.index') }}" class="nav-link {{ request()->routeIs('anomalias.*') ? 'active' : '' }}">
-                <i class="fas fa-exclamation-triangle nav-icon"></i>
+                <i class="fas fa-exclamation-triangle nav-icon" style="color: var(--brand-danger);"></i>
                 <p>Anomalías</p>
               </a>
             </li>
@@ -327,7 +386,7 @@
 
         <li class="nav-item">
           <a href="{{ route('boletas.index') }}" class="nav-link {{ request()->routeIs('boletas.*') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-file-invoice-dollar"></i>
+            <i class="nav-icon fas fa-file-invoice-dollar" style="color: var(--brand-accent);"></i>
             <p class="ml-2 mb-0">{{ Auth::user()->puedeGestionarBoletas() ? 'Gestionar Boletas' : 'Mis Boletas' }}</p>
           </a>
         </li>
@@ -335,14 +394,14 @@
           @if(Auth::user()->tieneAccesoCompleto())
           <li class="nav-item">
             <a href="{{ route('requerimientos.index') }}" class="nav-link {{ request()->routeIs('requerimientos.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-file-alt"></i>
+              <i class="nav-icon fas fa-file-alt" style="color: var(--brand-info);"></i>
               <p class="ml-2 mb-0">Requerimientos</p>
             </a>
           </li>
 
         <li class="nav-item has-treeview">
           <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-folder-open"></i>
+            <i class="nav-icon fas fa-folder-open" style="color: var(--brand-info);"></i>
             <p>
               Control Cartas
               <i class="right fas fa-angle-left"></i>
@@ -353,14 +412,14 @@
             <li class="nav-item">
               <a href="{{ route('control_cartas.index') }}"
                 class="nav-link {{ request()->routeIs('control_cartas.*') ? 'active' : '' }}">
-                <i class="far fa-envelope nav-icon"></i>
+                <i class="far fa-envelope nav-icon" style="color: var(--brand-accent);"></i>
                 <p>SO-PRO</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="{{ route('cartas_fis.index') }}"
                 class="nav-link {{ request()->routeIs('cartas_fis.*') ? 'active' : '' }}">
-                <i class="far fa-clipboard nav-icon"></i>
+                <i class="far fa-clipboard nav-icon" style="color: var(--brand-info);"></i>
                 <p>FIS</p>
               </a>
             </li>
@@ -369,7 +428,7 @@
         <li class="nav-item">
           <a href="{{ route('logistica_lotes.index') }}"
             class="nav-link {{ request()->routeIs('logistica_lotes.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-boxes"></i>
+              <i class="nav-icon fas fa-boxes" style="color: var(--brand-primary-light);"></i>
               <p class="ms-2 mb-0">Logística Lote</p>
           </a>
       </li>
@@ -377,35 +436,19 @@
 
         </ul>
       </nav>
-
-      <!-- Pie del sidebar: usuario + Cerrar sesión -->
-      <div class="sidebar-user-footer">
-        <div class="d-flex align-items-center" style="gap:.6rem;">
-          @if(Auth::user()->foto_perfil)
-            <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="avatar">
-          @else
-            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=1F3A5F&color=fff&size=34" alt="Avatar" class="avatar">
-          @endif
-          <div class="text-truncate">
-            <div class="nombre text-truncate">{{ Auth::user()->name }}</div>
-            <div class="cargo text-truncate">{{ Auth::user()->cargo ?? 'Sin cargo asignado' }}</div>
-          </div>
-        </div>
-        <a href="{{ route('logout') }}" class="sidebar-logout-btn"
-           onclick="event.preventDefault(); document.getElementById('logout-form-sidebar').submit();">
-          <i class="fas fa-sign-out-alt"></i> Cerrar sesión
-        </a>
-      </div>
     </div>
   </aside>
 
+  
+
+
   <!-- Contenido principal (SCROLL AQUÍ) -->
   <div class="content-wrapper">
-    <div class="content-header py-3 border-bottom bg-white">
+    <div class="content-header py-3 border-bottom">
       <div class="container-fluid d-flex justify-content-between align-items-center">
         <div>
-          <h1 class="m-0" style="color:var(--text-primary);font-size:1.4rem;font-weight:700;">Bienvenido, {{ Auth::user()->name }}</h1>
-          <h5 class="mb-0" style="margin-top:2px;font-weight:400;font-size:.88rem;color:var(--text-secondary);">{{ Auth::user()->cargo ?? 'Cargo no asignado' }} · {{ now()->format('d/m/Y') }}</h5>
+          <h1 class="m-0 heading-font" style="color:#333;">Bienvenido, {{ Auth::user()->name }}</h1>
+          <h5 class="text-muted" style="margin-top:4px;">{{ Auth::user()->cargo ?? 'Cargo no asignado' }} • {{ now()->format('d/m/Y') }}</h5>
         </div>
         @if(Auth::user()->tieneAccesoCompleto())
         <div>
@@ -420,7 +463,7 @@
     <div class="container-fluid">
 
       @if($vistaPendiente)
-        <div class="alert alert-info" style="border-radius:4px;border-left:3px solid var(--brand-info);">
+        <div class="alert alert-info shadow-sm" style="border-left:4px solid var(--brand-info);">
           <i class="fas fa-info-circle mr-2"></i>
           Tu cuenta se creó correctamente, pero todavía no tiene un rol asignado. Un administrador debe asignarte
           un rol para que puedas acceder a los módulos que te correspondan. Mientras tanto, podés completar tu
@@ -592,9 +635,6 @@
 </div>
 
 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
-  @csrf
-</form>
-<form id="logout-form-sidebar" action="{{ route('logout') }}" method="POST" style="display:none;">
   @csrf
 </form>
 
