@@ -16,189 +16,104 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
 
+  <!-- Fuente títulos -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+
   <style>
-    /* ===== Paleta corporativa sobria — sin gradientes, sin tonos oscuros de fondo ===== */
+    /* ===== Paleta corporativa ===== */
     :root{
-      --brand-primary:#1F3A5F;
-      --brand-primary-dark:#16283F;
-      --brand-accent:#2F6F4E;
-      --brand-info:#0E7490;
-      --brand-danger:#B91C1C;
-      --brand-warning:#B45309;
-      --text-on-brand:#ffffff;
-      --header-h:52px;
-      --footer-h:40px;
+      --brand-primary: #003366;
+      --brand-primary-dark: #002B5C;
+      --brand-accent: #00A86B;
+      --brand-accent-dark: #038b5a;
+      --brand-info: #17a2b8;
+      --sidebar-bg: #121212;
+      --sidebar-main: #1F1F1F;
+      --text-on-brand: #ffffff;
 
-      --page-bg:#F3F4F6;
-      --surface:#ffffff;
-      --border:#D9DCE1;
-      --border-strong:#C4C9D2;
-      --text-primary:#1F2937;
-      --text-secondary:#6B7280;
-
-      --sidebar-bg:#ffffff;
-      --sidebar-border:#D9DCE1;
-      --sidebar-text:#3F4A5A;
-      --sidebar-text-active:var(--brand-primary);
+      /* Alturas para layout sticky */
+      --header-h: 56px;   /* ajusta si tu navbar es más alto */
+      --footer-h: 44px;   /* pon 0 si no quieres footer fijo */
     }
 
-    * { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
-
+    .heading-font { font-family:'Montserrat',sans-serif; }
     .no-resize { resize: none !important; }
     .tall-textarea { min-height: 70px; }
 
-    html, body{ height:100%; overflow:hidden; }
-    .wrapper{ height:100vh; overflow:hidden; }
-
-    .navbar-uni{ background:var(--brand-primary); border-bottom:1px solid var(--brand-primary-dark); }
-    .navbar-uni .nav-link, .navbar-uni .navbar-brand{ color:var(--text-on-brand); }
-    .main-header{ position:sticky; top:0; z-index:1035; height:var(--header-h); }
-
-    /* ===== Sidebar claro, sobrio ===== */
-    .main-sidebar{
-      background:var(--sidebar-bg) !important;
-      border-right:1px solid var(--sidebar-border);
-      display:flex;
-      flex-direction:column;
+    /* ====== LAYOUT: navbar/sidebar fijos y scroll SOLO en el contenido ====== */
+    html, body{
+      height: 100%;
+      overflow: hidden; /* El documento no scrollea */
     }
-    .brand-area{ background:var(--sidebar-bg); border-bottom:1px solid var(--sidebar-border); }
-    .brand-area .brand-text{ color:var(--brand-primary); font-weight:600; letter-spacing:.2px; }
-    .sidebar{ flex:1 1 auto; display:flex; flex-direction:column; min-height:0; padding-bottom:0!important; }
-    .sidebar-scroll{ flex:1 1 auto; overflow-y:auto; }
-
-    .nav-sidebar .nav-link{
-      color:var(--sidebar-text) !important;
-      border-radius:2px;
-      margin:1px 8px;
-      font-weight:500;
-      font-size:.88rem;
+    .wrapper{
+      height: 100vh;
+      overflow: hidden;
     }
+
+    /* Navbar fijo */
+    .navbar-uni { background: var(--brand-primary); box-shadow:0 2px 4px rgba(0,0,0,.2); }
+    .navbar-uni .nav-link { color:#fff; }
+    .navbar-uni .nav-link:hover { opacity:.9; }
+    .main-header{
+      position: sticky;
+      top: 0;
+      z-index: 1035;
+      height: var(--header-h);
+    }
+
+    /* Sidebar */
+    .main-sidebar { background-color: var(--sidebar-main)!important; }
+    .brand-area { background-color: var(--sidebar-bg); }
+    .brand-area .brand-text { color:#fff; }
+    .nav-sidebar .nav-link { color:#eaeaea!important; border-radius:.35rem; margin:0 .25rem; }
     .nav-sidebar .nav-link.active{
-      background:#EAEEF3 !important;
-      color:var(--sidebar-text-active) !important;
-      font-weight:600;
-      box-shadow:inset 3px 0 0 var(--brand-primary);
+      background: linear-gradient(90deg, var(--brand-primary) 0%, var(--brand-primary-dark) 100%);
+      color:#fff!important;
     }
-    .nav-sidebar .nav-link:hover{ background:#F3F4F6 !important; color:var(--sidebar-text-active) !important; }
-    .nav-sidebar .nav-treeview .nav-link{ margin-left:16px; }
-    .nav-sidebar .nav-link p, .nav-sidebar .nav-link .right{ color:inherit; }
+    .nav-sidebar .nav-link:hover{ background-color: rgba(255,255,255,.08)!important; color:#fff!important; }
+    .nav-icon.text-info{ color: var(--brand-info)!important; }
+    .nav-icon.text-success{ color: var(--brand-accent)!important; }
 
-    /* ===== Pie del sidebar: usuario + Cerrar sesión ===== */
-    .sidebar-user-footer{
-      flex-shrink:0;
-      border-top:1px solid var(--sidebar-border);
-      background:#FAFAFB;
-      padding:12px 14px;
-    }
-    .sidebar-user-footer .avatar{ width:34px; height:34px; border-radius:2px; object-fit:cover; flex-shrink:0; }
-    .sidebar-user-footer .nombre{ font-size:.83rem; font-weight:600; color:var(--text-primary); line-height:1.2; }
-    .sidebar-user-footer .cargo{ font-size:.72rem; color:var(--text-secondary); line-height:1.2; }
-    .sidebar-logout-btn{
-      display:flex; align-items:center; justify-content:center; gap:.4rem;
-      width:100%; margin-top:8px; padding:.4rem; border-radius:2px;
-      background:var(--surface); color:var(--brand-danger); font-weight:600; font-size:.8rem;
-      border:1px solid var(--border); text-decoration:none;
-    }
-    .sidebar-logout-btn:hover{ background:#FEF2F2; border-color:#F3C6C6; color:var(--brand-danger); text-decoration:none; }
-
+    /* El área que SÍ scrollea */
     .content-wrapper{
-      background-color:var(--page-bg);
-      height:calc(100vh - var(--header-h) - var(--footer-h));
-      overflow:auto;
-      -webkit-overflow-scrolling:touch;
+      background-color:#f8f9fa;
+      height: calc(100vh - var(--header-h) - var(--footer-h));
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
     }
-    .main-footer{ position:sticky; bottom:0; z-index:1020; background:var(--surface); border-top:1px solid var(--border); font-size:.8rem; color:var(--text-secondary); }
 
-    @media (min-width:992px){ :root{ --header-h:56px; } }
-
-    .card-clean{ border-radius:4px; border:1px solid var(--border); box-shadow:none; }
-    .card-clean .card-header{ background:var(--surface); font-weight:600; letter-spacing:.1px; border-bottom:1px solid var(--border); }
-
-    .btn{ border-radius:3px!important; font-weight:600; font-size:.85rem; box-shadow:none!important; transition:background-color .12s ease; }
-    .btn-brand{ background:var(--brand-primary); border:1px solid var(--brand-primary-dark); color:#fff!important; }
-    .btn-brand:hover{ background:var(--brand-primary-dark); color:#fff; }
-    .btn-primary{ background:var(--brand-primary); border:1px solid var(--brand-primary-dark); }
-    .btn-primary:hover{ background:var(--brand-primary-dark); }
-    .btn-info, .btn-outline-info{ background:var(--surface); border:1px solid var(--brand-info); color:var(--brand-info); }
-    .btn-info:hover, .btn-outline-info:hover{ background:#ECFAFB; color:var(--brand-info); }
-    .btn-warning{ background:var(--surface); border:1px solid #F5D08A; color:var(--brand-warning); }
-    .btn-warning:hover{ background:#FFFBEB; color:var(--brand-warning); }
-    .btn-danger, .btn-outline-danger{ background:var(--surface); border:1px solid #F3C6C6; color:var(--brand-danger); }
-    .btn-danger:hover, .btn-outline-danger:hover{ background:#FEF2F2; color:var(--brand-danger); }
-    .btn-success{ background:var(--surface); border:1px solid #A7D7BB; color:var(--brand-accent); }
-    .btn-success:hover{ background:#EEF7F1; color:var(--brand-accent); }
-    .btn-outline-brand{ background:var(--surface); border:1px solid var(--brand-primary); color:var(--brand-primary); }
-    .btn-outline-brand:hover{ background:#EEF1F5; color:var(--brand-primary); }
-    .btn-outline-secondary{ border-radius:3px!important; }
-    .btn-fw{ font-weight:600; }
-
-    /* ===== KPI cards — planas, con borde, sin sombra ===== */
-    .stat-row{ margin-left:-8px; margin-right:-8px; }
-    .stat-row > [class*="col-"]{ padding-left:8px; padding-right:8px; }
-    .stat-card{
-      display:flex; align-items:center; gap:12px;
-      padding:12px 14px; border-radius:4px; min-height:76px;
-      background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--border-strong);
+    /* Footer fijo abajo (opcional) */
+    .main-footer{
+      position: sticky;
+      bottom: 0;
+      z-index: 1020;
+      background:#fff;
     }
-    .stat-card.is-primary{ border-left-color:var(--brand-primary); }
-    .stat-card.is-info{ border-left-color:var(--brand-info); }
-    .stat-card.is-success{ border-left-color:var(--brand-accent); }
-    .stat-card.is-warning{ border-left-color:var(--brand-warning); }
-    .stat-icon{ width:34px; height:34px; border-radius:3px; display:grid; place-items:center; flex-shrink:0; background:var(--page-bg); }
-    .stat-icon i{ font-size:16px; }
-    .is-primary .stat-icon{ color:var(--brand-primary); }
-    .is-info .stat-icon{ color:var(--brand-info); }
-    .is-success .stat-icon{ color:var(--brand-accent); }
-    .is-warning .stat-icon{ color:var(--brand-warning); }
-    .stat-meta{ display:flex; flex-direction:column; color:var(--text-primary); }
-    .stat-kpi span{ font-weight:700; font-size:clamp(18px,2.4vw,22px); line-height:1.1; }
-    .stat-label{ font-size:.78rem; color:var(--text-secondary); }
 
-    /* ===== Tabla — densa, tipo hoja de datos empresarial ===== */
-    table thead th{
-      background:#F3F4F6!important; border:1px solid var(--border)!important; font-size:.72rem;
-      text-transform:uppercase; letter-spacing:.05em; color:var(--text-secondary); padding:.55rem .7rem; white-space:nowrap;
+    @media (min-width: 992px){
+      :root{ --header-h: 64px; }
     }
-    table tbody tr{ background:var(--surface); }
-    table tbody tr:hover{ background:#F8FAFC; }
-    table tbody td{ border:1px solid var(--border)!important; vertical-align:middle; padding:.55rem .7rem; font-size:.86rem; color:var(--text-primary); }
 
-    #tablaRequerimientos{ border-collapse:collapse!important; }
+    /* Botones corporativos */
+    .btn-brand { background: var(--brand-accent); border-color: var(--brand-accent); color:#fff; }
+    .btn-brand:hover { background: var(--brand-accent-dark); border-color: var(--brand-accent-dark); color:#fff; }
+    .btn-outline-brand { border-color: var(--brand-accent); color: var(--brand-accent); }
+    .btn-outline-brand:hover { background: var(--brand-accent); color:#fff; }
+    .btn-primary { background: var(--brand-primary); border-color: var(--brand-primary); }
+    .btn-primary:hover { background: var(--brand-primary-dark); border-color: var(--brand-primary-dark); }
+
+    /* Cards y tablas */
+    .card-clean { border:1px solid rgba(0,0,0,.06); box-shadow: 0 2px 10px rgba(0,0,0,.04); }
+    table.dataTable thead th{ white-space: nowrap; }
+    .table thead th{ font-weight:600; }
+    .actions-wrap { display:inline-flex; gap:.25rem; flex-wrap:wrap; justify-content:center; }
+    #tablaRequerimientos td, #tablaRequerimientos th { white-space: nowrap; }
     @media (max-width:576px){
       #tablaRequerimientos td:nth-child(3),
       #tablaRequerimientos td:nth-child(4){ white-space: normal; }
     }
 
-    .actions-wrap{ display:inline-flex; gap:.35rem; flex-wrap:wrap; justify-content:center; }
-
-    .filters-row{ background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:.75rem 1rem; }
-
-    .modal-content{ border-radius:4px!important; box-shadow:0 2px 12px rgba(0,0,0,.15); }
-    .modal-header, .modal-footer{ border-color:var(--border); }
-
-    .form-control, .custom-select{ border-radius:3px; font-size:.86rem; border-color:var(--border-strong); }
-    .form-control:focus, .custom-select:focus{ border-color:var(--brand-primary); box-shadow:0 0 0 2px rgba(31,58,95,.12); }
-    .input-group-text{ border-radius:3px; border-color:var(--border-strong); background:var(--page-bg); color:var(--text-secondary); font-size:.85rem; }
-    label{ font-size:.82rem; font-weight:600; color:var(--text-primary); }
-
-    .empty-state{ padding:2rem 1rem; text-align:center; color:var(--text-secondary); }
-    .empty-state i{ font-size:1.8rem; color:var(--border-strong); display:block; margin-bottom:.5rem; }
-
-    .badge{ font-weight:600; padding:.3rem .5rem; border-radius:3px; font-size:.72rem; }
-
-    /* ===== Modal Nuevo Requerimiento ===== */
-    #modalAgregar .form-section{
-      background:var(--surface); border:1px solid var(--border);
-      border-radius:4px; margin-bottom:.85rem; padding:1rem;
-    }
-    #wrapTablaDetalles{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
-    #tablaDetalles thead th{
-      background:#F3F4F6; border:1px solid var(--border)!important; font-size:.72rem;
-      text-transform:uppercase; letter-spacing:.05em; color:var(--text-secondary); padding:.5rem .6rem;
-    }
-    #tablaDetalles tbody td{ border:1px solid var(--border)!important; vertical-align:middle; padding:.4rem .5rem; }
-    .table-items tbody tr:hover{ background:#F8FAFC; }
-
+    /* ===== Modal móvil (BS4) ===== */
     @media (max-width: 576px) {
       #modalAgregar .modal-dialog{
         width:100%!important; max-width:100%!important; margin:0!important;
@@ -207,8 +122,8 @@
       #modalAgregar .modal-content{
         border-radius:0!important; height:100vh!important; display:flex; flex-direction:column;
       }
-      #modalAgregar .modal-header{ position:sticky; top:0; z-index:3; background:var(--surface); }
-      #modalAgregar .modal-footer{ position:sticky; bottom:0; z-index:3; background:var(--surface); }
+      #modalAgregar .modal-header{ position:sticky; top:0; z-index:3; background:#fff; }
+      #modalAgregar .modal-footer{ position:sticky; bottom:0; z-index:3; background:#fff; }
       #modalAgregar .modal-body{
         overflow-y:auto; -webkit-overflow-scrolling:touch;
         padding: 1rem .75rem 4.5rem;
@@ -216,9 +131,420 @@
       #modalAgregar .btn{ padding:.6rem .85rem; }
       #modalAgregar .input-group-text{ min-width:2.5rem; justify-content:center; }
     }
+
+    /* Secciones del modal */
+    #modalAgregar .form-section{
+      background:#fff; border:1px solid rgba(0,0,0,.05);
+      border-radius:.5rem; box-shadow:0 2px 6px rgba(0,0,0,.04);
+      margin-bottom:.85rem; padding:1rem;
+    }
+    #wrapTablaDetalles{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+    @media (max-width:576px){ #modalAgregar .table-items{ font-size:.92rem; } }
+
+    /* === ESTILOS PARA TARJETAS KPI === */
+    .dashboard-safe-container{
+      padding-left: clamp(16px, 4vw, 36px);
+      padding-right: clamp(16px, 4vw, 36px);
+    }
+    .stat-row{
+      margin-left: -8px;
+      margin-right: -8px;
+    }
+    .stat-row > [class*="col-"]{
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+    /* En desktop: 3 tarjetas en una sola fila */
+    @media (min-width: 992px){
+      .stat-row-lg-nowrap{ flex-wrap: nowrap !important; }
+    }
+    .stat-card{
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #fff, #fbfcff);
+      box-shadow: 0 6px 16px rgba(20,30,58,0.1);
+      border: 1px solid #eef2f7;
+      transition: transform .2s ease, box-shadow .2s ease;
+      min-height: 96px;
+    }
+    .stat-card:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(20,30,58,0.12);
+    }
+    .stat-icon{
+      flex: 0 0 auto;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: #eef4ff;
+    }
+    .stat-icon i{ font-size: 20px; }
+    .is-primary .stat-icon{ background: rgba(13,110,253,.12); color: #0d6efd; }
+    .is-info .stat-icon{ background: rgba(43,183,246,.12); color: #2bb7f6; }
+    .is-success .stat-icon{ background: rgba(24,181,143,.12); color: #18b58f; }
+    .stat-meta{ display: flex; flex-direction: column; gap: 2px; color: #25334a; }
+    .stat-kpi span{
+      font-weight: 700;
+      font-size: clamp(20px, 3.5vw, 28px);
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+    .stat-label{ font-size: .85rem; opacity: .8; }
+  </style>
+  <style>
+    /* =====================================
+   TABLA UX MODERNA – UNIENERGIA
+   ===================================== */
+
+/* ===== CONTENEDOR TABLA ===== */
+#tablaRequerimientos {
+  border-collapse: separate !important;
+  border-spacing: 0 8px;
+}
+
+/* ===== HEADER ===== */
+#tablaRequerimientos thead th {
+  background: #f8fafc !important;
+  border: none !important;
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: #475569;
+  padding: .75rem .75rem;
+}
+
+/* ===== FILAS ===== */
+#tablaRequerimientos tbody tr {
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(15,23,42,.06);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+#tablaRequerimientos tbody tr:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(15,23,42,.12);
+}
+
+/* ===== CELDAS ===== */
+#tablaRequerimientos tbody td {
+  border: none !important;
+  vertical-align: middle;
+  padding: .65rem .75rem;
+  font-size: .9rem;
+  color: #1e293b;
+}
+
+/* ===== COLUMNA CÓDIGO ===== */
+#tablaRequerimientos tbody td:first-child {
+  font-weight: 600;
+  color: #2563eb;
+}
+
+/* ===== ACCIONES ===== */
+.actions-wrap {
+  display: inline-flex;
+  gap: .35rem;
+}
+
+.actions-wrap .btn {
+  border-radius: 999px;
+  padding: .28rem .55rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s ease;
+}
+
+/* Ver */
+.actions-wrap .btn-outline-info {
+  border-color: rgba(14,165,233,.35);
+  color: #0ea5e9;
+}
+.actions-wrap .btn-outline-info:hover {
+  background: rgba(14,165,233,.12);
+}
+
+/* Eliminar */
+.actions-wrap .btn-danger {
+  border-radius: 999px;
+  padding: .28rem .55rem;
+  background: rgba(239,68,68,.1);
+  border: none;
+  color: #ef4444;
+}
+.actions-wrap .btn-danger:hover {
+  background: rgba(239,68,68,.2);
+}
+
+/* ===== DATATABLES CONTROLS ===== */
+.dataTables_wrapper .dataTables_filter input {
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+  padding: .35rem .75rem;
+  font-size: .85rem;
+}
+
+.dataTables_wrapper .dataTables_length select {
+  border-radius: 999px;
+  font-size: .85rem;
+  padding: .25rem .6rem;
+}
+
+/* ===== PAGINACIÓN ===== */
+.page-item .page-link {
+  border-radius: 999px !important;
+  border: none;
+  margin: 0 2px;
+  color: #334155;
+}
+
+.page-item.active .page-link {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(37,99,235,.4);
+}
+
+/* ===== MODAL LOOK MÁS PREMIUM ===== */
+.modal-content {
+  border-radius: 18px !important;
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(0,0,0,.05);
+}
+
+.modal-footer {
+  border-top: 1px solid rgba(0,0,0,.05);
+}
+
+/* ===== INPUTS ===== */
+.form-control,
+.custom-select {
+  border-radius: 10px;
+  font-size: .9rem;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.form-control:focus,
+.custom-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+}
+
+/* ===== TABLA ÍTEMS ===== */
+.table-items tbody tr:hover {
+  background: #f8fafc;
+}
+/* ======================================================
+   KPI PREMIUM – UNIENERGIA (NO BOOTSTRAP LOOK)
+   ====================================================== */
+
+/* KPI Card base */
+.stat-card {
+  position: relative;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff, #f9fafb);
+  border: 1px solid rgba(0,0,0,.04);
+  box-shadow: 0 10px 28px rgba(15,23,42,.08);
+  overflow: hidden;
+}
+
+/* Barra lateral de estado */
+.stat-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14%;
+  bottom: 14%;
+  width: 5px;
+  border-radius: 6px;
+}
+
+/* Colores por tipo */
+.stat-card.is-primary::before { background: linear-gradient(#2563eb, #1e40af); }
+.stat-card.is-info::before    { background: linear-gradient(#0ea5e9, #0369a1); }
+.stat-card.is-success::before { background: linear-gradient(#10b981, #047857); }
+
+/* Fondo dinámico sutil */
+.stat-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(37,99,235,.12), transparent 55%);
+  pointer-events: none;
+}
+
+/* Iconos KPI */
+.stat-icon {
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  box-shadow: inset 0 0 0 1px rgba(37,99,235,.18);
+}
+
+.stat-icon i {
+  font-size: 1.2rem;
+}
+
+/* Texto KPI */
+.stat-kpi span {
+  font-size: clamp(22px, 3.6vw, 30px);
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.stat-label {
+  font-size: .82rem;
+  letter-spacing: .02em;
+  color: #475569;
+}
+
+/* Hover KPI */
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 38px rgba(15,23,42,.14);
+}
+
+/* ======================================================
+   BOTONES CORPORATIVOS – UNIFICADOS
+   ====================================================== */
+
+.btn {
+  border-radius: 999px !important;
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+
+/* Botón principal (crear / guardar) */
+.btn-brand {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #fff !important;
+  border: none;
+  box-shadow: 0 8px 20px rgba(37,99,235,.35);
+}
+
+.btn-brand:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(37,99,235,.45);
+}
+
+/* Botón Excel */
+.btn-success {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  border: none;
+  box-shadow: 0 6px 18px rgba(22,163,74,.35);
+}
+
+.btn-success:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(22,163,74,.45);
+}
+
+/* Botones outline */
+.btn-outline-brand,
+.btn-outline-secondary {
+  border-radius: 999px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* ======================================================
+   ACCIONES TABLA – ICONOS PREMIUM
+   ====================================================== */
+
+.actions-wrap .btn {
+  border-radius: 999px;
+  padding: .3rem .55rem;
+  box-shadow: none;
+}
+
+/* Ver */
+.actions-wrap .btn-outline-info {
+  border-color: rgba(14,165,233,.35);
+  color: #0ea5e9;
+}
+.actions-wrap .btn-outline-info:hover {
+  background: rgba(14,165,233,.12);
+}
+
+/* Eliminar */
+.actions-wrap .btn-danger {
+  background: rgba(239,68,68,.12);
+  border: none;
+  color: #ef4444;
+}
+.actions-wrap .btn-danger:hover {
+  background: rgba(239,68,68,.22);
+}
+
+/* ======================================================
+   CABECERAS Y TARJETAS
+   ====================================================== */
+
+.card-clean {
+  border-radius: 18px;
+  box-shadow: 0 14px 34px rgba(15,23,42,.06);
+}
+
+.card-clean .card-header {
+  background: linear-gradient(180deg, #ffffff, #f9fafb);
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+
+/* ======================================================
+   INPUTS Y FORMULARIOS
+   ====================================================== */
+
+.form-control,
+.custom-select {
+  border-radius: 12px;
+  font-size: .9rem;
+}
+
+.form-control:focus,
+.custom-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.18);
+}
+
+/* ======================================================
+   DATATABLES – CONTROLES LIMPIOS
+   ====================================================== */
+
+.dataTables_wrapper .dataTables_filter input {
+  border-radius: 999px;
+  padding: .4rem .9rem;
+  font-size: .85rem;
+}
+
+.dataTables_wrapper .dataTables_length select {
+  border-radius: 999px;
+  font-size: .85rem;
+  padding: .3rem .6rem;
+}
+
+/* ======================================================
+   MODAL LOOK ENTERPRISE
+   ====================================================== */
+
+.modal-content {
+  border-radius: 20px !important;
+}
+
+.modal-header,
+.modal-footer {
+  border-color: rgba(0,0,0,.05);
+}
+
   </style>
 </head>
 
+<!-- body con navbar/slider fijo y layout fijo -->
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
 <div class="wrapper">
 
@@ -228,32 +554,32 @@
       <ul class="navbar-nav d-flex align-items-center">
         <li class="nav-item">
           <a class="nav-link" data-widget="pushmenu" href="#" role="button" aria-label="Abrir menú">
-            <i class="fas fa-bars"></i>
+            <i class="fas fa-bars fa-lg"></i>
           </a>
         </li>
         <li class="nav-item d-flex align-items-center ml-2">
-          <img src="{{ asset('img/logo.png.png') }}" alt="Logo" style="width:22px;height:22px;">
+          <img src="{{ asset('img/logo.png.png') }}" alt="Logo" style="width:25px;height:25px;">
         </li>
       </ul>
 
       <ul class="navbar-nav ml-auto d-flex align-items-center">
         <!-- Notificaciones -->
-        <li class="nav-item dropdown mr-2">
+        <li class="nav-item dropdown mr-3">
           <a class="nav-link position-relative" href="#" id="notificacionesDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-bell text-white"></i>
+            <i class="fas fa-bell fa-lg text-white"></i>
             @if($notificaciones->count() > 0)
-              <span id="notiBadge" class="badge badge-danger position-absolute" style="top:-2px;right:-6px;font-size:.6rem;">
+              <span id="notiBadge" class="badge badge-danger position-absolute" style="top:-4px;right:-8px;font-size:.65rem;">
                 {{ $notificaciones->count() }}
               </span>
             @endif
           </a>
-          <div class="dropdown-menu dropdown-menu-right shadow-sm border" aria-labelledby="notificacionesDropdown" style="min-width:300px;max-height:380px;overflow-y:auto;border-radius:4px;">
-            <h6 class="dropdown-header font-weight-bold text-dark"><i class="fas fa-bell mr-1"></i> Últimos registros</h6>
+          <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" aria-labelledby="notificacionesDropdown" style="min-width:300px;max-height:400px;overflow-y:auto;">
+            <h6 class="dropdown-header font-weight-bold text-dark">🔔 Últimos registros</h6>
             <div class="dropdown-divider"></div>
             @forelse($notificaciones as $notificacion)
               <div class="dropdown-item">
                 <div class="d-flex flex-column">
-                  <span class="font-weight-bold" style="color:var(--brand-primary);">{{ $notificacion->titulo ?? ('Requerimiento '.$notificacion->codigo) }}</span>
+                  <span class="font-weight-bold text-primary">{{ $notificacion->titulo ?? ('Requerimiento '.$notificacion->codigo) }}</span>
                   <small class="text-muted">{{ \Carbon\Carbon::parse($notificacion->created_at)->format('d/m/Y H:i') }}</small>
                 </div>
               </div>
@@ -265,24 +591,25 @@
 
         <!-- Usuario -->
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle d-flex align-items-center px-2 py-1 text-white"
-             href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle d-flex align-items-center px-3 py-2 rounded-pill shadow-sm text-white"
+             href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-expanded="false"
+             style="background-color: var(--brand-primary-dark);">
             @if(Auth::user()->foto_perfil)
-              <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" style="width:28px;height:28px;border-radius:2px;object-fit:cover;">
+              <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="rounded-circle" width="32" height="32" style="object-fit:cover;">
             @else
-              <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=1F3A5F&color=fff&size=28" alt="Avatar" style="width:28px;height:28px;border-radius:2px;">
+              <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=32" alt="Avatar" class="rounded-circle" width="32" height="32">
             @endif
             <span class="d-none d-md-inline font-weight-semibold ml-2">{{ Auth::user()->name }}</span>
           </a>
-          <div class="dropdown-menu dropdown-menu-right shadow-sm border" style="border-radius:4px;min-width:230px;">
+          <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" style="border-radius:12px;min-width:240px;">
             <div class="dropdown-item text-center bg-light py-3">
               @if(Auth::user()->foto_perfil)
-                <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="mb-2" style="width:56px;height:56px;border-radius:3px;object-fit:cover;">
+                <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="rounded-circle mb-2" style="width:64px;height:64px;object-fit:cover;">
               @else
-                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=1F3A5F&color=fff&size=56" alt="Avatar" class="mb-2" style="border-radius:3px;">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=64" alt="Avatar" class="rounded-circle mb-2">
               @endif
               <strong class="text-dark d-block">{{ Auth::user()->name }}</strong>
-              <p class="text-muted small mb-0">{{ Auth::user()->cargo ?? 'Cargo no asignado' }}</p>
+              <p class="text-muted small mb-0">Usuario activo</p>
             </div>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item d-flex align-items-center px-3 py-2" href="{{ route('perfil.edit') }}">
@@ -299,21 +626,23 @@
     </div>
   </nav>
 
-  <!-- Sidebar -->
-  <aside class="main-sidebar">
-    <a href="#" class="brand-link text-center brand-area d-block py-3">
-      <img src="{{ asset('img/logo.png.png') }}" style="width:22px;height:22px;margin-right:8px;">
-      <span class="brand-text">UNIENERGIA ABC</span>
+    <!-- Sidebar -->
+   <!-- Sidebar -->
+  <<!-- Sidebar -->
+  <aside class="main-sidebar elevation-4">
+    <a href="#" class="brand-link text-center brand-area">
+      <img src="{{ asset('img/logo.png.png') }}" style="width:25px;height:25px;margin-right:8px;">
+      <span class="brand-text font-weight-bold">UNIENERGIA ABC</span>
     </a>
     <div class="sidebar">
-      <nav class="mt-3 sidebar-scroll">
+      <nav class="mt-3">
         <ul class="nav nav-pills nav-sidebar flex-column"
     data-widget="treeview"
     data-accordion="true">
            <li class="nav-item">
-          <a href="{{ route('bienvenida') }}"
+          <a href="{{ route('bienvenida') }}" 
              class="nav-link {{ request()->routeIs('bienvenida') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-home"></i>
+            <i class="nav-icon fas fa-home" style="color: var(--brand-secondary);"></i>
             <p class="ml-2 mb-0">Bienvenida</p>
           </a>
         </li>
@@ -321,7 +650,7 @@
         @if(Auth::user()->puedeVerMantenimiento())
         <li class="nav-item has-treeview {{ request()->routeIs('reportes.*') || request()->routeIs('anomalias.*') ? 'menu-open' : '' }}">
           <a href="#" class="nav-link {{ request()->routeIs('reportes.*') || request()->routeIs('anomalias.*') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-tools"></i>
+            <i class="nav-icon fas fa-tools" style="color: var(--brand-accent);"></i>
             <p>
               Mantenimiento
               <i class="right fas fa-angle-left"></i>
@@ -330,13 +659,13 @@
           <ul class="nav nav-treeview ml-2">
             <li class="nav-item">
               <a href="{{ route('reportes.index') }}" class="nav-link {{ request()->routeIs('reportes.*') ? 'active' : '' }}">
-                <i class="fas fa-clipboard-list nav-icon"></i>
+                <i class="fas fa-clipboard-list nav-icon" style="color: var(--brand-accent);"></i>
                 <p>Reportes</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="{{ route('anomalias.index') }}" class="nav-link {{ request()->routeIs('anomalias.*') ? 'active' : '' }}">
-                <i class="fas fa-exclamation-triangle nav-icon"></i>
+                <i class="fas fa-exclamation-triangle nav-icon" style="color: var(--brand-danger);"></i>
                 <p>Anomalías</p>
               </a>
             </li>
@@ -346,7 +675,7 @@
 
         <li class="nav-item">
           <a href="{{ route('boletas.index') }}" class="nav-link {{ request()->routeIs('boletas.*') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-file-invoice-dollar"></i>
+            <i class="nav-icon fas fa-file-invoice-dollar" style="color: var(--brand-accent);"></i>
             <p class="ml-2 mb-0">{{ Auth::user()->puedeGestionarBoletas() ? 'Gestionar Boletas' : 'Mis Boletas' }}</p>
           </a>
         </li>
@@ -354,14 +683,14 @@
           @if(Auth::user()->tieneAccesoCompleto())
           <li class="nav-item">
             <a href="{{ route('requerimientos.index') }}" class="nav-link {{ request()->routeIs('requerimientos.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-file-alt"></i>
+              <i class="nav-icon fas fa-file-alt" style="color: var(--brand-info);"></i>
               <p class="ml-2 mb-0">Requerimientos</p>
             </a>
           </li>
 
         <li class="nav-item has-treeview">
           <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-folder-open"></i>
+            <i class="nav-icon fas fa-folder-open" style="color: var(--brand-info);"></i>
             <p>
               Control Cartas
               <i class="right fas fa-angle-left"></i>
@@ -372,14 +701,14 @@
             <li class="nav-item">
               <a href="{{ route('control_cartas.index') }}"
                 class="nav-link {{ request()->routeIs('control_cartas.*') ? 'active' : '' }}">
-                <i class="far fa-envelope nav-icon"></i>
+                <i class="far fa-envelope nav-icon" style="color: var(--brand-accent);"></i>
                 <p>SO-PRO</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="{{ route('cartas_fis.index') }}"
                 class="nav-link {{ request()->routeIs('cartas_fis.*') ? 'active' : '' }}">
-                <i class="far fa-clipboard nav-icon"></i>
+                <i class="far fa-clipboard nav-icon" style="color: var(--brand-info);"></i>
                 <p>Fis</p>
               </a>
             </li>
@@ -388,7 +717,7 @@
          <li class="nav-item">
           <a href="{{ route('logistica_lotes.index') }}"
             class="nav-link {{ request()->routeIs('logistica_lotes.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-boxes"></i>
+              <i class="nav-icon fas fa-boxes" style="color: var(--brand-primary-light);"></i>
               <p class="ms-2 mb-0">Logística Lote</p>
           </a>
       </li>
@@ -396,46 +725,28 @@
 
         </ul>
       </nav>
-
-      <!-- Pie del sidebar: usuario + Cerrar sesión -->
-      <div class="sidebar-user-footer">
-        <div class="d-flex align-items-center" style="gap:.6rem;">
-          @if(Auth::user()->foto_perfil)
-            <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="avatar">
-          @else
-            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=1F3A5F&color=fff&size=34" alt="Avatar" class="avatar">
-          @endif
-          <div class="text-truncate">
-            <div class="nombre text-truncate">{{ Auth::user()->name }}</div>
-            <div class="cargo text-truncate">{{ Auth::user()->cargo ?? 'Sin cargo asignado' }}</div>
-          </div>
-        </div>
-        <a href="{{ route('logout') }}" class="sidebar-logout-btn"
-           onclick="event.preventDefault(); document.getElementById('logout-form-sidebar').submit();">
-          <i class="fas fa-sign-out-alt"></i> Cerrar sesión
-        </a>
-      </div>
     </div>
   </aside>
 
+
+  
   <!-- Contenido principal (SCROLL AQUÍ) -->
   <div class="content-wrapper">
-    <div class="content-header py-3 border-bottom bg-white">
-      <div class="container-fluid d-flex justify-content-between align-items-center flex-wrap">
-        <h1 class="m-0" style="color:var(--text-primary);font-size:1.4rem;font-weight:700;">
-          <i class="fas fa-file-alt mr-2" style="color:var(--brand-primary);"></i>Requerimientos, Operaciones Lote IX
+    <div class="content-header py-3 border-bottom">
+      <div class="container-fluid d-flex justify-content-between align-items-center">
+        <h1 class="m-0 font-weight-semibold heading-font" style="color:#333;">
+          📋 Requerimientos, Operaciones Lote IX.
         </h1>
-        <button class="btn btn-brand btn-fw mt-2 mt-sm-0" data-toggle="modal" data-target="#modalAgregar">
+        <button class="btn btn-brand" data-toggle="modal" data-target="#modalAgregar">
           <i class="fas fa-plus mr-1"></i> Nuevo Requerimiento
         </button>
       </div>
     </div>
-
-    <div class="container-fluid pt-3">
-
-      <!-- KPI -->
-      <div class="row stat-row mb-3">
-        <div class="col-12 col-sm-6 col-md-4 mb-3 mb-md-0">
+      
+    <!-- KPI -->
+    <div class="dashboard-safe-container kpi-block">
+      <div class="row stat-row stat-row-lg-nowrap">
+        <div class="col-12 col-sm-6 col-md-4">
           <div class="stat-card is-primary">
             <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
             <div class="stat-meta">
@@ -444,7 +755,7 @@
             </div>
           </div>
         </div>
-        <div class="col-12 col-sm-6 col-md-4 mb-3 mb-md-0">
+        <div class="col-12 col-sm-6 col-md-4">
           <div class="stat-card is-info">
             <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
             <div class="stat-meta">
@@ -463,19 +774,19 @@
           </div>
         </div>
       </div>
-
-      <!-- Tabla -->
-      <div class="card card-clean">
-        <div class="card-header">
-          <h3 class="card-title mb-0" style="color:var(--text-primary);font-size:1rem;">
-            <i class="fas fa-list mr-1" style="color:var(--brand-primary);"></i> Lista de Requerimientos
-          </h3>
+    </div>
+   
+    <!-- Tabla -->
+    <div class="container-fluid">
+      <div class="card card-clean mt-3">
+        <div class="card-header bg-white border-bottom text-center">
+          <h3 class="card-title mb-0 font-weight-semibold heading-font" style="color:#333;">Lista de Requerimientos</h3>
         </div>
         <div class="card-body">
           <div class="table-responsive">
             <table id="tablaRequerimientos" class="table table-hover table-bordered align-middle text-center" style="width:100%">
-              <thead>
-                <tr>
+              <thead class="thead-light">
+                <tr class="text-muted">
                   <th data-priority="1">Código</th>
                   <th data-priority="3">Fecha</th>
                   <th data-priority="4">Área solicitante</th>
@@ -496,8 +807,8 @@
                       <span class="actions-wrap">
                         <a href="{{ route('requerimientos.show', $req->id) }}"
                            class="btn btn-sm btn-outline-info"
-                           title="Ver (PDF)"
-                           target="_blank"
+                           title="Ver (PDF)" 
+                           target="_blank" 
                            rel="noopener noreferrer">
                           <i class="fas fa-eye"></i>
                         </a>
@@ -521,46 +832,37 @@
           <div class="px-3 py-2 text-right">
             <span class="text-muted">Total de requerimientos en página: <strong>{{ $requerimientos->count() }}</strong></span>
           </div>
-          <div class="d-flex flex-wrap justify-content-between align-items-center mt-3 pt-3" style="border-top:1px solid var(--border);">
-            <h5 class="mb-2 mb-md-0" style="font-size:.95rem;font-weight:600;color:var(--text-primary);">
-              <i class="fas fa-file-export mr-2" style="color:var(--brand-primary);"></i> Realizar Backup
-            </h5>
-            <div class="d-flex flex-wrap" style="gap:.5rem;">
-              <a href="{{ route('requerimientos.export.excel') }}" class="btn btn-success btn-fw">
-                <i class="fas fa-file-excel mr-1"></i> Excel
+          <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 px-3 px-md-4">
+          <h5 class="mb-2 mb-md-0 fw-semibold text-primary">
+              <i class="fas fa-file-export me-2"></i> Realizar Backup
+          </h5>
+          <div class="d-flex flex-wrap gap-2">
+              <a href="{{ route('requerimientos.export.excel') }}" class="btn btn-success shadow-sm">
+                  <i class="fas fa-file-excel me-1"></i> Excel
               </a>
-            </div>
           </div>
+      </div>
         </div>
       </div>
     </div><!-- /.container-fluid -->
-
+   
   </div><!-- /.content-wrapper -->
 
   <!-- Footer -->
   <footer class="main-footer text-center">
-    <strong>Unienergia ABC © {{ date('Y') }}</strong> Todos los derechos reservados.
+    <strong>Unienergia ABC © 2025</strong> Todos los derechos reservados.
   </footer>
 </div>
-
-<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
-  @csrf
-</form>
-<form id="logout-form-sidebar" action="{{ route('logout') }}" method="POST" style="display:none;">
-  @csrf
-</form>
 
 <!-- ===== Modal Crear Requerimiento ===== -->
 <div class="modal fade" id="modalAgregar" tabindex="-1" role="dialog" aria-labelledby="modalAgregarLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
     <form method="POST" action="{{ route('requerimientos.store') }}" id="formCrearReq" novalidate>
       @csrf
-      <div class="modal-content" id="modalAgregarContent">
+      <div class="modal-content shadow-sm border-0" id="modalAgregarContent">
         <div class="modal-header bg-white border-bottom">
           <div class="d-flex flex-column">
-            <h5 class="modal-title font-weight-semibold mb-0" id="modalAgregarLabel">
-              <i class="fas fa-file-alt mr-1" style="color:var(--brand-primary);"></i> Nuevo Requerimiento
-            </h5>
+            <h5 class="modal-title font-weight-semibold mb-0" id="modalAgregarLabel">📝 Nuevo Requerimiento</h5>
             <small class="text-muted">Complete los campos y añada los ítems necesarios</small>
           </div>
           <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
@@ -737,6 +1039,10 @@
     </form>
   </div>
 </div>
+
+<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
+  @csrf
+</form>
 
 <!-- ===== Scripts (orden correcto) ===== -->
 <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>

@@ -38,30 +38,7 @@ class BoletaController extends Controller
             $trabajadores = collect();
         }
 
-        // Boletas propias del usuario logueado que todavía no confirmó que
-        // le pertenecen (aplica a cualquier rol: RRHH y admin también cobran).
-        $boletasPendientesConfirmar = Boleta::where('user_id', Auth::id())
-            ->whereNull('confirmado_en')
-            ->orderByDesc('id')
-            ->get();
-
-        return view('boletas.index', compact('boletas', 'trabajadores', 'puedeGestionar', 'boletasPendientesConfirmar'));
-    }
-
-    /**
-     * El propio trabajador confirma que una boleta subida le pertenece.
-     * Solo el dueño de la boleta puede confirmarla.
-     */
-    public function confirmar(Boleta $boleta)
-    {
-        abort_if($boleta->user_id !== Auth::id(), 403, 'Esta boleta no te pertenece.');
-
-        if (!$boleta->confirmado_en) {
-            $boleta->confirmado_en = now();
-            $boleta->save();
-        }
-
-        return back()->with('success', 'Confirmaste que esta boleta te pertenece.');
+        return view('boletas.index', compact('boletas', 'trabajadores', 'puedeGestionar'));
     }
 
     public function store(Request $request)

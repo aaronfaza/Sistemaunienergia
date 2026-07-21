@@ -23,227 +23,299 @@
   <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css"> -->
 
   <style>
+    /* ===== Paleta corporativa (ajusta aquí) ===== */
     :root{
-      --brand-primary:#1F3A5F;
-      --brand-primary-dark:#16283F;
-      --brand-accent:#2F6F4E;
-      --brand-info:#0E7490;
-      --brand-danger:#B91C1C;
-      --brand-warning:#B45309;
-      --text-on-brand:#ffffff;
-      --header-h:52px;
-      --footer-h:40px;
+      --brand-primary: #003366;   /* azul corporativo */
+      --brand-primary-dark: #002B5C;
+      --brand-accent: #00A86B;    /* verde acento */
+      --brand-accent-dark: #038b5a;
+      --brand-info: #17a2b8;      /* info */
+      --brand-danger: #dc3545;    /* danger */
+      --sidebar-bg: #121212;      /* fondo cabecera sidebar */
+      --sidebar-main: #1F1F1F;    /* fondo cuerpo sidebar */
+      --text-on-brand: #ffffff;
 
-      --page-bg:#F3F4F6;
-      --surface:#ffffff;
-      --border:#D9DCE1;
-      --border-strong:#C4C9D2;
-      --text-primary:#1F2937;
-      --text-secondary:#6B7280;
-
-      --sidebar-bg:#ffffff;
-      --sidebar-border:#D9DCE1;
-      --sidebar-text:#3F4A5A;
-      --sidebar-text-active:var(--brand-primary);
+      /* Alturas para layout sticky */
+      --header-h: 56px;  /* ajusta si tu navbar es más alto */
+      --footer-h: 44px;  /* pon 0 si no quieres footer fijo */
     }
 
-    * { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
-
-    html, body{ height:100%; overflow:hidden; }
-    .wrapper{ height:100vh; overflow:hidden; }
-
-    .navbar-uni{ background:var(--brand-primary); border-bottom:1px solid var(--brand-primary-dark); }
-    .navbar-uni .nav-link, .navbar-uni .navbar-brand{ color:var(--text-on-brand); }
-    .main-header{ position:sticky; top:0; z-index:1035; height:var(--header-h); }
-
-    /* ===== Sidebar claro, sobrio ===== */
-    .main-sidebar{
-      background:var(--sidebar-bg) !important;
-      border-right:1px solid var(--sidebar-border);
-      display:flex;
-      flex-direction:column;
+    /* ========== LAYOUT: navbar/sidebar fijos y scroll SOLO en el contenido ========== */
+    html, body{
+      height: 100%;
+      overflow: hidden; /* bloquea scroll global */
     }
-    .brand-area{ background:var(--sidebar-bg); border-bottom:1px solid var(--sidebar-border); }
-    .brand-area .brand-text{ color:var(--brand-primary); font-weight:600; letter-spacing:.2px; }
-    .sidebar{ flex:1 1 auto; display:flex; flex-direction:column; min-height:0; padding-bottom:0!important; }
-    .sidebar-scroll{ flex:1 1 auto; overflow-y:auto; }
+    .wrapper{ height: 100vh; overflow: hidden; }
 
-    .nav-sidebar .nav-link{
-      color:var(--sidebar-text) !important;
-      border-radius:2px;
-      margin:1px 8px;
-      font-weight:500;
-      font-size:.88rem;
-    }
-    .nav-sidebar .nav-link.active{
-      background:#EAEEF3 !important;
-      color:var(--sidebar-text-active) !important;
-      font-weight:600;
-      box-shadow:inset 3px 0 0 var(--brand-primary);
-    }
-    .nav-sidebar .nav-link:hover{ background:#F3F4F6 !important; color:var(--sidebar-text-active) !important; }
-    .nav-sidebar .nav-treeview .nav-link{ margin-left:16px; }
-    .nav-sidebar .nav-link p, .nav-sidebar .nav-link .right{ color:inherit; }
+    /* Navbar */
+    .navbar-uni { background-color: var(--brand-primary); box-shadow: 0 2px 4px rgba(0,0,0,.2); }
+    .navbar-uni .nav-link, .navbar-uni .navbar-brand { color: var(--text-on-brand); }
+    .navbar-uni .nav-link:hover { opacity: .9; }
+    .main-header{ position: sticky; top: 0; z-index: 1035; height: var(--header-h); }
 
-    /* ===== Pie del sidebar: usuario + Cerrar sesión ===== */
-    .sidebar-user-footer{
-      flex-shrink:0;
-      border-top:1px solid var(--sidebar-border);
-      background:#FAFAFB;
-      padding:12px 14px;
+    /* Sidebar */
+    .main-sidebar { background-color: var(--sidebar-main) !important; }
+    .brand-area { background-color: var(--sidebar-bg); }
+    .brand-area .brand-text { color: var(--text-on-brand); }
+    .nav-sidebar .nav-link { color: #eaeaea !important; border-radius: .35rem; margin: 0 .25rem; }
+    .nav-sidebar .nav-link.active {
+      background: linear-gradient(90deg, var(--brand-primary) 0%, var(--brand-primary-dark) 100%);
+      color: #fff !important;
     }
-    .sidebar-user-footer .avatar{
-      width:34px; height:34px; border-radius:2px; object-fit:cover; flex-shrink:0;
-    }
-    .sidebar-user-footer .nombre{ font-size:.83rem; font-weight:600; color:var(--text-primary); line-height:1.2; }
-    .sidebar-user-footer .cargo{ font-size:.72rem; color:var(--text-secondary); line-height:1.2; }
-    .sidebar-logout-btn{
-      display:flex; align-items:center; justify-content:center; gap:.4rem;
-      width:100%; margin-top:8px; padding:.4rem; border-radius:2px;
-      background:var(--surface); color:var(--brand-danger); font-weight:600; font-size:.8rem;
-      border:1px solid var(--border); text-decoration:none;
-    }
-    .sidebar-logout-btn:hover{ background:#FEF2F2; border-color:#F3C6C6; color:var(--brand-danger); text-decoration:none; }
+    .nav-sidebar .nav-link:hover { background-color: rgba(255,255,255,.08) !important; color: #fff !important; }
+    .nav-icon.text-info { color: var(--brand-info) !important; }
+    .nav-icon.text-success { color: var(--brand-accent) !important; }
 
+    /* Contenido: ÚNICO que scrollea */
     .content-wrapper{
-      background-color:var(--page-bg);
-      height:calc(100vh - var(--header-h) - var(--footer-h));
-      overflow:auto;
-      -webkit-overflow-scrolling:touch;
+      background-color:#f8f9fa;
+      height: calc(100vh - var(--header-h) - var(--footer-h));
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
     }
-    .main-footer{ position:sticky; bottom:0; z-index:1020; background:var(--surface); border-top:1px solid var(--border); font-size:.8rem; color:var(--text-secondary); }
 
-    @media (min-width:992px){ :root{ --header-h:56px; } }
+    /* Footer fijo abajo (quítalo si no lo quieres fijo) */
+    .main-footer{
+      position: sticky; bottom: 0; z-index: 1020; background:#fff;
+    }
+
+    @media (min-width: 992px){
+      :root{ --header-h: 64px; } /* header un poco más alto en desktop */
+    }
 
     /* Tipografía de títulos */
     .heading-font { font-family: 'Montserrat', sans-serif; }
 
-    .card-clean{ border-radius:4px; border:1px solid var(--border); box-shadow:none; }
-    .card-clean .card-header{ background:var(--surface); font-weight:600; letter-spacing:.1px; border-bottom:1px solid var(--border); }
+    /* Cards limpias */
+    .card-clean { border: 1px solid rgba(0,0,0,.06); box-shadow: 0 2px 10px rgba(0,0,0,.04); }
 
-    /* ===== Cards generales (ficha, secciones de modales) ===== */
-    .card{
-      border-radius:4px;
-      border:1px solid var(--border);
-      box-shadow:none;
-    }
-    .card-header{
-      background:var(--surface);
-      font-weight:600;
-      letter-spacing:.1px;
-      border-bottom:1px solid var(--border);
-    }
-
-    .btn{ border-radius:3px!important; font-weight:600; font-size:.85rem; box-shadow:none!important; transition:background-color .12s ease; }
-    .btn-brand{ background:var(--brand-primary); border:1px solid var(--brand-primary-dark); color:#fff!important; }
-    .btn-brand:hover{ background:var(--brand-primary-dark); color:#fff; }
-    .btn-primary{ background:var(--brand-primary); border:1px solid var(--brand-primary-dark); }
-    .btn-primary:hover{ background:var(--brand-primary-dark); }
-    .btn-success{ background:var(--surface); border:1px solid var(--brand-accent); color:var(--brand-accent); }
-    .btn-success:hover{ background:#EFFAF4; color:var(--brand-accent); }
-    .btn-info{ background:var(--surface); border:1px solid var(--brand-info); color:var(--brand-info); }
-    .btn-info:hover{ background:#ECFAFB; color:var(--brand-info); }
-    .btn-warning{ background:var(--surface); border:1px solid #F5D08A; color:var(--brand-warning); }
-    .btn-warning:hover{ background:#FFFBEB; color:var(--brand-warning); }
-    .btn-danger{ background:var(--surface); border:1px solid #F3C6C6; color:var(--brand-danger); }
-    .btn-danger:hover{ background:#FEF2F2; color:var(--brand-danger); }
-    .btn-outline-secondary{ border-radius:3px!important; }
-    .btn-fw{ font-weight:600; }
-
-    /* Buscador (ya no en píldora) */
-    .input-group .form-control{ border-radius:3px 0 0 3px; }
-    .input-group .btn{ border-radius:0 3px 3px 0!important; }
-
-    /* ===== KPI cards — planas, con borde, sin sombra ===== */
+    /* ===== KPI Cards ===== */
+    .dashboard-safe-container{ padding-left:clamp(16px,4vw,36px); padding-right:clamp(16px,4vw,36px); }
     .stat-row{ margin-left:-8px; margin-right:-8px; }
     .stat-row > [class*="col-"]{ padding-left:8px; padding-right:8px; }
+    @media (min-width: 992px){ .stat-row-lg-nowrap{ flex-wrap:nowrap!important; } }
+
     .stat-card{
-      display:flex; align-items:center; gap:12px;
-      padding:12px 14px; border-radius:4px; min-height:76px;
-      background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--border-strong);
+      display:flex; align-items:center; gap:14px;
+      padding:14px 16px; border-radius:14px; min-height:96px;
+      background:linear-gradient(180deg,#fff,#fbfcff);
+      border:1px solid #eef2f7; box-shadow:0 6px 16px rgba(20,30,58,0.1);
+      transition:transform .2s ease, box-shadow .2s ease;
     }
-    .stat-card.is-primary{ border-left-color:var(--brand-primary); }
-    .stat-card.is-info{ border-left-color:var(--brand-info); }
-    .stat-card.is-success{ border-left-color:var(--brand-accent); }
-    .stat-card.is-warning{ border-left-color:var(--brand-warning); }
-    .stat-icon{ width:34px; height:34px; border-radius:3px; display:grid; place-items:center; flex-shrink:0; background:var(--page-bg); }
-    .stat-icon i{ font-size:16px; }
-    .is-primary .stat-icon{ color:var(--brand-primary); }
-    .is-info .stat-icon{ color:var(--brand-info); }
-    .is-success .stat-icon{ color:var(--brand-accent); }
-    .is-warning .stat-icon{ color:var(--brand-warning); }
-    .stat-meta{ display:flex; flex-direction:column; color:var(--text-primary); }
-    .stat-kpi span{ font-weight:700; font-size:clamp(18px,2.4vw,22px); line-height:1.1; }
-    .stat-label{ font-size:.78rem; color:var(--text-secondary); }
+    .stat-card:hover{ transform:translateY(-2px); box-shadow:0 12px 28px rgba(20,30,58,0.12); }
+    .stat-icon{ width:48px; height:48px; border-radius:12px; display:grid; place-items:center; background:#eef4ff; }
+    .stat-icon i{ font-size:20px; }
+    .is-primary .stat-icon{ background:rgba(13,110,253,.12); color:#0d6efd; }
+    .is-info .stat-icon{ background:rgba(43,183,246,.12); color:#2bb7f6; }
+    .is-success .stat-icon{ background:rgba(24,181,143,.12); color:#18b58f; }
+    .stat-meta{ display:flex; flex-direction:column; color:#25334a; }
+    .stat-kpi span{ font-weight:700; font-size:clamp(20px,3.5vw,28px); letter-spacing:-.5px; line-height:1; }
+    .stat-label{ font-size:.85rem; opacity:.8; }
 
-    /* ===== Tabla — densa, tipo hoja de datos empresarial ===== */
-    .table{ border-collapse:collapse!important; border-spacing:0; }
-    table thead th{
-      background:#F3F4F6!important; border:1px solid var(--border)!important; font-size:.72rem;
-      text-transform:uppercase; letter-spacing:.05em; color:var(--text-secondary); padding:.55rem .7rem; white-space:nowrap;
-    }
-    table tbody tr{ background:var(--surface); }
-    table tbody tr:hover{ background:#F8FAFC; }
-    table tbody td{ border:1px solid var(--border)!important; vertical-align:middle; padding:.55rem .7rem; font-size:.86rem; color:var(--text-primary); }
+    /* ======================================================
+   CONTROL DE CARTAS – UX/UI ENTERPRISE UNIENERGIA
+   ====================================================== */
 
-    .filters-row{ background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:.75rem 1rem; }
+/* =========================
+   CARDS GENERALES
+   ========================= */
+.card {
+  border-radius: 18px;
+  border: 1px solid rgba(0,0,0,.05);
+  box-shadow: 0 14px 34px rgba(15,23,42,.06);
+}
 
-    .modal-content{ border-radius:4px!important; box-shadow:0 2px 12px rgba(0,0,0,.15); }
-    .modal-header, .modal-footer{ border-color:var(--border); }
+.card-header {
+  background: linear-gradient(180deg, #ffffff, #f9fafb);
+  font-weight: 600;
+  letter-spacing: .2px;
+}
 
-    .form-control, .custom-select, textarea{ border-radius:3px; font-size:.86rem; border-color:var(--border-strong); }
-    .form-control:focus, .custom-select:focus, textarea:focus{ border-color:var(--brand-primary); box-shadow:0 0 0 2px rgba(31,58,95,.12); }
-    label{ font-size:.82rem; font-weight:600; color:var(--text-primary); }
+/* =========================
+   BOTONES – SISTEMA UNIFICADO
+   ========================= */
+.btn {
+  border-radius: 999px !important;
+  font-weight: 600;
+  letter-spacing: .2px;
+  transition: all .2s ease;
+}
 
-    .empty-state{ padding:2rem 1rem; text-align:center; color:var(--text-secondary); }
-    .empty-state i{ font-size:1.8rem; color:var(--border-strong); display:block; margin-bottom:.5rem; }
+/* Nueva Carta */
+.btn-success {
+  background: linear-gradient(135deg, #10b981, #047857);
+  border: none;
+  box-shadow: 0 8px 20px rgba(16,185,129,.35);
+}
+.btn-success:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(16,185,129,.45);
+}
 
-    .badge{ font-weight:600; padding:.3rem .5rem; border-radius:3px; font-size:.72rem; }
+/* Buscar */
+.btn-primary {
+  background: linear-gradient(135deg, #003366, #002B5C);
+  border: none;
+  box-shadow: 0 6px 18px rgba(0,51,102,.35);
+}
+
+/* Ver */
+.btn-info {
+  background: linear-gradient(135deg, #0ea5e9, #0369a1);
+  border: none;
+  box-shadow: 0 6px 16px rgba(14,165,233,.35);
+}
+
+/* Editar */
+.btn-warning {
+  background: rgba(245,158,11,.15);
+  border: none;
+  color: #b45309;
+}
+.btn-warning:hover {
+  background: rgba(245,158,11,.25);
+}
+
+/* Eliminar */
+.btn-danger {
+  background: rgba(239,68,68,.12);
+  border: none;
+  color: #ef4444;
+}
+.btn-danger:hover {
+  background: rgba(239,68,68,.22);
+}
+
+/* =========================
+   TABLA DE CARTAS (NO BOOTSTRAP LOOK)
+   ========================= */
+.table {
+  border-collapse: separate !important;
+  border-spacing: 0 8px;
+}
+
+.table thead th {
+  background: #f8fafc !important;
+  border: none !important;
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: #475569;
+  padding: .75rem;
+}
+
+.table tbody tr {
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(15,23,42,.06);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.table tbody tr:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(15,23,42,.12);
+}
+
+.table tbody td {
+  border: none !important;
+  vertical-align: middle;
+  padding: .65rem .75rem;
+  font-size: .9rem;
+  color: #1e293b;
+}
+
+/* Código */
+.table tbody td:nth-child(2) {
+  font-weight: 600;
+  color: #2563eb;
+}
+
+/* =========================
+   BUSCADOR
+   ========================= */
+.input-group .form-control {
+  border-radius: 999px 0 0 999px;
+}
+
+.input-group .btn {
+  border-radius: 0 999px 999px 0 !important;
+}
+
+/* =========================
+   MODALES – FICHA CORPORATIVA
+   ========================= */
+.modal-content {
+  border-radius: 20px !important;
+  box-shadow: 0 24px 48px rgba(15,23,42,.25);
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(0,0,0,.05);
+}
+
+.modal-footer {
+  border-top: 1px solid rgba(0,0,0,.05);
+}
+
+/* =========================
+   FORMULARIOS
+   ========================= */
+.form-control,
+.custom-select,
+textarea {
+  border-radius: 12px;
+  font-size: .9rem;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.form-control:focus,
+.custom-select:focus,
+textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.18);
+}
+
   </style>
 
 <style>
 /* ===== ESTADOS DE CARTAS ===== */
 .estado-select {
-  border-radius: 3px;
+  border-radius: 999px;
   font-weight: 600;
-  font-size: .78rem;
-  padding: 4px 8px;
-  border: 1px solid var(--border-strong);
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border: none;
   outline: none;
   cursor: pointer;
   min-width: 120px;
   text-align: center;
-  background: var(--surface);
+  transition: all .2s ease;
 }
 
 /* Pendiente */
 .estado-pendiente {
-  background: #FFFBEB;
-  color: var(--brand-warning);
-  border-color: #F5D08A;
+  background: rgba(245, 158, 11, .18);
+  color: #b45309;
 }
 .estado-pendiente:hover {
-  background: #FFF3D6;
+  background: rgba(245, 158, 11, .30);
 }
 
 /* Ejecutado */
 .estado-ejecutado {
-  background: #EFFAF4;
-  color: var(--brand-accent);
-  border-color: #BFE3CD;
+  background: rgba(16, 185, 129, .20);
+  color: #047857;
 }
 .estado-ejecutado:hover {
-  background: #E3F5EA;
+  background: rgba(16, 185, 129, .32);
 }
 
 /* Rechazado */
 .estado-rechazado {
-  background: #FEF2F2;
-  color: var(--brand-danger);
-  border-color: #F3C6C6;
+  background: rgba(239, 68, 68, .18);
+  color: #b91c1c;
 }
 .estado-rechazado:hover {
-  background: #FCE4E4;
+  background: rgba(239, 68, 68, .30);
 }
 </style>
 
@@ -301,21 +373,22 @@
 
         <!-- Usuario -->
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle d-flex align-items-center px-2 py-1 text-white"
-             href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle d-flex align-items-center px-3 py-2 rounded-pill shadow-sm text-white"
+             href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+             style="background-color: var(--brand-primary-dark);">
             @if(Auth::user()->foto_perfil)
-              <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" style="width:28px;height:28px;border-radius:2px;object-fit:cover;">
+              <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="rounded-circle" width="32" height="32" style="object-fit:cover;">
             @else
-              <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=1F3A5F&color=fff&size=28" alt="Avatar" style="width:28px;height:28px;border-radius:2px;">
+              <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=32" alt="Avatar" class="rounded-circle" width="32" height="32">
             @endif
             <span class="d-none d-md-inline font-weight-semibold ml-2">{{ Auth::user()->name }}</span>
           </a>
-          <div class="dropdown-menu dropdown-menu-right shadow-sm border" style="border-radius:4px;min-width:230px;">
+          <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" style="border-radius:12px;min-width:240px;">
             <div class="dropdown-item text-center bg-light py-3">
               @if(Auth::user()->foto_perfil)
-                <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="mb-2" style="width:56px;height:56px;border-radius:3px;object-fit:cover;">
+                <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="rounded-circle mb-2" style="width:64px;height:64px;object-fit:cover;">
               @else
-                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=1F3A5F&color=fff&size=56" alt="Avatar" class="mb-2" style="border-radius:3px;">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=64" alt="Avatar" class="rounded-circle mb-2">
               @endif
               <strong class="text-dark d-block">{{ Auth::user()->name }}</strong>
               <p class="text-muted small mb-0">{{ Auth::user()->cargo ?? 'Cargo no asignado' }}</p>
@@ -336,20 +409,21 @@
   </nav>
 
  <!-- Sidebar -->
-  <aside class="main-sidebar">
-    <a href="#" class="brand-link text-center brand-area d-block py-3">
-      <img src="{{ asset('img/logo.png.png') }}" style="width:22px;height:22px;margin-right:8px;">
-      <span class="brand-text">UNIENERGIA ABC</span>
+<!-- Sidebar -->
+  <aside class="main-sidebar elevation-4">
+    <a href="#" class="brand-link text-center brand-area">
+      <img src="{{ asset('img/logo.png.png') }}" style="width:25px;height:25px;margin-right:8px;">
+      <span class="brand-text font-weight-bold">UNIENERGIA ABC</span>
     </a>
     <div class="sidebar">
-      <nav class="mt-3 sidebar-scroll">
+      <nav class="mt-3">
         <ul class="nav nav-pills nav-sidebar flex-column"
     data-widget="treeview"
     data-accordion="true">
            <li class="nav-item">
-          <a href="{{ route('bienvenida') }}"
+          <a href="{{ route('bienvenida') }}" 
              class="nav-link {{ request()->routeIs('bienvenida') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-home"></i>
+            <i class="nav-icon fas fa-home" style="color: var(--brand-secondary);"></i>
             <p class="ml-2 mb-0">Bienvenida</p>
           </a>
         </li>
@@ -357,7 +431,7 @@
         @if(Auth::user()->puedeVerMantenimiento())
         <li class="nav-item has-treeview {{ request()->routeIs('reportes.*') || request()->routeIs('anomalias.*') ? 'menu-open' : '' }}">
           <a href="#" class="nav-link {{ request()->routeIs('reportes.*') || request()->routeIs('anomalias.*') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-tools"></i>
+            <i class="nav-icon fas fa-tools" style="color: var(--brand-accent);"></i>
             <p>
               Mantenimiento
               <i class="right fas fa-angle-left"></i>
@@ -366,13 +440,13 @@
           <ul class="nav nav-treeview ml-2">
             <li class="nav-item">
               <a href="{{ route('reportes.index') }}" class="nav-link {{ request()->routeIs('reportes.*') ? 'active' : '' }}">
-                <i class="fas fa-clipboard-list nav-icon"></i>
+                <i class="fas fa-clipboard-list nav-icon" style="color: var(--brand-accent);"></i>
                 <p>Reportes</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="{{ route('anomalias.index') }}" class="nav-link {{ request()->routeIs('anomalias.*') ? 'active' : '' }}">
-                <i class="fas fa-exclamation-triangle nav-icon"></i>
+                <i class="fas fa-exclamation-triangle nav-icon" style="color: var(--brand-danger);"></i>
                 <p>Anomalías</p>
               </a>
             </li>
@@ -382,7 +456,7 @@
 
         <li class="nav-item">
           <a href="{{ route('boletas.index') }}" class="nav-link {{ request()->routeIs('boletas.*') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-file-invoice-dollar"></i>
+            <i class="nav-icon fas fa-file-invoice-dollar" style="color: var(--brand-accent);"></i>
             <p class="ml-2 mb-0">{{ Auth::user()->puedeGestionarBoletas() ? 'Gestionar Boletas' : 'Mis Boletas' }}</p>
           </a>
         </li>
@@ -390,14 +464,14 @@
           @if(Auth::user()->tieneAccesoCompleto())
           <li class="nav-item">
             <a href="{{ route('requerimientos.index') }}" class="nav-link {{ request()->routeIs('requerimientos.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-file-alt"></i>
+              <i class="nav-icon fas fa-file-alt" style="color: var(--brand-info);"></i>
               <p class="ml-2 mb-0">Requerimientos</p>
             </a>
           </li>
 
         <li class="nav-item has-treeview">
           <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-folder-open"></i>
+            <i class="nav-icon fas fa-folder-open" style="color: var(--brand-info);"></i>
             <p>
               Control Cartas
               <i class="right fas fa-angle-left"></i>
@@ -408,14 +482,14 @@
             <li class="nav-item">
               <a href="{{ route('control_cartas.index') }}"
                 class="nav-link {{ request()->routeIs('control_cartas.*') ? 'active' : '' }}">
-                <i class="far fa-envelope nav-icon"></i>
+                <i class="far fa-envelope nav-icon" style="color: var(--brand-accent);"></i>
                 <p>SO-PRO</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="{{ route('cartas_fis.index') }}"
                 class="nav-link {{ request()->routeIs('cartas_fis.*') ? 'active' : '' }}">
-                <i class="far fa-clipboard nav-icon"></i>
+                <i class="far fa-clipboard nav-icon" style="color: var(--brand-info);"></i>
                 <p>FIS</p>
               </a>
             </li>
@@ -424,7 +498,7 @@
          <li class="nav-item">
           <a href="{{ route('logistica_lotes.index') }}"
             class="nav-link {{ request()->routeIs('logistica_lotes.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-boxes"></i>
+              <i class="nav-icon fas fa-boxes" style="color: var(--brand-primary-light);"></i>
               <p class="ms-2 mb-0">Logística Lote</p>
           </a>
       </li>
@@ -432,29 +506,10 @@
 
         </ul>
       </nav>
-
-      <!-- Pie del sidebar: usuario + Cerrar sesión -->
-      <div class="sidebar-user-footer">
-        <div class="d-flex align-items-center" style="gap:.6rem;">
-          @if(Auth::user()->foto_perfil)
-            <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="avatar">
-          @else
-            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=1F3A5F&color=fff&size=34" alt="Avatar" class="avatar">
-          @endif
-          <div class="text-truncate">
-            <div class="nombre text-truncate">{{ Auth::user()->name }}</div>
-            <div class="cargo text-truncate">{{ Auth::user()->cargo ?? 'Sin cargo asignado' }}</div>
-          </div>
-        </div>
-        <a href="{{ route('logout') }}" class="sidebar-logout-btn"
-           onclick="event.preventDefault(); document.getElementById('logout-form-sidebar').submit();">
-          <i class="fas fa-sign-out-alt"></i> Cerrar sesión
-        </a>
-      </div>
     </div>
   </aside>
 
-
+  
 
 
 
@@ -710,7 +765,7 @@
 
       <!-- HEADER -->
       <div class="modal-header text-white"
-           style="background:var(--brand-accent); border-radius:4px 4px 0 0;">
+           style="background:linear-gradient(135deg,#10b981,#047857); border-radius:16px 16px 0 0;">
         <h5 class="modal-title font-weight-bold" id="modalAgregarLabel">
           <i class="fas fa-file-alt mr-2"></i> Registro de Carta SO-PRO
         </h5>
@@ -903,7 +958,7 @@
 
                   <!-- HEADER -->
                   <div class="modal-header text-white"
-                      style="background: var(--brand-primary); border-radius:4px 4px 0 0;">
+                      style="background: linear-gradient(135deg, #003366, #002B5C); border-radius:18px 18X|x 0 0;">
                     <div>
                       <h5 class="modal-title mb-0 font-weight-bold">
                         📄 Carta SO-PRO — {{ $carta->codigo }}
@@ -1082,9 +1137,6 @@
 
 <!-- Formulario de Cierre de sesión (Logout) -->
 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
-    @csrf
-</form>
-<form id="logout-form-sidebar" action="{{ route('logout') }}" method="POST" style="display:none;">
     @csrf
 </form>
 
