@@ -22,9 +22,11 @@ class DashboardWelcomeController extends Controller
 
         // Cada rol ve la "Bienvenida" adaptada a su propio caso de uso:
         // mecánico/supervisor -> Mantenimiento y Anomalías; RRHH -> Boletas;
-        // el resto (admin) -> Requerimientos, igual que antes.
+        // admin -> Requerimientos; una cuenta autoregistrada sin rol asignado
+        // no ve datos de negocio de ningún módulo.
         $vistaMantenimiento = Auth::user()->tieneAccesoLimitadoAMantenimiento();
         $vistaRRHH = Auth::user()->esRRHH();
+        $vistaPendiente = Auth::user()->esCuentaPendiente();
 
         if ($vistaMantenimiento) {
             [$kpiCards, $actividad, $porArea, $porDia, $eventos, $notificaciones] =
@@ -32,6 +34,9 @@ class DashboardWelcomeController extends Controller
         } elseif ($vistaRRHH) {
             [$kpiCards, $actividad, $porArea, $porDia, $eventos, $notificaciones] =
                 $this->datosRRHH($hoy, $inicioMes, $finMes);
+        } elseif ($vistaPendiente) {
+            [$kpiCards, $actividad, $porArea, $porDia, $eventos, $notificaciones] =
+                $this->datosPendiente();
         } else {
             [$kpiCards, $actividad, $porArea, $porDia, $eventos, $notificaciones] =
                 $this->datosRequerimientos($hoy, $inicioMes, $finMes);
@@ -70,8 +75,26 @@ class DashboardWelcomeController extends Controller
             'ultimasConexiones',
             'cumpleañosMes',
             'vistaMantenimiento',
-            'vistaRRHH'
+            'vistaRRHH',
+            'vistaPendiente'
         ));
+    }
+
+    /**
+     * Datos para una cuenta autoregistrada que todavía no tiene rol asignado:
+     * no debe ver ningún dato de negocio, solo un aviso de que su cuenta
+     * está a la espera de que un administrador le asigne un rol.
+     */
+    private function datosPendiente(): array
+    {
+        $kpiCards = [];
+        $actividad = collect();
+        $porArea = collect();
+        $porDia = collect();
+        $eventos = collect();
+        $notificaciones = collect();
+
+        return [$kpiCards, $actividad, $porArea, $porDia, $eventos, $notificaciones];
     }
 
     /**

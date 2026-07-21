@@ -703,7 +703,7 @@
                         <input type="checkbox" name="remember">
                         Recordarme
                     </label>
-                    <a href="#">¿Olvidó su contraseña?</a>
+                    <a href="{{ route('password.request') }}">¿Olvidó su contraseña?</a>
                 </div>
 
                 <button type="submit">Ingresar</button>

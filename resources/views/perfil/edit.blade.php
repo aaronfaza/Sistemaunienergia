@@ -351,6 +351,8 @@
             <span class="rol-badge">
               @if($usuario->esSupervisorMantenimiento()) Supervisor de Mantenimiento
               @elseif($usuario->esSoloMantenimiento()) Mecánico
+              @elseif($usuario->esRRHH()) Recursos Humanos
+              @elseif($usuario->esCuentaPendiente()) Pendiente de asignación
               @else Administración
               @endif
             </span>
@@ -385,6 +387,14 @@
                   <label>Fecha de cumpleaños</label>
                   <input type="date" name="fecha_nacimiento" class="form-control shadow-sm"
                          value="{{ old('fecha_nacimiento', optional($usuario->fecha_nacimiento)->format('Y-m-d')) }}">
+                </div>
+
+                <div class="mb-3">
+                  <label>Correo de recuperación</label>
+                  <input type="email" name="correo_recuperacion" class="form-control shadow-sm"
+                         value="{{ old('correo_recuperacion', $usuario->correo_recuperacion) }}"
+                         placeholder="tuCorreoPersonal@gmail.com">
+                  <small class="text-muted">Puede ser Gmail, Hotmail o cualquier correo personal. Aquí recibirás el código si olvidas tu contraseña.</small>
                 </div>
 
                 <button type="submit" class="btn btn-brand btn-fw">

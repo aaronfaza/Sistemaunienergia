@@ -30,7 +30,7 @@ class RestringirAccesoPorRol
     ];
 
     protected array $permitidasPorDefecto = [
-        'bienvenida', 'perfil.*', 'logout',
+        'bienvenida', 'perfil.*', 'boletas.*', 'logout',
     ];
 
     public function handle($request, Closure $next)

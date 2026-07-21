@@ -29,6 +29,7 @@ class User extends Authenticatable
         'foto_perfil',
         'fecha_nacimiento',
         'fecha_ingreso',
+        'correo_recuperacion',
     ];
 
     /**
@@ -91,6 +92,15 @@ class User extends Authenticatable
     public function puedeGestionarBoletas(): bool
     {
         return $this->esRRHH() || $this->tieneAccesoCompleto();
+    }
+
+    /**
+     * ¿Es una cuenta autoregistrada que todavía no tiene rol asignado por
+     * un administrador? No tiene acceso a ningún módulo de negocio.
+     */
+    public function esCuentaPendiente(): bool
+    {
+        return $this->rol === 'pendiente';
     }
 
     /**

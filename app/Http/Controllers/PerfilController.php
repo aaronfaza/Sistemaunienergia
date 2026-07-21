@@ -27,12 +27,14 @@ class PerfilController extends Controller
             'direccion' => 'nullable|string|max:255',
             'fecha_nacimiento' => 'nullable|date|before:today',
             'foto_perfil' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:15360',
+            'correo_recuperacion' => 'nullable|email|max:255',
         ]);
 
         $user = Auth::user();
 
         $user->direccion = $request->direccion;
         $user->fecha_nacimiento = $request->fecha_nacimiento;
+        $user->correo_recuperacion = $request->correo_recuperacion;
 
         if ($request->hasFile('foto_perfil')) {
             if ($user->foto_perfil && Storage::disk('public')->exists($user->foto_perfil)) {
