@@ -13,33 +13,157 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
 
-  <!-- Fuente para títulos -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
-
   <!-- DataTables (Bootstrap 4) -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 
   <style>
     :root{
-      --brand-primary:#003366;
-      --brand-primary-dark:#002B5C;
-      --brand-accent:#00A86B;
-      --brand-accent-dark:#038b5a;
-      --brand-info:#17a2b8;
-      --brand-danger:#dc3545;
-      --sidebar-bg:#121212;
-      --sidebar-main:#1F1F1F;
+      /* Paleta corporativa sobria — sin gradientes, sin tonos oscuros de fondo */
+      --brand-primary:#1F3A5F;
+      --brand-primary-dark:#16283F;
+      --brand-accent:#2F6F4E;
+      --brand-info:#0E7490;
+      --brand-danger:#B91C1C;
+      --brand-warning:#B45309;
       --text-on-brand:#ffffff;
-      --header-h:56px;
-      --footer-h:44px;
+      --header-h:52px;
+      --footer-h:40px;
+
+      --page-bg:#F3F4F6;
+      --surface:#ffffff;
+      --border:#D9DCE1;
+      --border-strong:#C4C9D2;
+      --text-primary:#1F2937;
+      --text-secondary:#6B7280;
+
+      --sidebar-bg:#ffffff;
+      --sidebar-border:#D9DCE1;
+      --sidebar-text:#3F4A5A;
+      --sidebar-text-active:var(--brand-primary);
     }
 
+    * { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+
+    html, body{ height:100%; overflow:hidden; }
+    .wrapper{ height:100vh; overflow:hidden; }
+
+    .navbar-uni{ background:var(--brand-primary); border-bottom:1px solid var(--brand-primary-dark); }
+    .navbar-uni .nav-link, .navbar-uni .navbar-brand{ color:var(--text-on-brand); }
+    .main-header{ position:sticky; top:0; z-index:1035; height:var(--header-h); }
+
+    /* ===== Sidebar claro, sobrio ===== */
+    .main-sidebar{
+      background:var(--sidebar-bg) !important;
+      border-right:1px solid var(--sidebar-border);
+      display:flex;
+      flex-direction:column;
+    }
+    .brand-area{ background:var(--sidebar-bg); border-bottom:1px solid var(--sidebar-border); }
+    .brand-area .brand-text{ color:var(--brand-primary); font-weight:600; letter-spacing:.2px; }
+    .sidebar{ flex:1 1 auto; display:flex; flex-direction:column; min-height:0; padding-bottom:0!important; }
+    .sidebar-scroll{ flex:1 1 auto; overflow-y:auto; }
+
+    .nav-sidebar .nav-link{
+      color:var(--sidebar-text) !important;
+      border-radius:2px;
+      margin:1px 8px;
+      font-weight:500;
+      font-size:.88rem;
+    }
+    .nav-sidebar .nav-link.active{
+      background:#EAEEF3 !important;
+      color:var(--sidebar-text-active) !important;
+      font-weight:600;
+      box-shadow:inset 3px 0 0 var(--brand-primary);
+    }
+    .nav-sidebar .nav-link:hover{ background:#F3F4F6 !important; color:var(--sidebar-text-active) !important; }
+    .nav-sidebar .nav-treeview .nav-link{ margin-left:16px; }
+    .nav-sidebar .nav-link p, .nav-sidebar .nav-link .right{ color:inherit; }
+
+    /* ===== Pie del sidebar: usuario + Cerrar sesión ===== */
+    .sidebar-user-footer{
+      flex-shrink:0;
+      border-top:1px solid var(--sidebar-border);
+      background:#FAFAFB;
+      padding:12px 14px;
+    }
+    .sidebar-user-footer .avatar{
+      width:34px; height:34px; border-radius:2px; object-fit:cover; flex-shrink:0;
+    }
+    .sidebar-user-footer .nombre{ font-size:.83rem; font-weight:600; color:var(--text-primary); line-height:1.2; }
+    .sidebar-user-footer .cargo{ font-size:.72rem; color:var(--text-secondary); line-height:1.2; }
+    .sidebar-logout-btn{
+      display:flex; align-items:center; justify-content:center; gap:.4rem;
+      width:100%; margin-top:8px; padding:.4rem; border-radius:2px;
+      background:var(--surface); color:var(--brand-danger); font-weight:600; font-size:.8rem;
+      border:1px solid var(--border); text-decoration:none;
+    }
+    .sidebar-logout-btn:hover{ background:#FEF2F2; border-color:#F3C6C6; color:var(--brand-danger); text-decoration:none; }
+
+    .content-wrapper{
+      background-color:var(--page-bg);
+      height:calc(100vh - var(--header-h) - var(--footer-h));
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+    .main-footer{ position:sticky; bottom:0; z-index:1020; background:var(--surface); border-top:1px solid var(--border); font-size:.8rem; color:var(--text-secondary); }
+
+    @media (min-width:992px){ :root{ --header-h:56px; } }
+    .heading-font{ font-family:inherit; }
+
+    .card-clean{ border-radius:4px; border:1px solid var(--border); box-shadow:none; }
+    .card-clean .card-header{ background:var(--surface); font-weight:600; letter-spacing:.1px; border-bottom:1px solid var(--border); }
+
+    .btn{ border-radius:3px!important; font-weight:600; font-size:.85rem; box-shadow:none!important; transition:background-color .12s ease; }
+    .btn-brand{ background:var(--brand-primary); border:1px solid var(--brand-primary-dark); color:#fff!important; }
+    .btn-brand:hover{ background:var(--brand-primary-dark); color:#fff; }
+    .btn-primary{ background:var(--brand-primary); border:1px solid var(--brand-primary-dark); }
+    .btn-primary:hover{ background:var(--brand-primary-dark); }
+    .btn-info{ background:var(--surface); border:1px solid var(--brand-info); color:var(--brand-info); }
+    .btn-info:hover{ background:#ECFAFB; color:var(--brand-info); }
+    .btn-warning{ background:var(--surface); border:1px solid #F5D08A; color:var(--brand-warning); }
+    .btn-warning:hover{ background:#FFFBEB; color:var(--brand-warning); }
+    .btn-outline-brand{ background:var(--surface); border:1px solid var(--brand-accent); color:var(--brand-accent); border-radius:3px!important; }
+    .btn-outline-brand:hover{ background:#ECF5EF; color:var(--brand-accent); }
+    .btn-outline-primary{ background:var(--surface); border:1px solid var(--brand-primary); color:var(--brand-primary); border-radius:3px!important; }
+    .btn-outline-primary:hover{ background:#EAEEF3; color:var(--brand-primary); }
+    .btn-danger{ background:var(--surface); border:1px solid #F3C6C6; color:var(--brand-danger); }
+    .btn-danger:hover{ background:#FEF2F2; color:var(--brand-danger); }
+    .btn-success{ background:var(--surface); border:1px solid var(--brand-accent); color:var(--brand-accent); }
+    .btn-success:hover{ background:#ECF5EF; color:var(--brand-accent); }
+    .btn-outline-secondary{ border-radius:3px!important; }
+    .btn-fw{ font-weight:600; }
+
+    #tablaReportes{ border-collapse:collapse!important; }
+    #tablaReportes thead th{
+      background:#F3F4F6!important; border:1px solid var(--border)!important; font-size:.72rem;
+      text-transform:uppercase; letter-spacing:.05em; color:var(--text-secondary); padding:.55rem .7rem; white-space:nowrap;
+    }
+    #tablaReportes tbody tr{ background:var(--surface); }
+    #tablaReportes tbody tr:hover{ background:#F8FAFC; }
+    #tablaReportes tbody td{ border:1px solid var(--border)!important; vertical-align:middle; padding:.55rem .7rem; font-size:.86rem; color:var(--text-primary); }
+    #tablaReportes tbody td:first-child{ font-weight:600; color:var(--brand-primary); }
+
+    .filters-row{ background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:.75rem 1rem; }
+
+    .modal-content{ border-radius:4px!important; box-shadow:0 2px 12px rgba(0,0,0,.15); }
+    .modal-header, .modal-footer{ border-color:var(--border); }
+
+    .form-control, .custom-select{ border-radius:3px; font-size:.86rem; border-color:var(--border-strong); }
+    .form-control:focus, .custom-select:focus{ border-color:var(--brand-primary); box-shadow:0 0 0 2px rgba(31,58,95,.12); }
+    label{ font-size:.82rem; font-weight:600; color:var(--text-primary); }
+
+    .empty-state{ padding:2rem 1rem; text-align:center; color:var(--text-secondary); }
+    .empty-state i{ font-size:1.8rem; color:var(--border-strong); display:block; margin-bottom:.5rem; }
+
+    .badge{ font-weight:600; padding:.3rem .5rem; border-radius:3px; font-size:.72rem; }
+
+    /* ===== Firma digital (signature_pad) ===== */
     .signature-card{
-      border: 1px solid rgba(0,0,0,.08);
-      border-radius: 16px;
-      padding: 12px;
-      background: #fff;
-      box-shadow: 0 10px 24px rgba(15,23,42,.06);
+      border:1px solid var(--border);
+      border-radius:4px;
+      padding:12px;
+      background:var(--surface);
     }
     .signature-head{
       display:flex;
@@ -49,19 +173,20 @@
     }
     .signature-title{
       font-weight:700;
-      font-size:.95rem;
+      font-size:.88rem;
       margin:0;
+      color:var(--text-primary);
     }
     .signature-hint{
       font-size:.78rem;
-      color:#64748b;
+      color:var(--text-secondary);
       margin:0;
     }
     .signature-wrap{
-      border: 1px dashed rgba(0,0,0,.25);
-      border-radius: 14px;
+      border:1px dashed var(--border-strong);
+      border-radius:3px;
       overflow:hidden;
-      background: #fbfdff;
+      background:#FAFAFB;
     }
 
     .signature-canvas{
@@ -77,145 +202,19 @@
       margin-top:10px;
     }
 
-
-    html, body{ height:100%; overflow:hidden; }
-    .wrapper{ height:100vh; overflow:hidden; }
-
-    .navbar-uni{ background-color:var(--brand-primary); box-shadow:0 2px 4px rgba(0,0,0,.2); }
-    .navbar-uni .nav-link, .navbar-uni .navbar-brand{ color:var(--text-on-brand); }
-    .navbar-uni .nav-link:hover{ opacity:.9; }
-    .main-header{ position:sticky; top:0; z-index:1035; height:var(--header-h); }
-
-    .main-sidebar{ background-color:var(--sidebar-main)!important; }
-    .brand-area{ background-color:var(--sidebar-bg); }
-    .brand-area .brand-text{ color:var(--text-on-brand); }
-    .nav-sidebar .nav-link{ color:#eaeaea!important; border-radius:.35rem; margin:0 .25rem; }
-    .nav-sidebar .nav-link.active{
-      background:linear-gradient(90deg,var(--brand-primary) 0%, var(--brand-primary-dark) 100%);
-      color:#fff!important;
-    }
-    .nav-sidebar .nav-link:hover{ background-color:rgba(255,255,255,.08)!important; color:#fff!important; }
-
-    .content-wrapper{
-      background-color:#f8f9fa;
-      height:calc(100vh - var(--header-h) - var(--footer-h));
-      overflow:auto;
-      -webkit-overflow-scrolling:touch;
-    }
-    .main-footer{ position:sticky; bottom:0; z-index:1020; background:#fff; }
-
-    @media (min-width:992px){ :root{ --header-h:64px; } }
-    .heading-font{ font-family:'Montserrat', sans-serif; }
-
-    .card-clean{
-      border-radius:18px;
-      border:1px solid rgba(0,0,0,.05);
-      box-shadow:0 14px 34px rgba(15,23,42,.06);
-    }
-    .card-clean .card-header{
-      background:linear-gradient(180deg,#ffffff,#f9fafb);
-      font-weight:600;
-      letter-spacing:.2px;
-    }
-
-    .btn{
-      border-radius:999px!important;
-      font-weight:600;
-      letter-spacing:.2px;
-      transition:all .2s ease;
-    }
-    .btn-brand{
-      background:linear-gradient(135deg,#2563eb,#1e40af);
-      border:none;
-      color:#fff!important;
-      box-shadow:0 8px 20px rgba(37,99,235,.35);
-    }
-    .btn-brand:hover{ transform:translateY(-1px); box-shadow:0 14px 32px rgba(37,99,235,.45); }
-    .btn-primary{
-      background:linear-gradient(135deg,#003366,#002B5C);
-      border:none;
-      box-shadow:0 6px 18px rgba(0,51,102,.35);
-    }
-    .btn-info{
-      background:linear-gradient(135deg,#0ea5e9,#0369a1);
-      border:none;
-      box-shadow:0 6px 16px rgba(14,165,233,.35);
-    }
-    .btn-outline-brand{
-      border-radius:999px;
-      border:1px solid rgba(16,185,129,.45);
-      color:#10b981;
-    }
-    .btn-outline-brand:hover{ background:rgba(16,185,129,.12); }
-    .btn-danger{ background:rgba(239,68,68,.12); border:none; color:#ef4444; }
-    .btn-danger:hover{ background:rgba(239,68,68,.22); }
-    .btn-fw{ font-weight:600; }
-
-    #tablaReportes{ border-collapse:separate!important; border-spacing:0 8px; }
-    #tablaReportes thead th{
-      background:#f8fafc!important;
-      border:none!important;
-      font-size:.78rem;
-      text-transform:uppercase;
-      letter-spacing:.05em;
-      color:#475569;
-      padding:.75rem;
-      white-space:nowrap;
-    }
-    #tablaReportes tbody tr{
-      background:#ffffff;
-      box-shadow:0 6px 18px rgba(15,23,42,.06);
-      transition:transform .18s ease, box-shadow .18s ease;
-    }
-    #tablaReportes tbody tr:hover{
-      transform:translateY(-1px);
-      box-shadow:0 14px 32px rgba(15,23,42,.12);
-    }
-    #tablaReportes tbody td{
-      border:none!important;
-      vertical-align:middle;
-      padding:.65rem .75rem;
-      font-size:.9rem;
-      color:#1e293b;
-    }
-    #tablaReportes tbody td:first-child{ font-weight:600; color:#2563eb; }
-
-    .filters-row{
-      background:#ffffff;
-      border-radius:16px;
-      padding:.85rem 1rem;
-      box-shadow:0 8px 22px rgba(15,23,42,.05);
-    }
-
-    .modal-content{
-      border-radius:20px!important;
-      box-shadow:0 24px 48px rgba(15,23,42,.25);
-    }
-    .modal-header, .modal-footer{ border-color:rgba(0,0,0,.05); }
-
-    .form-control, .custom-select{
-      border-radius:12px;
-      font-size:.9rem;
-      transition:border-color .15s ease, box-shadow .15s ease;
-    }
-    .form-control:focus, .custom-select:focus{
-      border-color:#2563eb;
-      box-shadow:0 0 0 3px rgba(37,99,235,.18);
-    }
-
     /* ===== FOTO UX ===== */
     .photo-card{
-      border:1px dashed rgba(15,23,42,.18);
-      border-radius:16px;
+      border:1px dashed var(--border-strong);
+      border-radius:4px;
       padding:12px;
-      background:linear-gradient(180deg,#fff,#fbfdff);
+      background:var(--page-bg);
     }
     .photo-preview{
       width:100%;
       height:160px;
-      border-radius:14px;
-      border:1px solid rgba(0,0,0,.06);
-      background:#f8fafc;
+      border-radius:3px;
+      border:1px solid var(--border);
+      background:var(--surface);
       display:flex;
       align-items:center;
       justify-content:center;
@@ -229,13 +228,13 @@
     }
     .photo-empty{
       font-size:.85rem;
-      color:#64748b;
+      color:var(--text-secondary);
       text-align:center;
       padding:10px;
     }
     .photo-meta{
       font-size:.8rem;
-      color:#64748b;
+      color:var(--text-secondary);
       margin-top:8px;
       line-height:1.2;
     }
@@ -251,31 +250,31 @@
       <ul class="navbar-nav d-flex align-items-center">
         <li class="nav-item">
           <a class="nav-link" data-widget="pushmenu" href="#" role="button" aria-label="Abrir menú">
-            <i class="fas fa-bars fa-lg"></i>
+            <i class="fas fa-bars"></i>
           </a>
         </li>
         <li class="nav-item d-flex align-items-center ml-2">
-          <img src="{{ asset('img/logo.png.png') }}" alt="Logo" style="width:25px;height:25px;">
+          <img src="{{ asset('img/logo.png.png') }}" alt="Logo" style="width:22px;height:22px;">
         </li>
       </ul>
 
       <ul class="navbar-nav ml-auto d-flex align-items-center">
-        <li class="nav-item dropdown mr-3">
+        <li class="nav-item dropdown mr-2">
           <a class="nav-link position-relative" href="#" id="notificacionesDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-bell fa-lg text-white"></i>
+            <i class="fas fa-bell text-white"></i>
             @if($notificaciones->count() > 0)
-              <span id="notiBadge" class="badge badge-danger position-absolute" style="top:-4px;right:-8px;font-size:.65rem;">
+              <span id="notiBadge" class="badge badge-danger position-absolute" style="top:-2px;right:-6px;font-size:.6rem;">
                 {{ $notificaciones->count() }}
               </span>
             @endif
           </a>
-          <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" aria-labelledby="notificacionesDropdown" style="min-width:300px;max-height:400px;overflow-y:auto;">
-            <h6 class="dropdown-header font-weight-bold text-dark">🔔 Últimos registros</h6>
+          <div class="dropdown-menu dropdown-menu-right shadow-sm border" aria-labelledby="notificacionesDropdown" style="min-width:300px;max-height:400px;overflow-y:auto;border-radius:4px;">
+            <h6 class="dropdown-header font-weight-bold text-dark">Últimos registros</h6>
             <div class="dropdown-divider"></div>
             @forelse($notificaciones as $notificacion)
               <div class="dropdown-item">
                 <div class="d-flex flex-column">
-                  <span class="font-weight-bold text-primary">{{ $notificacion->titulo ?? ('Requerimiento '.$notificacion->codigo) }}</span>
+                  <span class="font-weight-bold" style="color:var(--brand-primary);">{{ $notificacion->titulo ?? ('Requerimiento '.$notificacion->codigo) }}</span>
                   <small class="text-muted">{{ \Carbon\Carbon::parse($notificacion->created_at)->format('d/m/Y H:i') }}</small>
                 </div>
               </div>
@@ -286,22 +285,21 @@
         </li>
 
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle d-flex align-items-center px-3 py-2 rounded-pill shadow-sm text-white"
-             href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-expanded="false"
-             style="background-color: var(--brand-primary-dark);">
+          <a class="nav-link dropdown-toggle d-flex align-items-center px-2 py-1 text-white"
+             href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
             @if(Auth::user()->foto_perfil)
-              <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="rounded-circle" width="32" height="32" style="object-fit:cover;">
+              <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" style="width:28px;height:28px;border-radius:2px;object-fit:cover;">
             @else
-              <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=32" alt="Avatar" class="rounded-circle" width="32" height="32">
+              <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=1F3A5F&color=fff&size=28" alt="Avatar" style="width:28px;height:28px;border-radius:2px;">
             @endif
             <span class="d-none d-md-inline font-weight-semibold ml-2">{{ Auth::user()->name }}</span>
           </a>
-          <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" style="border-radius:12px;min-width:240px;">
+          <div class="dropdown-menu dropdown-menu-right shadow-sm border" style="border-radius:4px;min-width:230px;">
             <div class="dropdown-item text-center bg-light py-3">
               @if(Auth::user()->foto_perfil)
-                <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="rounded-circle mb-2" style="width:64px;height:64px;object-fit:cover;">
+                <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="mb-2" style="width:56px;height:56px;border-radius:3px;object-fit:cover;">
               @else
-                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=64" alt="Avatar" class="rounded-circle mb-2">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=1F3A5F&color=fff&size=56" alt="Avatar" class="mb-2" style="border-radius:3px;">
               @endif
               <strong class="text-dark d-block">{{ Auth::user()->name }}</strong>
               <p class="text-muted small mb-0">Usuario activo</p>
@@ -328,20 +326,20 @@
   </nav>
 
   <!-- Sidebar -->
- <aside class="main-sidebar elevation-4">
-    <a href="#" class="brand-link text-center brand-area">
-      <img src="{{ asset('img/logo.png.png') }}" style="width:25px;height:25px;margin-right:8px;">
-      <span class="brand-text font-weight-bold">UNIENERGIA ABC</span>
+  <aside class="main-sidebar">
+    <a href="#" class="brand-link text-center brand-area d-block py-3">
+      <img src="{{ asset('img/logo.png.png') }}" style="width:22px;height:22px;margin-right:8px;">
+      <span class="brand-text">UNIENERGIA ABC</span>
     </a>
     <div class="sidebar">
-      <nav class="mt-3">
+      <nav class="mt-3 sidebar-scroll">
         <ul class="nav nav-pills nav-sidebar flex-column"
     data-widget="treeview"
     data-accordion="true">
            <li class="nav-item">
-          <a href="{{ route('bienvenida') }}" 
+          <a href="{{ route('bienvenida') }}"
              class="nav-link {{ request()->routeIs('bienvenida') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-home" style="color: var(--brand-secondary);"></i>
+            <i class="nav-icon fas fa-home"></i>
             <p class="ml-2 mb-0">Bienvenida</p>
           </a>
         </li>
@@ -349,7 +347,7 @@
         @if(Auth::user()->puedeVerMantenimiento())
         <li class="nav-item has-treeview {{ request()->routeIs('reportes.*') || request()->routeIs('anomalias.*') ? 'menu-open' : '' }}">
           <a href="#" class="nav-link {{ request()->routeIs('reportes.*') || request()->routeIs('anomalias.*') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-tools" style="color: var(--brand-accent);"></i>
+            <i class="nav-icon fas fa-tools"></i>
             <p>
               Mantenimiento
               <i class="right fas fa-angle-left"></i>
@@ -358,13 +356,13 @@
           <ul class="nav nav-treeview ml-2">
             <li class="nav-item">
               <a href="{{ route('reportes.index') }}" class="nav-link {{ request()->routeIs('reportes.*') ? 'active' : '' }}">
-                <i class="fas fa-clipboard-list nav-icon" style="color: var(--brand-accent);"></i>
+                <i class="fas fa-clipboard-list nav-icon"></i>
                 <p>Reportes</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="{{ route('anomalias.index') }}" class="nav-link {{ request()->routeIs('anomalias.*') ? 'active' : '' }}">
-                <i class="fas fa-exclamation-triangle nav-icon" style="color: var(--brand-danger);"></i>
+                <i class="fas fa-exclamation-triangle nav-icon"></i>
                 <p>Anomalías</p>
               </a>
             </li>
@@ -374,7 +372,7 @@
 
         <li class="nav-item">
           <a href="{{ route('boletas.index') }}" class="nav-link {{ request()->routeIs('boletas.*') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-file-invoice-dollar" style="color: var(--brand-accent);"></i>
+            <i class="nav-icon fas fa-file-invoice-dollar"></i>
             <p class="ml-2 mb-0">{{ Auth::user()->puedeGestionarBoletas() ? 'Gestionar Boletas' : 'Mis Boletas' }}</p>
           </a>
         </li>
@@ -382,14 +380,14 @@
           @if(Auth::user()->tieneAccesoCompleto())
           <li class="nav-item">
             <a href="{{ route('requerimientos.index') }}" class="nav-link {{ request()->routeIs('requerimientos.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-file-alt" style="color: var(--brand-info);"></i>
+              <i class="nav-icon fas fa-file-alt"></i>
               <p class="ml-2 mb-0">Requerimientos</p>
             </a>
           </li>
 
         <li class="nav-item has-treeview">
           <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-folder-open" style="color: var(--brand-info);"></i>
+            <i class="nav-icon fas fa-folder-open"></i>
             <p>
               Control Cartas
               <i class="right fas fa-angle-left"></i>
@@ -400,14 +398,14 @@
             <li class="nav-item">
               <a href="{{ route('control_cartas.index') }}"
                 class="nav-link {{ request()->routeIs('control_cartas.*') ? 'active' : '' }}">
-                <i class="far fa-envelope nav-icon" style="color: var(--brand-accent);"></i>
+                <i class="far fa-envelope nav-icon"></i>
                 <p>SO-PRO</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="{{ route('cartas_fis.index') }}"
                 class="nav-link {{ request()->routeIs('cartas_fis.*') ? 'active' : '' }}">
-                <i class="far fa-clipboard nav-icon" style="color: var(--brand-info);"></i>
+                <i class="far fa-clipboard nav-icon"></i>
                 <p>FIS</p>
               </a>
             </li>
@@ -416,7 +414,7 @@
          <li class="nav-item">
           <a href="{{ route('logistica_lotes.index') }}"
             class="nav-link {{ request()->routeIs('logistica_lotes.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-boxes" style="color: var(--brand-primary-light);"></i>
+              <i class="nav-icon fas fa-boxes"></i>
               <p class="ms-2 mb-0">Logística Lote</p>
           </a>
       </li>
@@ -424,19 +422,38 @@
 
         </ul>
       </nav>
+
+      <!-- Pie del sidebar: usuario + Cerrar sesión -->
+      <div class="sidebar-user-footer">
+        <div class="d-flex align-items-center" style="gap:.6rem;">
+          @if(Auth::user()->foto_perfil)
+            <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="avatar">
+          @else
+            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=1F3A5F&color=fff&size=34" alt="Avatar" class="avatar">
+          @endif
+          <div class="text-truncate">
+            <div class="nombre text-truncate">{{ Auth::user()->name }}</div>
+            <div class="cargo text-truncate">{{ Auth::user()->cargo ?? 'Sin cargo asignado' }}</div>
+          </div>
+        </div>
+        <a href="{{ route('logout') }}" class="sidebar-logout-btn"
+           onclick="event.preventDefault(); document.getElementById('logout-form-sidebar').submit();">
+          <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+        </a>
+      </div>
     </div>
   </aside>
 
 
   <!-- Contenido -->
   <div class="content-wrapper">
-    <div class="content-header py-3 border-bottom">
+    <div class="content-header py-3 border-bottom bg-white">
       <div class="container-fluid">
-        <h1 class="m-0 heading-font" style="color:#333;">Registro de Mantenimiento</h1>
-        <h5 class="text-muted" style="margin-top:4px;">Servicios Mecanicos</h5>
+        <h1 class="m-0" style="color:var(--text-primary);font-size:1.4rem;font-weight:700;">Registro de Mantenimiento</h1>
+        <h5 class="mb-0" style="margin-top:2px;font-weight:400;font-size:.88rem;color:var(--text-secondary);">Servicios Mecánicos</h5>
 
         @if(session('success'))
-          <div class="alert alert-success alert-dismissible fade show mt-3 shadow-sm" role="alert" style="border-left:4px solid var(--brand-accent);">
+          <div class="alert alert-success alert-dismissible fade show mt-3" role="alert" style="border-radius:4px;border-left:3px solid var(--brand-accent);">
             <i class="fas fa-check-circle mr-2" style="color: var(--brand-accent);"></i>
             {{ session('success') }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
@@ -446,7 +463,7 @@
         @endif
 
         @if(session('error'))
-          <div class="alert alert-danger alert-dismissible fade show mt-3 shadow-sm" role="alert">
+          <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert" style="border-radius:4px;">
             <i class="fas fa-exclamation-circle mr-2"></i>
             {{ session('error') }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
@@ -459,9 +476,9 @@
 
     <div class="container-fluid">
       <div class="card card-clean mb-3">
-        <div class="card-header bg-white border-bottom">
+        <div class="card-header">
           <div class="d-flex justify-content-between align-items-center flex-wrap">
-            <h3 class="card-title m-0 heading-font" style="color:#333;">Registrar nuevo reporte</h3>
+            <h3 class="card-title m-0" style="color:var(--text-primary);font-size:1rem;">Registrar nuevo reporte</h3>
             <button class="btn btn-brand btn-fw mt-2 mt-sm-0" data-toggle="modal" data-target="#modalAgregar">
               <i class="fas fa-plus mr-1"></i> Agregar Registro
             </button>
@@ -484,8 +501,10 @@
       </div>
 
       <div class="card card-clean">
-        <div class="card-header bg-white border-bottom d-flex justify-content-center align-items-center">
-          <h3 class="card-title mb-0 heading-font" style="color:#333;">📋 REPORTES DE MANTENIMIENTO MECÁNICO 2025-2026</h3>
+        <div class="card-header d-flex justify-content-center align-items-center">
+          <h3 class="card-title mb-0" style="color:var(--text-primary);font-size:1rem;">
+            <i class="fas fa-clipboard-list mr-1" style="color:var(--brand-primary);"></i> Reportes de Mantenimiento Mecánico 2025-2026
+          </h3>
         </div>
 
         <div class="card-body">
@@ -559,11 +578,12 @@
           </div>
         </div>
       </div>
+
+      <a href="{{ route('reportes.backup.excel') }}"
+        class="btn btn-success btn-fw mt-3 mb-3">
+        <i class="fas fa-file-excel mr-1"></i> Backup Excel
+      </a>
     </div>
-    <a href="{{ route('reportes.backup.excel') }}"
-      class="btn btn-success shadow-sm mb-3">
-      <i class="fas fa-file-excel mr-1"></i> Backup Excel
-    </a>
   </div>
 
   <footer class="main-footer text-center">
@@ -575,16 +595,20 @@
   @csrf
 </form>
 
+<form id="logout-form-sidebar" action="{{ route('logout') }}" method="POST" style="display:none;">
+  @csrf
+</form>
+
 @if(Auth::user()->esSupervisorMantenimiento())
 <!-- ========== Modal Configurar Firma (Supervisor) ========== -->
 <div class="modal fade" id="modalConfigurarFirma" tabindex="-1" role="dialog" aria-labelledby="modalConfigurarFirmaLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
     <form id="formConfigurarFirma" method="POST" action="{{ route('firma.guardar') }}" novalidate>
       @csrf
-      <div class="modal-content shadow-sm border-0">
+      <div class="modal-content border-0">
         <div class="modal-header bg-white border-bottom">
-          <h5 class="modal-title font-weight-semibold" id="modalConfigurarFirmaLabel" style="color:#333;">
-            ✍️ Configurar mi firma
+          <h5 class="modal-title font-weight-semibold" id="modalConfigurarFirmaLabel" style="color:var(--text-primary);">
+            <i class="fas fa-signature mr-1" style="color:var(--brand-primary);"></i> Configurar mi firma
           </h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
             <span aria-hidden="true">&times;</span>
@@ -605,7 +629,7 @@
           @if(Auth::user()->firma_imagen)
             <div class="mb-3">
               <label class="font-weight-bold d-block">Firma actual guardada:</label>
-              <img src="{{ asset('storage/'.Auth::user()->firma_imagen) }}" alt="Firma actual" style="max-height:80px;border:1px solid rgba(0,0,0,.1);border-radius:8px;padding:6px;background:#fff;">
+              <img src="{{ asset('storage/'.Auth::user()->firma_imagen) }}" alt="Firma actual" style="max-height:80px;border:1px solid var(--border);border-radius:3px;padding:6px;background:#fff;">
               <div class="text-muted small mt-1">Si dibujas y guardas de nuevo, esta firma se reemplaza.</div>
             </div>
           @endif
@@ -629,12 +653,12 @@
           <div class="form-row">
             <div class="col-md-6 mb-3">
               <label>Clave de firma (mínimo 4 caracteres)</label>
-              <input type="password" name="pin" class="form-control shadow-sm" minlength="4" required autocomplete="new-password">
+              <input type="password" name="pin" class="form-control" minlength="4" required autocomplete="new-password">
               <small class="text-muted">Se te pedirá cada vez que firmes un reporte. No es tu contraseña de acceso.</small>
             </div>
             <div class="col-md-6 mb-3">
               <label>Confirmar clave de firma</label>
-              <input type="password" name="pin_confirmation" class="form-control shadow-sm" minlength="4" required autocomplete="new-password">
+              <input type="password" name="pin_confirmation" class="form-control" minlength="4" required autocomplete="new-password">
             </div>
           </div>
         </div>
@@ -659,10 +683,10 @@
     <form method="POST" action="{{ route('reportes.update', $reporte->id) }}" enctype="multipart/form-data">
       @csrf
       @method('PUT')
-      <div class="modal-content shadow-sm border-0">
+      <div class="modal-content border-0">
         <div class="modal-header bg-white border-bottom">
-          <h5 class="modal-title font-weight-semibold" id="editarLabel{{ $reporte->id }}" style="color:#333;">
-            ✏️ Editar Reporte de Mantenimiento
+          <h5 class="modal-title font-weight-semibold" id="editarLabel{{ $reporte->id }}" style="color:var(--text-primary);">
+            <i class="fas fa-edit mr-1" style="color:var(--brand-primary);"></i> Editar Reporte de Mantenimiento
           </h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
             <span aria-hidden="true">&times;</span>
@@ -720,27 +744,27 @@
             <!-- RESTO CAMPOS -->
             <div class="col-md-4 mb-3">
               <label>Nombre</label>
-              <input type="text" name="nombre" class="form-control shadow-sm" value="{{ $reporte->nombre }}" required>
+              <input type="text" name="nombre" class="form-control" value="{{ $reporte->nombre }}" required>
             </div>
 
             <div class="col-md-8 mb-3">
               <label>Título del reporte</label>
-              <input type="text" name="titulo" class="form-control shadow-sm" value="{{ $reporte->titulo }}" required>
+              <input type="text" name="titulo" class="form-control" value="{{ $reporte->titulo }}" required>
             </div>
 
             <div class="col-md-4 mb-3">
               <label>Fecha de inicio</label>
-              <input type="date" name="fecha_inicio" class="form-control shadow-sm" value="{{ $reporte->fecha_inicio }}" required>
+              <input type="date" name="fecha_inicio" class="form-control" value="{{ $reporte->fecha_inicio }}" required>
             </div>
 
             <div class="col-md-4 mb-3">
               <label>Fecha de término</label>
-              <input type="date" name="fecha_termino" class="form-control shadow-sm" value="{{ $reporte->fecha_termino }}" required>
+              <input type="date" name="fecha_termino" class="form-control" value="{{ $reporte->fecha_termino }}" required>
             </div>
 
             <div class="col-md-6 mb-3">
               <label for="tipo_equipo_{{ $reporte->id }}">Tipo de equipo</label>
-              <select name="tipo_equipo" id="tipo_equipo_{{ $reporte->id }}" class="form-control shadow-sm" required>
+              <select name="tipo_equipo" id="tipo_equipo_{{ $reporte->id }}" class="form-control" required>
                 <option value="">Seleccione una opción</option>
                 <option value="Motor" {{ $reporte->tipo_equipo == 'Motor' ? 'selected' : '' }}>Motor</option>
                 <option value="Unidad de Bombeo Mecánico" {{ $reporte->tipo_equipo == 'Unidad de Bombeo Mecánico' ? 'selected' : '' }}>Unidad de Bombeo Mecánico</option>
@@ -751,29 +775,29 @@
 
             <div class="col-md-6 mb-3">
               <label>Ubicación</label>
-              <input type="text" name="ubicacion" class="form-control shadow-sm" value="{{ $reporte->ubicacion }}" required>
+              <input type="text" name="ubicacion" class="form-control" value="{{ $reporte->ubicacion }}" required>
             </div>
 
             <div class="col-md-6 mb-3">
               <label>Rotulado</label>
-              <input type="text" name="rotulado" class="form-control shadow-sm" value="{{ $reporte->rotulado }}">
+              <input type="text" name="rotulado" class="form-control" value="{{ $reporte->rotulado }}">
             </div>
 
             <div class="col-md-6 mb-3">
               <label>Herramientas <small>(separadas por coma)</small></label>
-              <input type="text" name="herramientas" class="form-control shadow-sm"
+              <input type="text" name="herramientas" class="form-control"
                      value="{{ is_array($reporte->herramientas) ? implode(', ', $reporte->herramientas) : $reporte->herramientas }}">
             </div>
 
             <div class="col-md-6 mb-3">
               <label>Materiales <small>(separados por coma)</small></label>
-              <input type="text" name="materiales" class="form-control shadow-sm"
+              <input type="text" name="materiales" class="form-control"
                      value="{{ is_array($reporte->materiales) ? implode(', ', $reporte->materiales) : $reporte->materiales }}">
             </div>
 
             <div class="col-md-12 mb-3">
               <label>Descripción de la actividad</label>
-              <textarea name="descripcion_actividad" class="form-control shadow-sm" rows="3">{{ $reporte->descripcion_actividad }}</textarea>
+              <textarea name="descripcion_actividad" class="form-control" rows="3">{{ $reporte->descripcion_actividad }}</textarea>
             </div>
 
           </div>
@@ -798,7 +822,7 @@
                 <img
                   src="{{ asset('storage/'.$reporte->firma) }}"
                   alt="Firma guardada"
-                  style="max-height:70px; max-width:100%; border:1px solid rgba(0,0,0,.15); border-radius:10px; padding:6px; background:#fff;"
+                  style="max-height:70px; max-width:100%; border:1px solid var(--border); border-radius:3px; padding:6px; background:#fff;"
                 >
               </div>
             @endif
@@ -839,10 +863,10 @@
     <form method="POST" action="{{ route('reportes.firmar', $reporte->id) }}">
       @csrf
       @method('PATCH')
-      <div class="modal-content shadow-sm border-0">
+      <div class="modal-content border-0">
         <div class="modal-header bg-white border-bottom">
-          <h5 class="modal-title font-weight-semibold" style="color:#333;">
-            ✍️ Firmar Reporte de {{ $reporte->nombre }}
+          <h5 class="modal-title font-weight-semibold" style="color:var(--text-primary);">
+            <i class="fas fa-signature mr-1" style="color:var(--brand-primary);"></i> Firmar Reporte de {{ $reporte->nombre }}
           </h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
             <span aria-hidden="true">&times;</span>
@@ -855,7 +879,7 @@
             </div>
           @else
             <label>Ingresa tu clave de firma</label>
-            <input type="password" name="pin" class="form-control shadow-sm" required autocomplete="current-password" autofocus>
+            <input type="password" name="pin" class="form-control" required autocomplete="current-password" autofocus>
           @endif
         </div>
         <div class="modal-footer bg-light">
@@ -880,10 +904,10 @@
     <form id="formAgregarReporte" method="POST" action="{{ route('reportes.store') }}" enctype="multipart/form-data" novalidate>
       @csrf
 
-      <div class="modal-content shadow-sm border-0">
+      <div class="modal-content border-0">
         <div class="modal-header bg-white border-bottom">
-          <h5 class="modal-title font-weight-semibold" id="modalAgregarLabel" style="color:#333;">
-            🛠️ Nuevo Reporte de Mantenimiento
+          <h5 class="modal-title font-weight-semibold" id="modalAgregarLabel" style="color:var(--text-primary);">
+            <i class="fas fa-tools mr-1" style="color:var(--brand-primary);"></i> Nuevo Reporte de Mantenimiento
           </h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
             <span aria-hidden="true">&times;</span>
@@ -913,7 +937,7 @@
                       <div class="photo-empty" id="previewEmpty_new">
                         Sin foto. Sube una imagen para evidenciar el reporte.
                       </div>
-                      <img id="previewImg_new" src="" alt="Previsualización" style="display:none;max-width:100%;border-radius:10px;">
+                      <img id="previewImg_new" src="" alt="Previsualización" style="display:none;max-width:100%;border-radius:3px;">
                     </div>
                     <small class="text-muted d-block mt-2" id="photoInfoNew"></small>
                   </div>
@@ -940,27 +964,27 @@
             <!-- RESTO CAMPOS -->
             <div class="col-md-4 mb-3">
               <label>Nombre</label>
-              <input type="text" name="nombre" class="form-control shadow-sm" value="{{ Auth::user()->name }}" readonly>
+              <input type="text" name="nombre" class="form-control" value="{{ Auth::user()->name }}" readonly>
             </div>
 
             <div class="col-md-8 mb-3">
               <label>Título</label>
-              <input type="text" name="titulo" class="form-control shadow-sm" required>
+              <input type="text" name="titulo" class="form-control" required>
             </div>
 
             <div class="col-md-4 mb-3">
               <label>Fecha de inicio</label>
-              <input type="date" name="fecha_inicio" class="form-control shadow-sm" required>
+              <input type="date" name="fecha_inicio" class="form-control" required>
             </div>
 
             <div class="col-md-4 mb-3">
               <label>Fecha de término</label>
-              <input type="date" name="fecha_termino" class="form-control shadow-sm" required>
+              <input type="date" name="fecha_termino" class="form-control" required>
             </div>
 
             <div class="col-md-6 mb-3">
               <label for="tipo_equipo_new">Tipo de equipo</label>
-              <select name="tipo_equipo" id="tipo_equipo_new" class="form-control shadow-sm" required>
+              <select name="tipo_equipo" id="tipo_equipo_new" class="form-control" required>
                 <option value="">Seleccione una opción</option>
                 <option value="Motor">Motor</option>
                 <option value="Unidad de Bombeo Mecánico">Unidad de Bombeo Mecánico</option>
@@ -971,27 +995,27 @@
 
             <div class="col-md-6 mb-3">
               <label>Ubicación</label>
-              <input type="text" name="ubicacion" class="form-control shadow-sm">
+              <input type="text" name="ubicacion" class="form-control">
             </div>
 
             <div class="col-md-6 mb-3">
               <label>Rotulado</label>
-              <input type="text" name="rotulado" class="form-control shadow-sm">
+              <input type="text" name="rotulado" class="form-control">
             </div>
 
             <div class="col-md-6 mb-3">
               <label>Herramientas <small>(separadas por coma)</small></label>
-              <input type="text" name="herramientas" class="form-control shadow-sm">
+              <input type="text" name="herramientas" class="form-control">
             </div>
 
             <div class="col-md-6 mb-3">
               <label>Materiales <small>(separados por coma)</small></label>
-              <input type="text" name="materiales" class="form-control shadow-sm">
+              <input type="text" name="materiales" class="form-control">
             </div>
 
             <div class="col-md-12 mb-3">
               <label>Descripción de la actividad</label>
-              <textarea name="descripcion_actividad" class="form-control shadow-sm" rows="3"></textarea>
+              <textarea name="descripcion_actividad" class="form-control" rows="3"></textarea>
             </div>
           </div>
 
