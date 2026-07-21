@@ -53,6 +53,9 @@ Route::middleware(['auth', 'rol.restriccion'])->group(function () {
         ->only(['index', 'store', 'destroy'])
         ->parameters(['boletas' => 'boleta']);
 
+    Route::patch('/boletas/{boleta}/confirmar', [BoletaController::class, 'confirmar'])
+        ->name('boletas.confirmar');
+
     Route::patch('/reportes/{reporte}/firmar', [ReporteMantenimientoController::class, 'firmarSupervisor'])
         ->name('reportes.firmar');
 
@@ -73,7 +76,7 @@ Route::middleware(['auth', 'rol.restriccion'])->group(function () {
     // Ruta para imprimir PDF de requerimientos
     Route::get('/requerimientos/{id}/pdf', [RequerimientoController::class, 'imprimir'])
     ->name('requerimientos.imprimir');
-    
+
 
     // Inspección vehicular (nuevo caso de uso)
     Route::resource('inspecciones', InspeccionVehicularController::class)
