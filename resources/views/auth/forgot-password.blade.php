@@ -85,7 +85,7 @@
         </div>
 
         <div class="text-gray">
-            ¿Olvidaste tu contraseña? No hay problema. Ingresa tu correo electrónico y te enviaremos un enlace para restablecerla.
+            ¿Olvidaste tu contraseña? Ingresa tu correo institucional (@unienergia.pe) y te enviaremos un código a tu correo de recuperación configurado en tu perfil.
         </div>
 
         <!-- Estado de sesión -->
@@ -117,10 +117,14 @@
 
             <div>
                 <button type="submit" class="btn-submit">
-                    Enviar enlace de restablecimiento
+                    Enviar código
                 </button>
             </div>
         </form>
+
+        <div style="text-align:center; margin-top:16px;">
+            <a href="{{ route('login') }}" style="font-size:13px; color:#3c8dbc;">&larr; Volver a iniciar sesión</a>
+        </div>
     </div>
 
 </body>

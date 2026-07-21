@@ -450,15 +450,26 @@
           <h1 class="m-0 heading-font" style="color:#333;">Bienvenido, {{ Auth::user()->name }}</h1>
           <h5 class="text-muted" style="margin-top:4px;">{{ Auth::user()->cargo ?? 'Cargo no asignado' }} • {{ now()->format('d/m/Y') }}</h5>
         </div>
+        @if(Auth::user()->tieneAccesoCompleto())
         <div>
           <a href="{{ route('requerimientos.index') }}" class="btn btn-brand">
             <i class="fas fa-plus mr-1"></i> Nuevo requerimiento
           </a>
         </div>
+        @endif
       </div>
     </div>
 
     <div class="container-fluid">
+
+      @if($vistaPendiente)
+        <div class="alert alert-info shadow-sm" style="border-left:4px solid var(--brand-info);">
+          <i class="fas fa-info-circle mr-2"></i>
+          Tu cuenta se creó correctamente, pero todavía no tiene un rol asignado. Un administrador debe asignarte
+          un rol para que puedas acceder a los módulos que te correspondan. Mientras tanto, podés completar tu
+          <a href="{{ route('perfil.edit') }}">perfil</a> (incluyendo tu correo de recuperación).
+        </div>
+      @endif
 
       {{-- KPIs (se adaptan según el rol: Requerimientos para admin, Mantenimiento/Anomalías para mecánico y supervisor) --}}
       <div class="dashboard-safe-container kpi-block">
@@ -520,7 +531,7 @@
         <div class="col-lg-6">
           <div class="card card-clean">
             <div class="card-header bg-white">
-              <i class="fas fa-chart-bar mr-1"></i>{{ $vistaMantenimiento ? 'Mantenimiento por tipo de equipo (mes)' : ($vistaRRHH ? 'Boletas por periodo (mes)' : 'Requerimientos por área (mes)') }}
+              <i class="fas fa-chart-bar mr-1"></i>{{ $vistaMantenimiento ? 'Mantenimiento por tipo de equipo (mes)' : ($vistaRRHH ? 'Boletas por periodo (mes)' : ($vistaPendiente ? 'Sin datos' : 'Requerimientos por área (mes)')) }}
             </div>
             <div class="card-body">
               <canvas id="chartAreas"></canvas>
@@ -654,7 +665,7 @@
   const porArea = @json($porArea);
   const porDia  = @json($porDia);
   const eventos = @json($eventos);
-  const etiquetaSerie = @json($vistaMantenimiento ? 'Mantenimiento' : ($vistaRRHH ? 'Boletas' : 'Requerimientos'));
+  const etiquetaSerie = @json($vistaMantenimiento ? 'Mantenimiento' : ($vistaRRHH ? 'Boletas' : ($vistaPendiente ? 'Sin datos' : 'Requerimientos')));
 
   // Chart: Barras por área / tipo de equipo
   (function(){

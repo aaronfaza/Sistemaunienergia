@@ -35,14 +35,17 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users', 'regex:/@unienergia\.pe$/i'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ], [
+            'email.regex' => 'Solo se permite registrarse con un correo institucional (@unienergia.pe).',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'rol' => 'pendiente',
         ]);
 
         event(new Registered($user));
