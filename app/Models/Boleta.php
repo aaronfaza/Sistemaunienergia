@@ -15,6 +15,11 @@ class Boleta extends Model
         'periodo',
         'archivo',
         'subido_por',
+        'confirmado_en',
+    ];
+
+    protected $casts = [
+        'confirmado_en' => 'datetime',
     ];
 
     const TIPOS = [
