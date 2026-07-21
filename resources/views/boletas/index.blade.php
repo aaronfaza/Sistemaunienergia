@@ -13,38 +13,42 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
 
-  <!-- Fuente para títulos -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
-
   <style>
     :root{
-      --brand-primary:#003366;
-      --brand-primary-dark:#002B5C;
-      --brand-accent:#00A86B;
-      --brand-accent-dark:#038b5a;
-      --brand-info:#17a2b8;
-      --brand-danger:#dc3545;
-      --brand-warning:#f59e0b;
+      /* Paleta corporativa sobria — sin gradientes, sin tonos oscuros de fondo */
+      --brand-primary:#1F3A5F;
+      --brand-primary-dark:#16283F;
+      --brand-accent:#2F6F4E;
+      --brand-info:#0E7490;
+      --brand-danger:#B91C1C;
+      --brand-warning:#B45309;
       --text-on-brand:#ffffff;
-      --header-h:56px;
-      --footer-h:44px;
+      --header-h:52px;
+      --footer-h:40px;
 
-      /* Sidebar claro — sin tonos oscuros */
+      --page-bg:#F3F4F6;
+      --surface:#ffffff;
+      --border:#D9DCE1;
+      --border-strong:#C4C9D2;
+      --text-primary:#1F2937;
+      --text-secondary:#6B7280;
+
       --sidebar-bg:#ffffff;
-      --sidebar-border:#e7ecf3;
-      --sidebar-text:#51607a;
+      --sidebar-border:#D9DCE1;
+      --sidebar-text:#3F4A5A;
       --sidebar-text-active:var(--brand-primary);
     }
+
+    * { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
 
     html, body{ height:100%; overflow:hidden; }
     .wrapper{ height:100vh; overflow:hidden; }
 
-    .navbar-uni{ background:linear-gradient(100deg,var(--brand-primary),var(--brand-primary-dark)); box-shadow:0 2px 8px rgba(0,0,0,.12); }
+    .navbar-uni{ background:var(--brand-primary); border-bottom:1px solid var(--brand-primary-dark); }
     .navbar-uni .nav-link, .navbar-uni .navbar-brand{ color:var(--text-on-brand); }
-    .navbar-uni .nav-link:hover{ opacity:.9; }
     .main-header{ position:sticky; top:0; z-index:1035; height:var(--header-h); }
 
-    /* ===== Sidebar claro, tipo SaaS empresarial ===== */
+    /* ===== Sidebar claro, sobrio ===== */
     .main-sidebar{
       background:var(--sidebar-bg) !important;
       border-right:1px solid var(--sidebar-border);
@@ -52,133 +56,140 @@
       flex-direction:column;
     }
     .brand-area{ background:var(--sidebar-bg); border-bottom:1px solid var(--sidebar-border); }
-    .brand-area .brand-text{ color:var(--brand-primary); font-weight:700; }
+    .brand-area .brand-text{ color:var(--brand-primary); font-weight:600; letter-spacing:.2px; }
     .sidebar{ flex:1 1 auto; display:flex; flex-direction:column; min-height:0; padding-bottom:0!important; }
     .sidebar-scroll{ flex:1 1 auto; overflow-y:auto; }
 
     .nav-sidebar .nav-link{
       color:var(--sidebar-text) !important;
-      border-radius:10px;
-      margin:2px 10px;
+      border-radius:2px;
+      margin:1px 8px;
       font-weight:500;
-      transition:background .15s ease, color .15s ease;
+      font-size:.88rem;
     }
     .nav-sidebar .nav-link.active{
-      background:rgba(0,51,102,.08) !important;
+      background:#EAEEF3 !important;
       color:var(--sidebar-text-active) !important;
-      font-weight:700;
-      box-shadow:inset 3px 0 0 var(--brand-accent);
+      font-weight:600;
+      box-shadow:inset 3px 0 0 var(--brand-primary);
     }
-    .nav-sidebar .nav-link:hover{ background:#f1f5f9 !important; color:var(--sidebar-text-active) !important; }
-    .nav-sidebar .nav-treeview .nav-link{ margin-left:18px; }
+    .nav-sidebar .nav-link:hover{ background:#F3F4F6 !important; color:var(--sidebar-text-active) !important; }
+    .nav-sidebar .nav-treeview .nav-link{ margin-left:16px; }
     .nav-sidebar .nav-link p, .nav-sidebar .nav-link .right{ color:inherit; }
 
     /* ===== Pie del sidebar: usuario + Cerrar sesión ===== */
     .sidebar-user-footer{
       flex-shrink:0;
       border-top:1px solid var(--sidebar-border);
-      background:#f8fafc;
-      padding:14px 16px;
+      background:#FAFAFB;
+      padding:12px 14px;
     }
     .sidebar-user-footer .avatar{
-      width:38px; height:38px; border-radius:50%; object-fit:cover; flex-shrink:0;
+      width:34px; height:34px; border-radius:2px; object-fit:cover; flex-shrink:0;
     }
-    .sidebar-user-footer .nombre{ font-size:.85rem; font-weight:700; color:#1e293b; line-height:1.2; }
-    .sidebar-user-footer .cargo{ font-size:.72rem; color:#94a3b8; line-height:1.2; }
+    .sidebar-user-footer .nombre{ font-size:.83rem; font-weight:600; color:var(--text-primary); line-height:1.2; }
+    .sidebar-user-footer .cargo{ font-size:.72rem; color:var(--text-secondary); line-height:1.2; }
     .sidebar-logout-btn{
       display:flex; align-items:center; justify-content:center; gap:.4rem;
-      width:100%; margin-top:10px; padding:.5rem; border-radius:10px;
-      background:rgba(220,53,69,.08); color:#dc3545; font-weight:600; font-size:.82rem;
-      border:none; text-decoration:none; transition:background .15s ease;
+      width:100%; margin-top:8px; padding:.4rem; border-radius:2px;
+      background:var(--surface); color:var(--brand-danger); font-weight:600; font-size:.8rem;
+      border:1px solid var(--border); text-decoration:none;
     }
-    .sidebar-logout-btn:hover{ background:rgba(220,53,69,.16); color:#dc3545; text-decoration:none; }
+    .sidebar-logout-btn:hover{ background:#FEF2F2; border-color:#F3C6C6; color:var(--brand-danger); text-decoration:none; }
 
     .content-wrapper{
-      background-color:#f5f7fb;
+      background-color:var(--page-bg);
       height:calc(100vh - var(--header-h) - var(--footer-h));
       overflow:auto;
       -webkit-overflow-scrolling:touch;
     }
-    .main-footer{ position:sticky; bottom:0; z-index:1020; background:#fff; border-top:1px solid var(--sidebar-border); }
+    .main-footer{ position:sticky; bottom:0; z-index:1020; background:var(--surface); border-top:1px solid var(--border); font-size:.8rem; color:var(--text-secondary); }
 
-    @media (min-width:992px){ :root{ --header-h:64px; } }
-    .heading-font{ font-family:'Montserrat', sans-serif; }
+    @media (min-width:992px){ :root{ --header-h:56px; } }
 
-    .card-clean{ border-radius:18px; border:1px solid rgba(0,0,0,.05); box-shadow:0 10px 28px rgba(15,23,42,.05); }
-    .card-clean .card-header{ background:#ffffff; font-weight:600; letter-spacing:.2px; }
+    .card-clean{ border-radius:4px; border:1px solid var(--border); box-shadow:none; }
+    .card-clean .card-header{ background:var(--surface); font-weight:600; letter-spacing:.1px; border-bottom:1px solid var(--border); }
 
-    .btn{ border-radius:999px!important; font-weight:600; letter-spacing:.2px; transition:all .2s ease; }
-    .btn-brand{ background:linear-gradient(135deg,var(--brand-accent),var(--brand-accent-dark)); border:none; color:#fff!important; box-shadow:0 8px 20px rgba(0,168,107,.3); }
-    .btn-brand:hover{ transform:translateY(-1px); box-shadow:0 14px 28px rgba(0,168,107,.4); color:#fff; }
-    .btn-primary{ background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-dark)); border:none; box-shadow:0 6px 18px rgba(0,51,102,.3); }
-    .btn-info{ background:linear-gradient(135deg,#22b8cf,var(--brand-info)); border:none; box-shadow:0 6px 16px rgba(23,162,184,.3); }
-    .btn-warning{ background:rgba(245,158,11,.12); border:none; color:#b45309; }
-    .btn-warning:hover{ background:rgba(245,158,11,.22); color:#b45309; }
-    .btn-danger{ background:rgba(220,53,69,.1); border:none; color:#dc3545; }
-    .btn-danger:hover{ background:rgba(220,53,69,.18); color:#dc3545; }
+    .btn{ border-radius:3px!important; font-weight:600; font-size:.85rem; box-shadow:none!important; transition:background-color .12s ease; }
+    .btn-brand{ background:var(--brand-primary); border:1px solid var(--brand-primary-dark); color:#fff!important; }
+    .btn-brand:hover{ background:var(--brand-primary-dark); color:#fff; }
+    .btn-primary{ background:var(--brand-primary); border:1px solid var(--brand-primary-dark); }
+    .btn-primary:hover{ background:var(--brand-primary-dark); }
+    .btn-info{ background:var(--surface); border:1px solid var(--brand-info); color:var(--brand-info); }
+    .btn-info:hover{ background:#ECFAFB; color:var(--brand-info); }
+    .btn-warning{ background:var(--surface); border:1px solid #F5D08A; color:var(--brand-warning); }
+    .btn-warning:hover{ background:#FFFBEB; color:var(--brand-warning); }
+    .btn-danger{ background:var(--surface); border:1px solid #F3C6C6; color:var(--brand-danger); }
+    .btn-danger:hover{ background:#FEF2F2; color:var(--brand-danger); }
+    .btn-outline-secondary{ border-radius:3px!important; }
     .btn-fw{ font-weight:600; }
 
-    /* ===== KPI cards (mismo lenguaje visual que Bienvenida) ===== */
+    /* ===== KPI cards — planas, con borde, sin sombra ===== */
     .stat-row{ margin-left:-8px; margin-right:-8px; }
     .stat-row > [class*="col-"]{ padding-left:8px; padding-right:8px; }
     .stat-card{
-      display:flex; align-items:center; gap:14px;
-      padding:14px 16px; border-radius:16px; min-height:88px;
-      background:#ffffff; border:1px solid #eef2f7; box-shadow:0 8px 20px rgba(20,30,58,.06);
-      transition:transform .2s ease, box-shadow .2s ease;
+      display:flex; align-items:center; gap:12px;
+      padding:12px 14px; border-radius:4px; min-height:76px;
+      background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--border-strong);
     }
-    .stat-card:hover{ transform:translateY(-2px); box-shadow:0 14px 30px rgba(20,30,58,.1); }
-    .stat-icon{ width:46px; height:46px; border-radius:12px; display:grid; place-items:center; flex-shrink:0; }
-    .stat-icon i{ font-size:19px; }
-    .is-primary .stat-icon{ background:rgba(0,51,102,.1); color:var(--brand-primary); }
-    .is-info .stat-icon{ background:rgba(23,162,184,.12); color:var(--brand-info); }
-    .is-success .stat-icon{ background:rgba(0,168,107,.12); color:var(--brand-accent-dark); }
-    .is-warning .stat-icon{ background:rgba(245,158,11,.14); color:#b45309; }
-    .stat-meta{ display:flex; flex-direction:column; color:#25334a; }
-    .stat-kpi span{ font-weight:700; font-size:clamp(20px,3vw,26px); letter-spacing:-.5px; line-height:1; }
-    .stat-label{ font-size:.82rem; color:#64748b; }
+    .stat-card.is-primary{ border-left-color:var(--brand-primary); }
+    .stat-card.is-info{ border-left-color:var(--brand-info); }
+    .stat-card.is-success{ border-left-color:var(--brand-accent); }
+    .stat-card.is-warning{ border-left-color:var(--brand-warning); }
+    .stat-icon{ width:34px; height:34px; border-radius:3px; display:grid; place-items:center; flex-shrink:0; background:var(--page-bg); }
+    .stat-icon i{ font-size:16px; }
+    .is-primary .stat-icon{ color:var(--brand-primary); }
+    .is-info .stat-icon{ color:var(--brand-info); }
+    .is-success .stat-icon{ color:var(--brand-accent); }
+    .is-warning .stat-icon{ color:var(--brand-warning); }
+    .stat-meta{ display:flex; flex-direction:column; color:var(--text-primary); }
+    .stat-kpi span{ font-weight:700; font-size:clamp(18px,2.4vw,22px); line-height:1.1; }
+    .stat-label{ font-size:.78rem; color:var(--text-secondary); }
 
     /* ===== Alerta de boletas pendientes de confirmar ===== */
     .alerta-pendientes{
-      background:linear-gradient(135deg,#fffbeb,#fff7ed);
-      border:1px solid #fde68a;
-      border-radius:16px;
-      padding:1rem 1.25rem;
+      background:#FFFBEB;
+      border:1px solid #F5D08A;
+      border-left:3px solid var(--brand-warning);
+      border-radius:4px;
+      padding:.9rem 1.1rem;
     }
     .alerta-pendientes .icono-alerta{
-      width:44px; height:44px; border-radius:50%;
-      background:rgba(245,158,11,.16); color:#b45309;
+      width:36px; height:36px; border-radius:3px;
+      background:#FEF3C7; color:var(--brand-warning);
       display:flex; align-items:center; justify-content:center; flex-shrink:0;
-      font-size:1.1rem;
+      font-size:1rem;
     }
     .pendiente-chip{
       display:inline-flex; align-items:center; gap:.5rem;
-      background:#ffffff; border:1px solid #fde68a; border-radius:999px;
-      padding:.3rem .5rem .3rem .9rem; font-size:.82rem; color:#78350f;
+      background:var(--surface); border:1px solid #F5D08A; border-radius:3px;
+      padding:.25rem .4rem .25rem .75rem; font-size:.8rem; color:#78350F;
     }
 
-    #tablaBoletas{ border-collapse:separate!important; border-spacing:0 8px; }
+    /* ===== Tabla — densa, tipo hoja de datos empresarial ===== */
+    #tablaBoletas{ border-collapse:collapse!important; }
     #tablaBoletas thead th{
-      background:transparent!important; border:none!important; font-size:.75rem;
-      text-transform:uppercase; letter-spacing:.06em; color:#8892a4; padding:.75rem; white-space:nowrap;
+      background:#F3F4F6!important; border:1px solid var(--border)!important; font-size:.72rem;
+      text-transform:uppercase; letter-spacing:.05em; color:var(--text-secondary); padding:.55rem .7rem; white-space:nowrap;
     }
-    #tablaBoletas tbody tr{ background:#ffffff; box-shadow:0 4px 14px rgba(15,23,42,.05); transition:transform .15s ease, box-shadow .15s ease; }
-    #tablaBoletas tbody tr.fila-nueva{ box-shadow:0 4px 14px rgba(245,158,11,.18); }
-    #tablaBoletas tbody tr:hover{ transform:translateY(-1px); box-shadow:0 10px 24px rgba(15,23,42,.1); }
-    #tablaBoletas tbody td{ border:none!important; vertical-align:middle; padding:.7rem .75rem; font-size:.9rem; color:#334155; }
+    #tablaBoletas tbody tr{ background:var(--surface); }
+    #tablaBoletas tbody tr.fila-nueva{ background:#FFFBEB; }
+    #tablaBoletas tbody tr:hover{ background:#F8FAFC; }
+    #tablaBoletas tbody td{ border:1px solid var(--border)!important; vertical-align:middle; padding:.55rem .7rem; font-size:.86rem; color:var(--text-primary); }
 
-    .filters-row{ background:#ffffff; border-radius:16px; padding:.85rem 1rem; box-shadow:0 6px 18px rgba(15,23,42,.04); }
+    .filters-row{ background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:.75rem 1rem; }
 
-    .modal-content{ border-radius:20px!important; box-shadow:0 24px 48px rgba(15,23,42,.2); }
-    .modal-header, .modal-footer{ border-color:rgba(0,0,0,.05); }
+    .modal-content{ border-radius:4px!important; box-shadow:0 2px 12px rgba(0,0,0,.15); }
+    .modal-header, .modal-footer{ border-color:var(--border); }
 
-    .form-control, .custom-select{ border-radius:12px; font-size:.9rem; transition:border-color .15s ease, box-shadow .15s ease; }
-    .form-control:focus, .custom-select:focus{ border-color:var(--brand-accent); box-shadow:0 0 0 3px rgba(0,168,107,.15); }
+    .form-control, .custom-select{ border-radius:3px; font-size:.86rem; border-color:var(--border-strong); }
+    .form-control:focus, .custom-select:focus{ border-color:var(--brand-primary); box-shadow:0 0 0 2px rgba(31,58,95,.12); }
+    label{ font-size:.82rem; font-weight:600; color:var(--text-primary); }
 
-    .empty-state{ padding:2.5rem 1rem; text-align:center; color:#94a3b8; }
-    .empty-state i{ font-size:2.2rem; color:#e2e8f0; display:block; margin-bottom:.6rem; }
+    .empty-state{ padding:2rem 1rem; text-align:center; color:var(--text-secondary); }
+    .empty-state i{ font-size:1.8rem; color:var(--border-strong); display:block; margin-bottom:.5rem; }
 
-    .badge{ font-weight:600; padding:.35rem .6rem; border-radius:999px; }
+    .badge{ font-weight:600; padding:.3rem .5rem; border-radius:3px; font-size:.72rem; }
   </style>
 </head>
 
@@ -191,31 +202,31 @@
       <ul class="navbar-nav d-flex align-items-center">
         <li class="nav-item">
           <a class="nav-link" data-widget="pushmenu" href="#" role="button" aria-label="Abrir menú">
-            <i class="fas fa-bars fa-lg"></i>
+            <i class="fas fa-bars"></i>
           </a>
         </li>
         <li class="nav-item d-flex align-items-center ml-2">
-          <img src="{{ asset('img/logo.png.png') }}" alt="Logo" style="width:25px;height:25px;">
+          <img src="{{ asset('img/logo.png.png') }}" alt="Logo" style="width:22px;height:22px;">
         </li>
       </ul>
 
       <ul class="navbar-nav ml-auto d-flex align-items-center">
         <li class="nav-item dropdown mr-2">
           <a class="nav-link position-relative" href="#" id="notiBoletasDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-bell fa-lg text-white"></i>
+            <i class="fas fa-bell text-white"></i>
             @if($boletasPendientesConfirmar->count() > 0)
-              <span class="badge badge-warning position-absolute" style="top:-2px;right:-6px;font-size:.62rem;">
+              <span class="badge badge-warning position-absolute" style="top:-2px;right:-6px;font-size:.6rem;">
                 {{ $boletasPendientesConfirmar->count() }}
               </span>
             @endif
           </a>
-          <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" style="min-width:300px;max-height:380px;overflow-y:auto;border-radius:14px;">
+          <div class="dropdown-menu dropdown-menu-right shadow-sm border" style="min-width:300px;max-height:380px;overflow-y:auto;border-radius:4px;">
             <h6 class="dropdown-header font-weight-bold text-dark">Boletas por confirmar</h6>
             <div class="dropdown-divider"></div>
             @forelse($boletasPendientesConfirmar as $pendiente)
               <div class="dropdown-item">
                 <div class="d-flex flex-column">
-                  <span class="font-weight-bold text-warning">
+                  <span class="font-weight-bold" style="color:var(--brand-warning);">
                     <i class="fas fa-exclamation-circle mr-1"></i>{{ $pendiente->tipo_label }} · {{ $pendiente->periodo_formateado }}
                   </span>
                   <small class="text-muted">Verifica que esta boleta te pertenece</small>
@@ -228,22 +239,21 @@
         </li>
 
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle d-flex align-items-center px-3 py-2 rounded-pill shadow-sm text-white"
-             href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-expanded="false"
-             style="background-color: rgba(255,255,255,.14);">
+          <a class="nav-link dropdown-toggle d-flex align-items-center px-2 py-1 text-white"
+             href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
             @if(Auth::user()->foto_perfil)
-              <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="rounded-circle" width="32" height="32" style="object-fit:cover;">
+              <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" style="width:28px;height:28px;border-radius:2px;object-fit:cover;">
             @else
-              <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=32" alt="Avatar" class="rounded-circle" width="32" height="32">
+              <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=1F3A5F&color=fff&size=28" alt="Avatar" style="width:28px;height:28px;border-radius:2px;">
             @endif
             <span class="d-none d-md-inline font-weight-semibold ml-2">{{ Auth::user()->name }}</span>
           </a>
-          <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" style="border-radius:12px;min-width:240px;">
+          <div class="dropdown-menu dropdown-menu-right shadow-sm border" style="border-radius:4px;min-width:230px;">
             <div class="dropdown-item text-center bg-light py-3">
               @if(Auth::user()->foto_perfil)
-                <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="rounded-circle mb-2" style="width:64px;height:64px;object-fit:cover;">
+                <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="mb-2" style="width:56px;height:56px;border-radius:3px;object-fit:cover;">
               @else
-                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=64" alt="Avatar" class="rounded-circle mb-2">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=1F3A5F&color=fff&size=56" alt="Avatar" class="mb-2" style="border-radius:3px;">
               @endif
               <strong class="text-dark d-block">{{ Auth::user()->name }}</strong>
               <p class="text-muted small mb-0">{{ Auth::user()->cargo ?? 'Cargo no asignado' }}</p>
@@ -264,10 +274,10 @@
   </nav>
 
   <!-- Sidebar -->
-  <aside class="main-sidebar elevation-4">
+  <aside class="main-sidebar">
     <a href="#" class="brand-link text-center brand-area d-block py-3">
-      <img src="{{ asset('img/logo.png.png') }}" style="width:25px;height:25px;margin-right:8px;">
-      <span class="brand-text font-weight-bold">UNIENERGIA ABC</span>
+      <img src="{{ asset('img/logo.png.png') }}" style="width:22px;height:22px;margin-right:8px;">
+      <span class="brand-text">UNIENERGIA ABC</span>
     </a>
     <div class="sidebar">
       <nav class="mt-3 sidebar-scroll">
@@ -367,7 +377,7 @@
           @if(Auth::user()->foto_perfil)
             <img src="{{ asset('storage/'.Auth::user()->foto_perfil) }}" alt="Avatar" class="avatar">
           @else
-            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=003366&color=fff&size=38" alt="Avatar" class="avatar">
+            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=1F3A5F&color=fff&size=34" alt="Avatar" class="avatar">
           @endif
           <div class="text-truncate">
             <div class="nombre text-truncate">{{ Auth::user()->name }}</div>
@@ -386,13 +396,13 @@
   <div class="content-wrapper">
     <div class="content-header py-3 border-bottom bg-white">
       <div class="container-fluid">
-        <h1 class="m-0 heading-font" style="color:#1e293b;">{{ $puedeGestionar ? 'Boletas de Pago' : 'Mis Boletas de Pago' }}</h1>
-        <h5 class="text-muted" style="margin-top:4px;font-weight:400;">
+        <h1 class="m-0" style="color:var(--text-primary);font-size:1.4rem;font-weight:700;">{{ $puedeGestionar ? 'Boletas de Pago' : 'Mis Boletas de Pago' }}</h1>
+        <h5 class="mb-0" style="margin-top:2px;font-weight:400;font-size:.88rem;color:var(--text-secondary);">
           {{ $puedeGestionar ? 'Sube y gestiona la boleta de pago de cada trabajador' : 'Aquí encuentras tus boletas de pago registradas' }}
         </h5>
 
         @if(session('success'))
-          <div class="alert alert-success alert-dismissible fade show mt-3 shadow-sm" role="alert" style="border-radius:12px;border-left:4px solid var(--brand-accent);">
+          <div class="alert alert-success alert-dismissible fade show mt-3" role="alert" style="border-radius:4px;border-left:3px solid var(--brand-accent);">
             <i class="fas fa-check-circle mr-2" style="color: var(--brand-accent);"></i>
             {{ session('success') }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
@@ -402,7 +412,7 @@
         @endif
 
         @if(session('error'))
-          <div class="alert alert-danger alert-dismissible fade show mt-3 shadow-sm" role="alert" style="border-radius:12px;">
+          <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert" style="border-radius:4px;">
             <i class="fas fa-exclamation-circle mr-2"></i>
             {{ session('error') }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
@@ -412,7 +422,7 @@
         @endif
 
         @if($errors->any())
-          <div class="alert alert-danger alert-dismissible fade show mt-3 shadow-sm" role="alert" style="border-radius:12px;">
+          <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert" style="border-radius:4px;">
             <ul class="mb-0 pl-3">
               @foreach($errors->all() as $error)
                 <li>{{ $error }}</li>
@@ -433,7 +443,7 @@
         <div class="alerta-pendientes mb-3 d-flex align-items-start" style="gap:1rem;">
           <span class="icono-alerta"><i class="fas fa-exclamation-triangle"></i></span>
           <div class="flex-grow-1">
-            <div class="font-weight-bold" style="color:#78350f;">
+            <div class="font-weight-bold" style="color:#78350F;font-size:.9rem;">
               Tienes {{ $boletasPendientesConfirmar->count() }} boleta{{ $boletasPendientesConfirmar->count() > 1 ? 's' : '' }} nueva{{ $boletasPendientesConfirmar->count() > 1 ? 's' : '' }} sin confirmar
             </div>
             <div class="text-muted small mb-2">Verifica que cada una realmente te pertenece antes de darla por válida.</div>
@@ -444,7 +454,7 @@
                   <form action="{{ route('boletas.confirmar', $pendiente->id) }}" method="POST" class="d-inline">
                     @csrf
                     @method('PATCH')
-                    <button type="submit" class="btn btn-sm btn-warning btn-fw" style="padding:.15rem .6rem;font-size:.75rem;">
+                    <button type="submit" class="btn btn-sm btn-warning btn-fw" style="padding:.15rem .6rem;font-size:.72rem;">
                       <i class="fas fa-check mr-1"></i>Confirmar
                     </button>
                   </form>
@@ -500,9 +510,9 @@
 
       @if($puedeGestionar)
         <div class="card card-clean mb-3">
-          <div class="card-header bg-white border-bottom">
+          <div class="card-header">
             <div class="d-flex justify-content-between align-items-center flex-wrap">
-              <h3 class="card-title m-0 heading-font" style="color:#1e293b;">Subir nueva boleta</h3>
+              <h3 class="card-title m-0" style="color:var(--text-primary);font-size:1rem;">Subir nueva boleta</h3>
               <button class="btn btn-brand btn-fw mt-2 mt-sm-0" data-toggle="modal" data-target="#modalSubirBoleta">
                 <i class="fas fa-upload mr-1"></i> Subir Boleta
               </button>
@@ -552,17 +562,17 @@
       @endif
 
       <div class="card card-clean">
-        <div class="card-header bg-white border-bottom">
-          <h3 class="card-title mb-0 heading-font" style="color:#1e293b;">
-            <i class="fas fa-file-invoice-dollar mr-1" style="color:var(--brand-accent);"></i> {{ $puedeGestionar ? 'Todas las boletas' : 'Boletas registradas' }}
+        <div class="card-header">
+          <h3 class="card-title mb-0" style="color:var(--text-primary);font-size:1rem;">
+            <i class="fas fa-file-invoice-dollar mr-1" style="color:var(--brand-primary);"></i> {{ $puedeGestionar ? 'Todas las boletas' : 'Boletas registradas' }}
           </h3>
         </div>
 
         <div class="card-body">
           <div class="table-responsive">
             <table id="tablaBoletas" class="table table-hover align-middle text-center" style="width:100%;">
-              <thead class="thead-light">
-                <tr class="text-muted">
+              <thead>
+                <tr>
                   @if($puedeGestionar)
                     <th>Trabajador</th>
                   @endif
@@ -660,10 +670,10 @@
   <div class="modal-dialog" role="document">
     <form method="POST" action="{{ route('boletas.store') }}" enctype="multipart/form-data">
       @csrf
-      <div class="modal-content shadow-sm border-0">
+      <div class="modal-content border-0">
         <div class="modal-header bg-white border-bottom">
-          <h5 class="modal-title font-weight-semibold" id="modalSubirBoletaLabel" style="color:#1e293b;">
-            <i class="fas fa-file-invoice-dollar mr-1" style="color:var(--brand-accent);"></i> Subir Boleta de Pago
+          <h5 class="modal-title font-weight-semibold" id="modalSubirBoletaLabel" style="color:var(--text-primary);">
+            <i class="fas fa-file-invoice-dollar mr-1" style="color:var(--brand-primary);"></i> Subir Boleta de Pago
           </h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
             <span aria-hidden="true">&times;</span>
@@ -672,7 +682,7 @@
         <div class="modal-body">
           <div class="mb-3">
             <label>Trabajador</label>
-            <select name="user_id" class="form-control shadow-sm" required>
+            <select name="user_id" class="form-control" required>
               <option value="">Seleccione un trabajador</option>
               @foreach($trabajadores as $t)
                 <option value="{{ $t->id }}">{{ $t->name }} @if($t->cargo) — {{ $t->cargo }} @endif</option>
@@ -682,7 +692,7 @@
 
           <div class="mb-3">
             <label>Tipo de boleta</label>
-            <select name="tipo" id="tipoBoleta" class="form-control shadow-sm" required>
+            <select name="tipo" id="tipoBoleta" class="form-control" required>
               <option value="mensual">Mensual</option>
               <option value="cts">CTS</option>
               <option value="gratificacion">Gratificación</option>
@@ -691,24 +701,24 @@
 
           <div class="mb-3" id="grupoPeriodoMensual">
             <label>Periodo (mes de la boleta)</label>
-            <input type="month" name="periodo" class="form-control shadow-sm" value="{{ date('Y-m') }}">
+            <input type="month" name="periodo" class="form-control" value="{{ date('Y-m') }}">
           </div>
 
           <div class="mb-3 d-none" id="grupoPeriodoFijo">
             <label id="labelPeriodoFijo">Periodo</label>
             <div class="form-row">
               <div class="col-6">
-                <select name="mes_fijo" id="mesFijo" class="form-control shadow-sm"></select>
+                <select name="mes_fijo" id="mesFijo" class="form-control"></select>
               </div>
               <div class="col-6">
-                <select name="anio" id="anioFijo" class="form-control shadow-sm"></select>
+                <select name="anio" id="anioFijo" class="form-control"></select>
               </div>
             </div>
           </div>
 
           <div class="mb-3">
             <label>Archivo de la boleta (PDF o imagen)</label>
-            <input type="file" name="archivo" class="form-control shadow-sm" accept=".pdf,image/*" required>
+            <input type="file" name="archivo" class="form-control" accept=".pdf,image/*" required>
           </div>
         </div>
         <div class="modal-footer bg-light">
