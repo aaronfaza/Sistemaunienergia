@@ -70,12 +70,12 @@ class LogisticaLoteController extends Controller
         $cartasDisponibles = [];
         if (Auth::user()->tieneAccesoCompleto()) {
             $cartasDisponibles = [
-                'control_carta' => ControlCarta::whereDoesntHave('ropLote')->orderByDesc('id')->pluck('codigo', 'id'),
-                'carta_fis' => CartaFis::whereDoesntHave('ropLote')->orderByDesc('id')->pluck('codigo', 'id'),
-                'carta_ipf' => CartaIpf::whereDoesntHave('ropLote')->orderByDesc('id')->pluck('codigo', 'id'),
-                'carta_man' => CartaMan::whereDoesntHave('ropLote')->orderByDesc('id')->pluck('codigo', 'id'),
-                'carta_log' => CartaLog::whereDoesntHave('ropLote')->orderByDesc('id')->pluck('codigo', 'id'),
-                'carta_hse' => CartaHse::whereDoesntHave('ropLote')->orderByDesc('id')->pluck('codigo', 'id'),
+                'control_carta' => ControlCarta::whereDoesntHave('ropLote')->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
+                'carta_fis' => CartaFis::whereDoesntHave('ropLote')->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
+                'carta_ipf' => CartaIpf::whereDoesntHave('ropLote')->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
+                'carta_man' => CartaMan::whereDoesntHave('ropLote')->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
+                'carta_log' => CartaLog::whereDoesntHave('ropLote')->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
+                'carta_hse' => CartaHse::whereDoesntHave('ropLote')->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
             ];
         }
 

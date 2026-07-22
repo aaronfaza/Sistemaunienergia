@@ -928,8 +928,8 @@
                         <label>Carta SO-PRO</label>
                         <select class="form-control" name="origen_id" id="selectOrigenControlCarta">
                             <option value="">Selecciona una carta...</option>
-                            @foreach($cartasDisponibles['control_carta'] ?? [] as $idCarta => $codigoCarta)
-                                <option value="{{ $idCarta }}">{{ $codigoCarta }}</option>
+                            @foreach($cartasDisponibles['control_carta'] ?? [] as $carta)
+                                <option value="{{ $carta->id }}" data-descripcion="{{ $carta->descripcion }}">{{ $carta->codigo }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -937,8 +937,8 @@
                         <label>Carta FIS</label>
                         <select class="form-control" name="origen_id" id="selectOrigenCartaFis" disabled>
                             <option value="">Selecciona una carta...</option>
-                            @foreach($cartasDisponibles['carta_fis'] ?? [] as $idCarta => $codigoCarta)
-                                <option value="{{ $idCarta }}">{{ $codigoCarta }}</option>
+                            @foreach($cartasDisponibles['carta_fis'] ?? [] as $carta)
+                                <option value="{{ $carta->id }}" data-descripcion="{{ $carta->descripcion }}">{{ $carta->codigo }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -946,8 +946,8 @@
                         <label>Carta IPF</label>
                         <select class="form-control" name="origen_id" id="selectOrigenCartaIpf" disabled>
                             <option value="">Selecciona una carta...</option>
-                            @foreach($cartasDisponibles['carta_ipf'] ?? [] as $idCarta => $codigoCarta)
-                                <option value="{{ $idCarta }}">{{ $codigoCarta }}</option>
+                            @foreach($cartasDisponibles['carta_ipf'] ?? [] as $carta)
+                                <option value="{{ $carta->id }}" data-descripcion="{{ $carta->descripcion }}">{{ $carta->codigo }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -955,8 +955,8 @@
                         <label>Carta MAN</label>
                         <select class="form-control" name="origen_id" id="selectOrigenCartaMan" disabled>
                             <option value="">Selecciona una carta...</option>
-                            @foreach($cartasDisponibles['carta_man'] ?? [] as $idCarta => $codigoCarta)
-                                <option value="{{ $idCarta }}">{{ $codigoCarta }}</option>
+                            @foreach($cartasDisponibles['carta_man'] ?? [] as $carta)
+                                <option value="{{ $carta->id }}" data-descripcion="{{ $carta->descripcion }}">{{ $carta->codigo }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -964,8 +964,8 @@
                         <label>Carta LOG</label>
                         <select class="form-control" name="origen_id" id="selectOrigenCartaLog" disabled>
                             <option value="">Selecciona una carta...</option>
-                            @foreach($cartasDisponibles['carta_log'] ?? [] as $idCarta => $codigoCarta)
-                                <option value="{{ $idCarta }}">{{ $codigoCarta }}</option>
+                            @foreach($cartasDisponibles['carta_log'] ?? [] as $carta)
+                                <option value="{{ $carta->id }}" data-descripcion="{{ $carta->descripcion }}">{{ $carta->codigo }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -973,15 +973,15 @@
                         <label>Carta HSE</label>
                         <select class="form-control" name="origen_id" id="selectOrigenCartaHse" disabled>
                             <option value="">Selecciona una carta...</option>
-                            @foreach($cartasDisponibles['carta_hse'] ?? [] as $idCarta => $codigoCarta)
-                                <option value="{{ $idCarta }}">{{ $codigoCarta }}</option>
+                            @foreach($cartasDisponibles['carta_hse'] ?? [] as $carta)
+                                <option value="{{ $carta->id }}" data-descripcion="{{ $carta->descripcion }}">{{ $carta->codigo }}</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label><strong>Asunto</strong></label>
-                        <input type="text" class="form-control" name="asunto" placeholder="¿Qué se está solicitando?">
+                        <input type="text" class="form-control" name="asunto" id="asuntoNuevoRegistro" placeholder="¿Qué se está solicitando?">
                     </div>
 
                     <div class="form-group">
@@ -1470,6 +1470,17 @@ function toggleOrigenCarta() {
 }
 $(document).on('change', 'input[name="origen_tipo"]', toggleOrigenCarta);
 $(function () { toggleOrigenCarta(); });
+
+// Al elegir una carta como origen, se autocompleta el Asunto con su
+// descripción para agilizar el registro (el campo sigue siendo editable).
+$.each(ORIGENES_CARTA_MAP, function (valor, sufijo) {
+    $(document).on('change', '#selectOrigen' + sufijo, function () {
+        var descripcion = $(this).find(':selected').data('descripcion');
+        if (descripcion) {
+            $('#asuntoNuevoRegistro').val(descripcion);
+        }
+    });
+});
 
 // Barra de scroll horizontal pegajosa: sincronizada con el scroll real de
 // la tabla, siempre alcanzable sin bajar hasta el final.
