@@ -46,6 +46,10 @@ class LogisticaLoteController extends Controller
             });
         }
 
+        if ($request->filled('estado_filtro') && in_array($request->estado_filtro, LogisticaLote::ESTADOS, true)) {
+            $query->where('estado', $request->estado_filtro);
+        }
+
         $totalRegistros = (clone $query)->count();
         $totalEnProceso = (clone $query)->whereIn('estado', ['EN REVISION', 'EN PROCESO', 'EN EJECUCION', 'BUENA PRO'])->count();
         $totalEjecutado = (clone $query)->where('estado', 'EJECUTADO')->count();
@@ -68,9 +72,23 @@ class LogisticaLoteController extends Controller
         $usuariosLogistica = User::where('rol', 'logistica')->orderBy('name')->get(['id', 'name']);
         $usuariosRegistrados = User::orderBy('name')->get(['id', 'name']);
 
+        // Alerta para el usuario logueado: expedientes donde él es el
+        // responsable de firma y todavía no llegan a un estado final.
+        $documentosPendientesFirma = LogisticaLote::where('responsable_id', Auth::id())
+            ->whereNotIn('estado', ['EJECUTADO', 'ANULADO'])
+            ->orderByDesc('id')
+            ->get(['id', 'cod_log', 'asunto', 'estado']);
+
+        // Equipo de Logística Lima: quién está activo ahora mismo y su
+        // última conexión (mismo criterio que "Usuarios activos" de Bienvenida).
+        $equipoLogistica = User::where('rol', 'logistica')
+            ->orderByDesc('last_login_at')
+            ->get(['id', 'name', 'last_login_at', 'foto_perfil']);
+
         return view('logistica_lotes.index', compact(
             'lotes', 'totalRegistros', 'totalEnProceso', 'totalEjecutado', 'totalAlerta',
-            'cartasDisponibles', 'usuariosLogistica', 'usuariosRegistrados'
+            'cartasDisponibles', 'usuariosLogistica', 'usuariosRegistrados',
+            'documentosPendientesFirma', 'equipoLogistica'
         ));
     }
 

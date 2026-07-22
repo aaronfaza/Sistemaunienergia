@@ -474,7 +474,52 @@
         </div>
     @endif
 
+    @if($documentosPendientesFirma->isNotEmpty())
+        <div class="alert alert-warning mt-3 shadow-sm border-0" style="border-radius:12px;">
+            <i class="fas fa-signature mr-1"></i>
+            <strong>Tienes {{ $documentosPendientesFirma->count() }} {{ $documentosPendientesFirma->count() === 1 ? 'documento pendiente de tu firma' : 'documentos pendientes de tu firma' }}:</strong>
+            <span>
+                @foreach($documentosPendientesFirma as $pendiente)
+                    <span class="badge badge-pill badge-light border mr-1">{{ $pendiente->cod_log }} — {{ $pendiente->estado }}</span>
+                @endforeach
+            </span>
+        </div>
+    @endif
+
     <div class="dashboard-safe-container mt-3">
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-body py-2">
+                    <div class="d-flex align-items-center flex-wrap" style="gap: 1.25rem;">
+                        <strong class="text-muted small text-uppercase mr-1"><i class="fas fa-users mr-1"></i> Equipo Logística</strong>
+                        @forelse($equipoLogistica as $miembro)
+                            @php
+                                $activo = $miembro->last_login_at && $miembro->last_login_at->gt(now()->subMinutes(15));
+                            @endphp
+                            <div class="d-flex align-items-center" style="gap:.4rem;">
+                                @if($miembro->foto_perfil)
+                                    <img src="{{ asset('storage/'.$miembro->foto_perfil) }}" class="rounded-circle" width="26" height="26" style="object-fit:cover;">
+                                @else
+                                    <img src="https://ui-avatars.com/api/?name={{ urlencode($miembro->name) }}&background=003366&color=fff&size=26" class="rounded-circle" width="26" height="26">
+                                @endif
+                                <span class="small">
+                                    {{ $miembro->name }}
+                                    @if($activo)
+                                        <span class="text-success">● activo</span>
+                                    @else
+                                        <span class="text-muted">— {{ $miembro->last_login_at ? $miembro->last_login_at->diffForHumans() : 'sin conexiones' }}</span>
+                                    @endif
+                                </span>
+                            </div>
+                        @empty
+                            <span class="text-muted small">Sin usuarios de Logística registrados.</span>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row stat-row stat-row-lg-nowrap">
 
         <div class="col-12 col-sm-6 col-lg-3 mb-3">
@@ -539,7 +584,7 @@
     <section class="content mt-4">
         <div class="container-fluid">
             <div class="row mb-3">
-                <div class="col-md-6">
+                <div class="col-md-7">
                     <form action="{{ route('logistica_lotes.index') }}" method="GET" class="d-flex">
                         <div class="input-group">
                             <input type="text" name="search" class="form-control"
@@ -549,13 +594,19 @@
                                 <button class="btn btn-primary" type="submit">
                                     <i class="fas fa-search"></i> Buscar
                                 </button>
-                                @if(request('search'))
+                                @if(request('search') || request('estado_filtro'))
                                     <a href="{{ route('logistica_lotes.index') }}" class="btn btn-secondary">
                                         Limpiar
                                     </a>
                                 @endif
                             </div>
                         </div>
+                        <select name="estado_filtro" class="form-control ml-2" style="max-width:220px;" onchange="this.form.submit()">
+                            <option value="">Todos los estados</option>
+                            @foreach(\App\Models\LogisticaLote::ESTADOS as $estadoOpcion)
+                                <option value="{{ $estadoOpcion }}" {{ request('estado_filtro') === $estadoOpcion ? 'selected' : '' }}>{{ $estadoOpcion }}</option>
+                            @endforeach
+                        </select>
                     </form>
                 </div>
             </div>
