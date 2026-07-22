@@ -615,6 +615,54 @@
               <p class="ms-2 mb-0">ROP2026 LOTE IX</p>
           </a>
       </li>
+          @elseif(Auth::user()->puedeVerCartasMan())
+          <li class="nav-item has-treeview {{ request()->routeIs('cartas_man.*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->routeIs('cartas_man.*') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-folder-open" style="color: var(--brand-info);"></i>
+              <p>
+                Control Cartas
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview ml-2">
+              <li class="nav-item has-treeview {{ request()->routeIs('cartas_man.*') && request()->query('anio', '2026') === '2026' ? 'menu-open' : '' }}">
+                <a href="#" class="nav-link {{ request()->routeIs('cartas_man.*') && request()->query('anio', '2026') === '2026' ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-calendar-alt" style="color: var(--brand-accent);"></i>
+                  <p>
+                    2026
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview ml-2">
+                  <li class="nav-item">
+                    <a href="{{ route('cartas_man.index', ['anio' => 2026]) }}"
+                      class="nav-link {{ request()->routeIs('cartas_man.*') && request()->query('anio', '2026') === '2026' ? 'active' : '' }}">
+                      <i class="fas fa-wrench nav-icon" style="color: var(--brand-info);"></i>
+                      <p>MAN</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="nav-item has-treeview {{ request()->routeIs('cartas_man.*') && request()->query('anio') === '2027' ? 'menu-open' : '' }}">
+                <a href="#" class="nav-link {{ request()->routeIs('cartas_man.*') && request()->query('anio') === '2027' ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-calendar-alt" style="color: var(--brand-secondary);"></i>
+                  <p>
+                    2027
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview ml-2">
+                  <li class="nav-item">
+                    <a href="{{ route('cartas_man.index', ['anio' => 2027]) }}"
+                      class="nav-link {{ request()->routeIs('cartas_man.*') && request()->query('anio') === '2027' ? 'active' : '' }}">
+                      <i class="fas fa-wrench nav-icon" style="color: var(--brand-info);"></i>
+                      <p>MAN</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
           @endif
 
           @if(Auth::user()->esLogistica())

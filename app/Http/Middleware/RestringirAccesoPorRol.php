@@ -22,7 +22,7 @@ class RestringirAccesoPorRol
         ],
         'supervisor' => [
             'dashboard', 'reportes.*', 'anomalias.*', 'firma.*',
-            'bienvenida', 'perfil.*', 'boletas.*', 'logout',
+            'bienvenida', 'perfil.*', 'boletas.*', 'cartas_man.*', 'logout',
         ],
         'rrhh' => [
             'bienvenida', 'perfil.*', 'boletas.*', 'logout',
