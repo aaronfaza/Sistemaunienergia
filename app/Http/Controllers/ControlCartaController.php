@@ -17,7 +17,7 @@ class ControlCartaController extends Controller
     {
         $buscar = $request->get('buscar');
 
-    $cartas = ControlCarta::with(['creador', 'modificador'])
+    $cartas = ControlCarta::with(['creador', 'modificador', 'ropLote'])
         ->when($buscar, function ($query, $buscar) {
             $query->where('codigo', 'like', "%{$buscar}%")
                   ->orWhere('servicio_compra', 'like', "%{$buscar}%")

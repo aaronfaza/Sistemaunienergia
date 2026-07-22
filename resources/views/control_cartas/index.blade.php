@@ -499,7 +499,7 @@ textarea:focus {
           <a href="{{ route('logistica_lotes.index') }}"
             class="nav-link {{ request()->routeIs('logistica_lotes.*') ? 'active' : '' }}">
               <i class="nav-icon fas fa-boxes" style="color: var(--brand-primary-light);"></i>
-              <p class="ms-2 mb-0">Logística Lote</p>
+              <p class="ms-2 mb-0">ROP2026 LOTE IX</p>
           </a>
       </li>
           @endif
@@ -1086,6 +1086,21 @@ textarea:focus {
                         </div>
                       </div>
                     </div>
+
+                    @if($carta->ropLote)
+                    <!-- BLOQUE: ROP ASOCIADO -->
+                    <div class="card shadow-sm border-0 mt-3">
+                      <div class="card-body">
+                        <h6 class="text-primary font-weight-bold mb-2">
+                          <i class="fas fa-boxes mr-1"></i> ROP2026 Lote IX asociado
+                        </h6>
+                        <p class="mb-0">
+                          <strong>{{ $carta->ropLote->cod_log }}</strong>
+                          <span class="badge badge-pill badge-light border ml-1">{{ $carta->ropLote->estado }}</span>
+                        </p>
+                      </div>
+                    </div>
+                    @endif
 
                     <!-- BLOQUE: AUDITORÍA -->
                     <div class="card shadow-sm border-0 mt-3">

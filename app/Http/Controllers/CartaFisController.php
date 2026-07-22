@@ -18,7 +18,7 @@ class CartaFisController extends Controller
      */
     public function index(Request $request)
     {
-        $query = CartaFis::query();
+        $query = CartaFis::with('ropLote');
 
         if ($request->filled('buscar')) {
             $buscar = $request->buscar;

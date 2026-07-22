@@ -22,5 +22,10 @@ class CartaFis extends Model
         'estado',
         'created_by','updated_by'
     ];
+
+    public function ropLote()
+    {
+        return $this->morphOne(LogisticaLote::class, 'carta');
+    }
 }
 

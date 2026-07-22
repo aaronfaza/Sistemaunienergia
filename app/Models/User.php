@@ -68,6 +68,16 @@ class User extends Authenticatable
     }
 
     /**
+     * ¿Es de Logística Lima? Su único caso de uso es procesar los registros
+     * ROP2026 LOTE IX (Logística) ya creados por administración: no puede
+     * crearlos ni eliminarlos, solo completarlos y cambiarles el estado.
+     */
+    public function esLogistica(): bool
+    {
+        return $this->rol === 'logistica';
+    }
+
+    /**
      * ¿Puede ver el módulo de Mantenimiento (Reportes + Anomalías) en el menú?
      * Admin, mecánico y supervisor sí; RRHH no (no es su caso de uso).
      */

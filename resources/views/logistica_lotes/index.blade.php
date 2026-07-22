@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Control y Seguimiento Cartas FIS</title>
+  <title>ROP2026 LOTE IX</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="icon" href="{{ asset('img/logo.png.png') }}" type="image/png">
@@ -98,220 +98,168 @@
     .is-primary .stat-icon{ background:rgba(13,110,253,.12); color:#0d6efd; }
     .is-info .stat-icon{ background:rgba(43,183,246,.12); color:#2bb7f6; }
     .is-success .stat-icon{ background:rgba(24,181,143,.12); color:#18b58f; }
+    .is-danger .stat-icon{ background:rgba(239,68,68,.12); color:#ef4444; }
     .stat-meta{ display:flex; flex-direction:column; color:#25334a; }
     .stat-kpi span{ font-weight:700; font-size:clamp(20px,3.5vw,28px); letter-spacing:-.5px; line-height:1; }
     .stat-label{ font-size:.85rem; opacity:.8; }
 
-    /* ======================================================
-   CONTROL DE CARTAS – UX/UI ENTERPRISE UNIENERGIA
-   ====================================================== */
+    .card {
+      border-radius: 18px;
+      border: 1px solid rgba(0,0,0,.05);
+      box-shadow: 0 14px 34px rgba(15,23,42,.06);
+    }
 
-/* =========================
-   CARDS GENERALES
-   ========================= */
-.card {
-  border-radius: 18px;
-  border: 1px solid rgba(0,0,0,.05);
-  box-shadow: 0 14px 34px rgba(15,23,42,.06);
-}
+    .card-header {
+      background: linear-gradient(180deg, #ffffff, #f9fafb);
+      font-weight: 600;
+      letter-spacing: .2px;
+    }
 
-.card-header {
-  background: linear-gradient(180deg, #ffffff, #f9fafb);
-  font-weight: 600;
-  letter-spacing: .2px;
-}
-.stat-card.is-info .stat-icon {
-    background: rgba(245, 158, 11, 0.1) !important;
-    color: #f59e0b !important; /* Color ámbar/naranja para indicar espera */
-}
+    .btn {
+      border-radius: 999px !important;
+      font-weight: 600;
+      letter-spacing: .2px;
+      transition: all .2s ease;
+    }
 
-/* =========================
-   BOTONES – SISTEMA UNIFICADO
-   ========================= */
-.btn {
-  border-radius: 999px !important;
-  font-weight: 600;
-  letter-spacing: .2px;
-  transition: all .2s ease;
-}
+    .btn-success {
+      background: linear-gradient(135deg, #10b981, #047857);
+      border: none;
+      box-shadow: 0 8px 20px rgba(16,185,129,.35);
+    }
+    .btn-success:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 32px rgba(16,185,129,.45);
+    }
 
-/* Nueva Carta */
-.btn-success {
-  background: linear-gradient(135deg, #10b981, #047857);
-  border: none;
-  box-shadow: 0 8px 20px rgba(16,185,129,.35);
-}
-.btn-success:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 32px rgba(16,185,129,.45);
-}
+    .btn-primary {
+      background: linear-gradient(135deg, #003366, #002B5C);
+      border: none;
+      box-shadow: 0 6px 18px rgba(0,51,102,.35);
+    }
 
-/* Buscar */
-.btn-primary {
-  background: linear-gradient(135deg, #003366, #002B5C);
-  border: none;
-  box-shadow: 0 6px 18px rgba(0,51,102,.35);
-}
+    .btn-info {
+      background: linear-gradient(135deg, #0ea5e9, #0369a1);
+      border: none;
+      box-shadow: 0 6px 16px rgba(14,165,233,.35);
+    }
 
-/* Ver */
-.btn-info {
-  background: linear-gradient(135deg, #0ea5e9, #0369a1);
-  border: none;
-  box-shadow: 0 6px 16px rgba(14,165,233,.35);
-}
+    .btn-warning {
+      background: rgba(245,158,11,.15);
+      border: none;
+      color: #b45309;
+    }
+    .btn-warning:hover {
+      background: rgba(245,158,11,.25);
+    }
 
-/* Editar */
-.btn-warning {
-  background: rgba(245,158,11,.15);
-  border: none;
-  color: #b45309;
-}
-.btn-warning:hover {
-  background: rgba(245,158,11,.25);
-}
+    .btn-danger {
+      background: rgba(239,68,68,.12);
+      border: none;
+      color: #ef4444;
+    }
+    .btn-danger:hover {
+      background: rgba(239,68,68,.22);
+    }
 
-/* Eliminar */
-.btn-danger {
-  background: rgba(239,68,68,.12);
-  border: none;
-  color: #ef4444;
-}
-.btn-danger:hover {
-  background: rgba(239,68,68,.22);
-}
+    .btn-secondary.btn-sm {
+      background: rgba(100,116,139,.12);
+      border: none;
+      color: #475569;
+    }
 
-/* =========================
-   TABLA DE CARTAS (NO BOOTSTRAP LOOK)
-   ========================= */
-.table {
-  border-collapse: separate !important;
-  border-spacing: 0 8px;
-}
+    .table {
+      border-collapse: separate !important;
+      border-spacing: 0 8px;
+    }
 
-.table thead th {
-  background: #f8fafc !important;
-  border: none !important;
-  font-size: .78rem;
-  text-transform: uppercase;
-  letter-spacing: .05em;
-  color: #475569;
-  padding: .75rem;
-}
+    .table thead th {
+      background: #f8fafc !important;
+      border: none !important;
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: #475569;
+      padding: .75rem;
+    }
 
-.table tbody tr {
-  background: #ffffff;
-  box-shadow: 0 6px 18px rgba(15,23,42,.06);
-  transition: transform .18s ease, box-shadow .18s ease;
-}
+    .table tbody tr {
+      background: #ffffff;
+      box-shadow: 0 6px 18px rgba(15,23,42,.06);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
 
-.table tbody tr:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 32px rgba(15,23,42,.12);
-}
+    .table tbody tr:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 32px rgba(15,23,42,.12);
+    }
 
-.table tbody td {
-  border: none !important;
-  vertical-align: middle;
-  padding: .65rem .75rem;
-  font-size: .9rem;
-  color: #1e293b;
-}
+    .table tbody td {
+      border: none !important;
+      vertical-align: middle;
+      padding: .65rem .75rem;
+      font-size: .9rem;
+      color: #1e293b;
+    }
 
-/* Código */
-.table tbody td:nth-child(2) {
-  font-weight: 600;
-  color: #2563eb;
-}
+    .input-group .form-control {
+      border-radius: 999px 0 0 999px;
+    }
 
-/* =========================
-   BUSCADOR
-   ========================= */
-.input-group .form-control {
-  border-radius: 999px 0 0 999px;
-}
+    .input-group .btn {
+      border-radius: 0 999px 999px 0 !important;
+    }
 
-.input-group .btn {
-  border-radius: 0 999px 999px 0 !important;
-}
+    .modal-content {
+      border-radius: 20px !important;
+      box-shadow: 0 24px 48px rgba(15,23,42,.25);
+    }
 
-/* =========================
-   MODALES – FICHA CORPORATIVA
-   ========================= */
-.modal-content {
-  border-radius: 20px !important;
-  box-shadow: 0 24px 48px rgba(15,23,42,.25);
-}
+    .modal-header {
+      border-bottom: 1px solid rgba(0,0,0,.05);
+    }
 
-.modal-header {
-  border-bottom: 1px solid rgba(0,0,0,.05);
-}
+    .modal-footer {
+      border-top: 1px solid rgba(0,0,0,.05);
+    }
 
-.modal-footer {
-  border-top: 1px solid rgba(0,0,0,.05);
-}
+    .form-control,
+    .custom-select,
+    textarea {
+      border-radius: 12px;
+      font-size: .9rem;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
 
-/* =========================
-   FORMULARIOS
-   ========================= */
-.form-control,
-.custom-select,
-textarea {
-  border-radius: 12px;
-  font-size: .9rem;
-  transition: border-color .15s ease, box-shadow .15s ease;
-}
+    .form-control:focus,
+    .custom-select:focus,
+    textarea:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.18);
+    }
 
-.form-control:focus,
-.custom-select:focus,
-textarea:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37,99,235,.18);
-}
-
+    .estado-select {
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.78rem;
+      padding: 4px 10px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      min-width: 140px;
+      text-align: center;
+      transition: all .2s ease;
+    }
+    .estado-badge {
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.78rem;
+      padding: 5px 12px;
+      display: inline-block;
+      min-width: 140px;
+      text-align: center;
+    }
   </style>
-
-<style>
-/* ===== ESTADOS DE CARTAS ===== */
-.estado-select {
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 0.8rem;
-  padding: 4px 10px;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  min-width: 120px;
-  text-align: center;
-  transition: all .2s ease;
-}
-
-/* Pendiente */
-.estado-pendiente {
-  background: rgba(245, 158, 11, .18);
-  color: #b45309;
-}
-.estado-pendiente:hover {
-  background: rgba(245, 158, 11, .30);
-}
-
-/* Ejecutado */
-.estado-ejecutado {
-  background: rgba(16, 185, 129, .20);
-  color: #047857;
-}
-.estado-ejecutado:hover {
-  background: rgba(16, 185, 129, .32);
-}
-
-/* Rechazado */
-.estado-rechazado {
-  background: rgba(239, 68, 68, .18);
-  color: #b91c1c;
-}
-.estado-rechazado:hover {
-  background: rgba(239, 68, 68, .30);
-}
-</style>
 
 </head>
 
@@ -347,7 +295,7 @@ textarea:focus {
           <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" style="border-radius:12px;min-width:240px;">
             <div class="dropdown-item text-center bg-light py-3">
               <strong class="text-dark d-block">{{ Auth::user()->name }}</strong>
-              <p class="text-muted small mb-0">Usuario activo</p>
+              <p class="text-muted small mb-0">{{ Auth::user()->cargo ?? 'Usuario activo' }}</p>
             </div>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item d-flex align-items-center px-3 py-2" href="{{ route('perfil.edit') }}">
@@ -376,7 +324,7 @@ textarea:focus {
     data-widget="treeview"
     data-accordion="true">
            <li class="nav-item">
-          <a href="{{ route('bienvenida') }}" 
+          <a href="{{ route('bienvenida') }}"
              class="nav-link {{ request()->routeIs('bienvenida') ? 'active' : '' }}">
             <i class="nav-icon fas fa-home" style="color: var(--brand-secondary);"></i>
             <p class="ml-2 mb-0">Bienvenida</p>
@@ -454,9 +402,19 @@ textarea:focus {
           <a href="{{ route('logistica_lotes.index') }}"
             class="nav-link {{ request()->routeIs('logistica_lotes.*') ? 'active' : '' }}">
               <i class="nav-icon fas fa-boxes" style="color: var(--brand-primary-light);"></i>
-              <p class="ms-2 mb-0">Logística Lote</p>
+              <p class="ms-2 mb-0">ROP2026 LOTE IX</p>
           </a>
       </li>
+          @endif
+
+          @if(Auth::user()->esLogistica())
+          <li class="nav-item">
+            <a href="{{ route('logistica_lotes.index') }}"
+              class="nav-link {{ request()->routeIs('logistica_lotes.*') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-boxes" style="color: var(--brand-primary-light);"></i>
+                <p class="ms-2 mb-0">ROP2026 LOTE IX</p>
+            </a>
+          </li>
           @endif
 
         </ul>
@@ -469,25 +427,32 @@ textarea:focus {
       <div class="container-fluid d-flex justify-content-between align-items-center">
         <div>
           <h1 class="m-0 font-weight-bold" style="color:#333; font-size:1.35rem;">
-            CONTROL Y SEGUIMIENTO DE ORDENES LOGISTICA LOTE IX
+            📦 ROP2026 LOTE IX
           </h1>
-          <div class="text-muted" style="font-size:.9rem;">Gestión y seguimiento interno</div>
+          <div class="text-muted" style="font-size:.9rem;">Control y seguimiento de órdenes — Logística Lote IX</div>
         </div>
+        @if(Auth::user()->tieneAccesoCompleto())
         <button class="btn btn-success" data-toggle="modal" data-target="#modalAgregarLote">
                 <i class="fas fa-plus mr-1"></i> Nuevo Registro
         </button>
+        @endif
       </div>
     </div>
-    
+
     @if(session('success'))
         <div class="alert alert-success mt-3 shadow-sm border-0" style="border-radius:12px;">
             <i class="fas fa-check-circle mr-1"></i> {{ session('success') }}
         </div>
     @endif
+    @if(session('error'))
+        <div class="alert alert-danger mt-3 shadow-sm border-0" style="border-radius:12px;">
+            <i class="fas fa-exclamation-circle mr-1"></i> {{ session('error') }}
+        </div>
+    @endif
 
     <div class="dashboard-safe-container mt-3">
     <div class="row stat-row stat-row-lg-nowrap">
-        
+
         <div class="col-12 col-sm-6 col-lg-3 mb-3">
             <div class="stat-card is-primary">
                 <div class="stat-icon">
@@ -509,7 +474,7 @@ textarea:focus {
                 </div>
                 <div class="stat-meta">
                     <div class="stat-kpi">
-                        <span>{{ $totalProceso }}</span>
+                        <span>{{ $totalEnProceso }}</span>
                     </div>
                     <span class="stat-label">En Proceso</span>
                 </div>
@@ -523,23 +488,23 @@ textarea:focus {
                 </div>
                 <div class="stat-meta">
                     <div class="stat-kpi">
-                        <span>{{ $totalFinalizados }}</span>
+                        <span>{{ $totalEjecutado }}</span>
                     </div>
-                    <span class="stat-label">Finalizados</span>
+                    <span class="stat-label">Ejecutado</span>
                 </div>
             </div>
         </div>
 
         <div class="col-12 col-sm-6 col-lg-3 mb-3">
-            <div class="stat-card">
-                <div class="stat-icon" style="background: rgba(37, 99, 235, .12); color: #2563eb;">
-                    <i class="fas fa-chart-line"></i>
+            <div class="stat-card is-danger">
+                <div class="stat-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
                 </div>
                 <div class="stat-meta">
                     <div class="stat-kpi">
-                        <span>{{ $totalRegistros > 0 ? round(($totalFinalizados / $totalRegistros) * 100) : 0 }}%</span>
+                        <span>{{ $totalAlerta }}</span>
                     </div>
-                    <span class="stat-label">Efectividad</span>
+                    <span class="stat-label">Vencidas / Observadas</span>
                 </div>
             </div>
         </div>
@@ -547,16 +512,14 @@ textarea:focus {
     </div>
 </div>
 
-
-
     <section class="content mt-4">
         <div class="container-fluid">
             <div class="row mb-3">
                 <div class="col-md-6">
                     <form action="{{ route('logistica_lotes.index') }}" method="GET" class="d-flex">
                         <div class="input-group">
-                            <input type="text" name="search" class="form-control" 
-                                placeholder="Buscar por código, responsable o asunto..." 
+                            <input type="text" name="search" class="form-control"
+                                placeholder="Buscar por código, carta, asunto..."
                                 value="{{ request('search') }}">
                             <div class="input-group-append">
                                 <button class="btn btn-primary" type="submit">
@@ -579,214 +542,162 @@ textarea:focus {
                                 <tr>
                                     <th>#</th>
                                     <th>Cod. Log</th>
-                                    <th>Carpeta</th>
-                                    <th>Responsable</th>
-                                    <th>N° Carta</th>
+                                    <th>Carta origen</th>
                                     <th>Asunto</th>
+                                    <th>Atención</th>
                                     <th class="text-center">Estado</th>
                                     <th class="text-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                    $estadoColores = [
+                                        'PENDIENTE' => ['bg' => '#e5e7eb', 'text' => '#374151'],
+                                        'EN REVISION' => ['bg' => '#dbeafe', 'text' => '#1d4ed8'],
+                                        'BUENA PRO' => ['bg' => '#cffafe', 'text' => '#0e7490'],
+                                        'EN PROCESO' => ['bg' => '#fef3c7', 'text' => '#b45309'],
+                                        'EN EJECUCION' => ['bg' => '#ffedd5', 'text' => '#c2410c'],
+                                        'EJECUTADO' => ['bg' => '#d1fae5', 'text' => '#047857'],
+                                        'OBSERVADO' => ['bg' => '#fce7f3', 'text' => '#be185d'],
+                                        'ORDEN VENCIDA' => ['bg' => '#fee2e2', 'text' => '#b91c1c'],
+                                        'ANULADO' => ['bg' => '#e2e8f0', 'text' => '#1e293b'],
+                                    ];
+                                @endphp
                                 @forelse ($lotes as $index => $lote)
+                                    @php $color = $estadoColores[$lote->estado] ?? ['bg' => '#e5e7eb', 'text' => '#374151']; @endphp
                                     <tr>
                                         <td>{{ $lotes->firstItem() + $index }}</td>
                                         <td class="font-weight-bold">{{ $lote->cod_log }}</td>
-                                        <td>{{ $lote->carpeta }}</td>
-                                        <td>{{ $lote->responsable }}</td>
-                                        <td>{{ $lote->numero_carta }}</td>
-                                        <td><small>{{ Str::limit($lote->asunto, 40) }}</small></td>
+                                        <td>
+                                            {{ $lote->numero_carta ?? '—' }}
+                                            @if($lote->carta_type)
+                                                <span class="badge badge-pill badge-light border">{{ $lote->carta_type === \App\Models\ControlCarta::class ? 'SO-PRO' : 'FIS' }}</span>
+                                            @endif
+                                        </td>
+                                        <td><small>{{ Str::limit($lote->asunto, 40) ?: '—' }}</small></td>
+                                        <td><small>{{ $lote->atencion ?? '—' }}</small></td>
                                        <td class="text-center">
-                                            <select class="form-control form-control-sm cambio-estado-rapido select-estado-{{ $lote->id }}" 
+                                            @if(Auth::user()->esLogistica())
+                                            <select class="form-control form-control-sm cambio-estado-rapido"
                                                     data-id="{{ $lote->id }}"
-                                                    style="border-radius: 20px; font-weight: bold; font-size: 0.85rem; border: none; padding: 2px 10px;
-                                                        background-color: {{ $lote->estado == 'Finalizado' ? '#d1fae5' : ($lote->estado == 'Proceso' ? '#fef3c7' : '#fee2e2') }};
-                                                        color: {{ $lote->estado == 'Finalizado' ? '#047857' : ($lote->estado == 'Proceso' ? '#b45309' : '#b91c1c') }};">
-                                                <option value="Pendiente" {{ $lote->estado == 'Pendiente' ? 'selected' : '' }}>Pendiente</option>
-                                                <option value="Proceso" {{ $lote->estado == 'Proceso' ? 'selected' : '' }}>Proceso</option>
-                                                <option value="Finalizado" {{ $lote->estado == 'Finalizado' ? 'selected' : '' }}>Finalizado</option>
+                                                    style="border-radius: 20px; font-weight: bold; font-size: 0.78rem; border: none; padding: 2px 10px;
+                                                        background-color: {{ $color['bg'] }}; color: {{ $color['text'] }};">
+                                                @foreach(\App\Models\LogisticaLote::ESTADOS as $estadoOpcion)
+                                                    <option value="{{ $estadoOpcion }}" {{ $lote->estado === $estadoOpcion ? 'selected' : '' }}>{{ $estadoOpcion }}</option>
+                                                @endforeach
                                             </select>
+                                            @else
+                                            <span class="estado-badge" style="background-color: {{ $color['bg'] }}; color: {{ $color['text'] }};">{{ $lote->estado }}</span>
+                                            @endif
                                         </td>
                                         <td class="text-center">
-                                            <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#modalEditarLote{{ $lote->id }}">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-info mr-1" data-toggle="modal" data-target="#modalVerLote{{ $lote->id }}">
+                                            <button class="btn btn-sm btn-info mr-1" data-toggle="modal" data-target="#modalVerLote{{ $lote->id }}" title="Ver">
                                                 <i class="fas fa-eye"></i>
                                             </button>
+                                            @if(Auth::user()->esLogistica())
+                                            <button class="btn btn-sm btn-warning mr-1" data-toggle="modal" data-target="#modalEditarLote{{ $lote->id }}" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            @endif
+                                            <button type="button" class="btn btn-sm btn-secondary mr-1 btn-historial"
+                                                    data-toggle="modal" data-target="#modalHistorialLote"
+                                                    data-url="{{ route('logistica_lotes.historial', $lote->id) }}"
+                                                    title="Historial de cambios">
+                                                <i class="fas fa-history"></i>
+                                            </button>
+                                            @if(Auth::user()->tieneAccesoCompleto())
+                                            <form action="{{ route('logistica_lotes.destroy', $lote->id) }}" method="POST" class="d-inline-block"
+                                                  onsubmit="return confirm('¿Eliminar el registro {{ $lote->cod_log }}? Esta acción no se puede deshacer.');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Eliminar">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                            @endif
                                         </td>
-                                        
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="text-center py-4 text-muted">No se encontraron registros de logística.</td>
+                                        <td colspan="7" class="text-center py-4 text-muted">No se encontraron registros de logística.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                             <p class="text-muted small">
-                            Mostrando del {{ $lotes->firstItem() }} al {{ $lotes->lastItem() }} 
+                            Mostrando del {{ $lotes->firstItem() }} al {{ $lotes->lastItem() }}
                             de un total de {{ $lotes->total() }} registros.
                         </p>
                         </table>
-                        
+
                     </div>
                 </div>
             </div>
-            
+
             <div class="d-flex justify-content-end mt-3">
                 {{ $lotes->links() }}
             </div>
         </div>
     </section>
-    <a href="{{ route('logistica.export') }}" class="btn btn-success shadow-sm">
+    <a href="{{ route('logistica_lotes.export.excel') }}" class="btn btn-success shadow-sm">
         <i class="fas fa-file-excel mr-2"></i> Exportar Backup Excel
     </a>
 </div>
 
-
-
+@if(Auth::user()->tieneAccesoCompleto())
+<!-- Modal Agregar (solo administración): cod_log, carta de origen, observación -->
 <div class="modal fade" id="modalAgregarLote" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
             <div class="modal-header text-white" style="background:linear-gradient(135deg,#003366,#002B5C); border-radius: 15px 15px 0 0;">
-                <h5 class="modal-title"><i class="fas fa-boxes mr-2"></i> Nuevo Registro de Logística</h5>
+                <h5 class="modal-title"><i class="fas fa-boxes mr-2"></i> Nuevo Registro ROP</h5>
                 <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
             </div>
             <form action="{{ route('logistica_lotes.store') }}" method="POST">
                 @csrf
                 <div class="modal-body p-4">
-                    <div class="row">
-                        <div class="col-md-3 form-group">
-                            <label><strong>Cod. Logística</strong></label>
-                            <input type="text" class="form-control border-primary" name="cod_log" required placeholder="Ej: LOG-001">
-                        </div>
-                        <div class="col-md-3 form-group">
-                            <label><strong>Carpeta</strong></label>
-                            <input type="text" class="form-control" name="carpeta">
-                        </div>
-                        <div class="col-md-3 form-group">
-                            <label><strong>Responsable</strong></label>
-                            <input type="text" class="form-control" name="responsable">
-                        </div>
-                        <div class="col-md-3 form-group">
-                            <label><strong>Estado</strong></label>
-                            <select class="form-control custom-select border-info" name="estado">
-                                <option value="Pendiente">Pendiente</option>
-                                <option value="Proceso">Proceso</option>
-                                <option value="Finalizado">Finalizado</option>
-                            </select>
+                    <p class="text-muted small">
+                        Este formulario solo inicia el registro. Logística Lima completa el resto del proceso
+                        (estado, proveedor, montos, órdenes) desde su propia edición.
+                    </p>
+                    <div class="form-group">
+                        <label><strong>Cod. Logística (N° ROP)</strong></label>
+                        <input type="text" class="form-control border-primary" name="cod_log" required placeholder="Ej: ROP260004">
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>Carta de origen</strong></label>
+                        <div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="origenControlCarta" name="origen_tipo" value="control_carta" class="custom-control-input" checked>
+                                <label class="custom-control-label" for="origenControlCarta">Control de Cartas (SO-PRO)</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="origenCartaFis" name="origen_tipo" value="carta_fis" class="custom-control-input">
+                                <label class="custom-control-label" for="origenCartaFis">Cartas FIS</label>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-4 form-group">
-                            <label><strong>Número de Carta</strong></label>
-                            <input type="text" class="form-control" name="numero_carta">
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <label><strong>Asunto</strong></label>
-                            <input type="text" class="form-control" name="asunto">
-                        </div>
+                    <div class="form-group" id="grupoOrigenControlCarta">
+                        <label>Carta SO-PRO</label>
+                        <select class="form-control" name="origen_id" id="selectOrigenControlCarta">
+                            <option value="">Selecciona una carta...</option>
+                            @foreach($cartasDisponibles['control_carta'] ?? [] as $idCarta => $codigoCarta)
+                                <option value="{{ $idCarta }}">{{ $codigoCarta }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group" id="grupoOrigenCartaFis" style="display:none;">
+                        <label>Carta FIS</label>
+                        <select class="form-control" name="origen_id" id="selectOrigenCartaFis" disabled>
+                            <option value="">Selecciona una carta...</option>
+                            @foreach($cartasDisponibles['carta_fis'] ?? [] as $idCarta => $codigoCarta)
+                                <option value="{{ $idCarta }}">{{ $codigoCarta }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-3 form-group">
-                            <label><strong>Fecha Emisión</strong></label>
-                            <input type="date" class="form-control" name="fecha_emision">
-                        </div>
-                        <div class="col-md-3 form-group">
-                            <label><strong>Código Único</strong></label>
-                            <input type="text" class="form-control" name="codigo_unico">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label><strong>Atención</strong></label>
-                            <input type="text" class="form-control" name="atencion">
-                        </div>
-                    </div>
-
-                    <hr>
-                    <h6 class="text-primary font-weight-bold mb-3"><i class="fas fa-file-invoice-dollar mr-2"></i> Datos Comerciales y Ganador</h6>
-                    <div class="row">
-                        <div class="col-md-3 form-group">
-                            <label><strong>RUC</strong></label>
-                            <input type="text" class="form-control" name="ruc" maxlength="11">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label><strong>Empresa Ganadora</strong></label>
-                            <input type="text" class="form-control" name="empresa_ganadora">
-                        </div>
-                        <div class="col-md-3 form-group">
-                            <label><strong>Centro de Costo</strong></label>
-                            <input type="text" class="form-control" name="centro_costo">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-2 form-group">
-                            <label><strong>Moneda</strong></label>
-                            <select class="form-control custom-select" name="moneda">
-                                <option value="Soles">Soles (S/)</option>
-                                <option value="Dólares">Dólares ($)</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3 form-group">
-                            <label><strong>Monto + IGV</strong></label>
-                            <input type="number" step="0.01" class="form-control" name="monto_igv">
-                        </div>
-                        <div class="col-md-4 form-group">
-                            <label><strong>Forma de Pago</strong></label>
-                            <input type="text" class="form-control" name="forma_pago">
-                        </div>
-                        <div class="col-md-3 form-group">
-                            <label><strong>Tipo Solicitud</strong></label>
-                            <input type="text" class="form-control" name="tipo_solicitud">
-                        </div>
-                    </div>
-
-                    <hr>
-                    <h6 class="text-success font-weight-bold mb-3"><i class="fas fa-tasks mr-2"></i> Documentación y Seguimiento</h6>
-                    <div class="row">
-                        <div class="col-md-3 form-group">
-                            <label><strong>N° OC / OS</strong></label>
-                            <input type="text" class="form-control" name="nro_oc_os">
-                        </div>
-                        <div class="col-md-3 form-group">
-                            <label><strong>Emisión OC/OS</strong></label>
-                            <input type="date" class="form-control" name="emision_oc_os">
-                        </div>
-                        <div class="col-md-3 form-group">
-                            <label><strong>Conformidad</strong></label>
-                            <input type="text" class="form-control" name="conformidad" placeholder="Nro de Conformidad">
-                        </div>
-                        <div class="col-md-3 form-group">
-                            <label><strong>Factura</strong></label>
-                            <input type="text" class="form-control" name="factura">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-3 form-group">
-                            <label><strong>Fecha Entrega</strong></label>
-                            <input type="date" class="form-control" name="fecha_entrega">
-                        </div>
-                        <div class="col-md-3 form-group">
-                            <label><strong>Orden Firmada</strong></label>
-                            <select class="form-control custom-select" name="orden_firmada">
-                                <option value="0">NO</option>
-                                <option value="1">SI</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3 form-group">
-                            <label><strong>% Ejecución</strong></label>
-                            <input type="number" class="form-control" name="porcentaje_ejecucion" placeholder="0 - 100">
-                        </div>
-                        <div class="col-md-3 form-group">
-                            <label><strong>Fecha Venc.</strong></label>
-                            <input type="date" class="form-control" name="fecha_vencimiento">
-                        </div>
-                    </div>
-
-                    <div class="form-group mt-3">
+                    <div class="form-group">
                         <label><strong>Observación</strong></label>
                         <textarea class="form-control" name="observacion" rows="2"></textarea>
                     </div>
@@ -799,70 +710,95 @@ textarea:focus {
         </div>
     </div>
 </div>
+@endif
 
 @foreach($lotes as $lote)
+
+@if(Auth::user()->esLogistica())
+<!-- Modal Editar (solo Logística Lima): todo excepto cod_log/carta origen/observación -->
 <div class="modal fade" id="modalEditarLote{{ $lote->id }}" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
             <div class="modal-header bg-warning" style="border-radius: 15px 15px 0 0;">
-                <h5 class="modal-title font-weight-bold"><i class="fas fa-edit mr-2"></i> Editar Registro: {{ $lote->cod_log }}</h5>
+                <h5 class="modal-title font-weight-bold"><i class="fas fa-edit mr-2"></i> Procesar Registro: {{ $lote->cod_log }}</h5>
                 <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
             </div>
             <form action="{{ route('logistica_lotes.update', $lote->id) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="modal-body p-4">
-                    <div class="row">
-                        <div class="col-md-3 form-group">
-                            <label><strong>Cod. Logística</strong></label>
-                            <input type="text" class="form-control border-warning" name="cod_log" value="{{ $lote->cod_log }}" required>
+                    <div class="row bg-light p-3 rounded mb-3">
+                        <div class="col-md-4">
+                            <small class="text-uppercase text-muted d-block">Cod. Logística</small>
+                            <strong>{{ $lote->cod_log }}</strong>
                         </div>
+                        <div class="col-md-4">
+                            <small class="text-uppercase text-muted d-block">Carta de origen</small>
+                            <strong>{{ $lote->numero_carta ?? '—' }}</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <small class="text-uppercase text-muted d-block">Observación (de administración)</small>
+                            <span>{{ $lote->observacion ?: '—' }}</span>
+                        </div>
+                    </div>
+
+                    <div class="row">
                         <div class="col-md-3 form-group">
                             <label><strong>Carpeta</strong></label>
                             <input type="text" class="form-control" name="carpeta" value="{{ $lote->carpeta }}">
                         </div>
                         <div class="col-md-3 form-group">
-                            <label><strong>Responsable</strong></label>
-                            <input type="text" class="form-control" name="responsable" value="{{ $lote->responsable }}">
-                        </div>
-                        <div class="col-md-3 form-group">
                             <label><strong>Estado</strong></label>
                             <select class="form-control custom-select border-warning" name="estado">
-                                <option value="Pendiente" {{ $lote->estado == 'Pendiente' ? 'selected' : '' }}>Pendiente</option>
-                                <option value="Proceso" {{ $lote->estado == 'Proceso' ? 'selected' : '' }}>Proceso</option>
-                                <option value="Finalizado" {{ $lote->estado == 'Finalizado' ? 'selected' : '' }}>Finalizado</option>
+                                @foreach(\App\Models\LogisticaLote::ESTADOS as $estadoOpcion)
+                                    <option value="{{ $estadoOpcion }}" {{ $lote->estado === $estadoOpcion ? 'selected' : '' }}>{{ $estadoOpcion }}</option>
+                                @endforeach
                             </select>
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label><strong>Servicio de Valorización</strong></label>
+                            <input type="text" class="form-control" name="servicio_valorizacion" value="{{ $lote->servicio_valorizacion }}">
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label><strong>Atención</strong></label>
+                            <input type="text" class="form-control" value="{{ Auth::user()->name }}" disabled>
+                            <small class="text-muted">Se registra automáticamente con tu usuario.</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8 form-group">
+                            <label><strong>Asunto</strong></label>
+                            <input type="text" class="form-control" name="asunto" value="{{ $lote->asunto }}">
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label><strong>Código Único</strong></label>
+                            <input type="text" class="form-control" name="codigo_unico" value="{{ $lote->codigo_unico }}">
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-4 form-group">
-                            <label><strong>Número de Carta</strong></label>
-                            <input type="text" class="form-control" name="numero_carta" value="{{ $lote->numero_carta }}">
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <label><strong>Asunto</strong></label>
-                            <input type="text" class="form-control" name="asunto" value="{{ $lote->asunto }}">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-3 form-group">
                             <label><strong>Fecha Emisión</strong></label>
-                            <input type="date" class="form-control" name="fecha_emision" value="{{ $lote->fecha_emision }}">
+                            <input type="date" class="form-control" name="fecha_emision" value="{{ $lote->fecha_emision ? \Carbon\Carbon::parse($lote->fecha_emision)->format('Y-m-d') : '' }}">
                         </div>
-                        <div class="col-md-3 form-group">
-                            <label><strong>Código Único</strong></label>
-                            <input type="text" class="form-control" name="codigo_unico" value="{{ $lote->codigo_unico }}">
+                        <div class="col-md-4 form-group">
+                            <label><strong>Tipo de Solicitud</strong></label>
+                            <select class="form-control custom-select" name="tipo_solicitud">
+                                <option value="">Selecciona...</option>
+                                @foreach(\App\Models\LogisticaLote::TIPOS_SOLICITUD as $tipoOpcion)
+                                    <option value="{{ $tipoOpcion }}" {{ $lote->tipo_solicitud === $tipoOpcion ? 'selected' : '' }}>{{ $tipoOpcion }}</option>
+                                @endforeach
+                            </select>
                         </div>
-                        <div class="col-md-6 form-group">
-                            <label><strong>Atención</strong></label>
-                            <input type="text" class="form-control" name="atencion" value="{{ $lote->atencion }}">
+                        <div class="col-md-4 form-group">
+                            <label><strong>N° OC / OS</strong></label>
+                            <input type="text" class="form-control" name="nro_oc_os" value="{{ $lote->nro_oc_os }}">
                         </div>
                     </div>
 
                     <hr>
-                    <h6 class="text-primary font-weight-bold mb-3"><i class="fas fa-file-invoice-dollar mr-2"></i> Datos Comerciales y Ganador</h6>
+                    <h6 class="text-primary font-weight-bold mb-3"><i class="fas fa-file-invoice-dollar mr-2"></i> Datos Comerciales y Proveedor</h6>
                     <div class="row">
                         <div class="col-md-3 form-group">
                             <label><strong>RUC</strong></label>
@@ -882,8 +818,10 @@ textarea:focus {
                         <div class="col-md-2 form-group">
                             <label><strong>Moneda</strong></label>
                             <select class="form-control custom-select" name="moneda">
-                                <option value="Soles" {{ $lote->moneda == 'Soles' ? 'selected' : '' }}>Soles (S/)</option>
-                                <option value="Dólares" {{ $lote->moneda == 'Dólares' ? 'selected' : '' }}>Dólares ($)</option>
+                                <option value="">Selecciona...</option>
+                                @foreach(\App\Models\LogisticaLote::MONEDAS as $monedaOpcion)
+                                    <option value="{{ $monedaOpcion }}" {{ $lote->moneda === $monedaOpcion ? 'selected' : '' }}>{{ $monedaOpcion }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="col-md-3 form-group">
@@ -892,82 +830,85 @@ textarea:focus {
                         </div>
                         <div class="col-md-4 form-group">
                             <label><strong>Forma de Pago</strong></label>
-                            <input type="text" class="form-control" name="forma_pago" value="{{ $lote->forma_pago }}">
+                            <select class="form-control custom-select forma-pago-select" name="forma_pago" data-target="#formaPagoOtro{{ $lote->id }}">
+                                <option value="">Selecciona...</option>
+                                @foreach(\App\Models\LogisticaLote::FORMAS_PAGO as $formaOpcion)
+                                    <option value="{{ $formaOpcion }}" {{ $lote->forma_pago === $formaOpcion ? 'selected' : '' }}>{{ $formaOpcion }}</option>
+                                @endforeach
+                            </select>
                         </div>
-                        <div class="col-md-3 form-group">
-                            <label><strong>Tipo Solicitud</strong></label>
-                            <input type="text" class="form-control" name="tipo_solicitud" value="{{ $lote->tipo_solicitud }}">
+                        <div class="col-md-3 form-group" id="formaPagoOtro{{ $lote->id }}" style="{{ in_array($lote->forma_pago, \App\Models\LogisticaLote::FORMAS_PAGO) || !$lote->forma_pago ? 'display:none;' : '' }}">
+                            <label><strong>Especificar forma de pago</strong></label>
+                            <input type="text" class="form-control" name="forma_pago_otro" value="{{ !in_array($lote->forma_pago, \App\Models\LogisticaLote::FORMAS_PAGO) ? $lote->forma_pago : '' }}">
                         </div>
                     </div>
 
                     <hr>
-                    <h6 class="text-success font-weight-bold mb-3"><i class="fas fa-tasks mr-2"></i> Documentación y Seguimiento</h6>
+                    <h6 class="text-success font-weight-bold mb-3"><i class="fas fa-tasks mr-2"></i> Documentación, Ejecución y Pago</h6>
                     <div class="row">
                         <div class="col-md-3 form-group">
-                            <label><strong>N° OC / OS</strong></label>
-                            <input type="text" class="form-control" name="nro_oc_os" value="{{ $lote->nro_oc_os }}">
-                        </div>
-                        <div class="col-md-3 form-group">
                             <label><strong>Emisión OC/OS</strong></label>
-                            <input type="date" class="form-control" name="emision_oc_os" value="{{ $lote->emision_oc_os }}">
-                        </div>
-                        <div class="col-md-3 form-group">
-                            <label><strong>Conformidad</strong></label>
-                            <input type="text" class="form-control" name="conformidad" value="{{ $lote->conformidad }}">
+                            <input type="date" class="form-control" name="emision_oc_os" value="{{ $lote->emision_oc_os ? \Carbon\Carbon::parse($lote->emision_oc_os)->format('Y-m-d') : '' }}">
                         </div>
                         <div class="col-md-3 form-group">
                             <label><strong>Factura</strong></label>
                             <input type="text" class="form-control" name="factura" value="{{ $lote->factura }}">
                         </div>
-                    </div>
-
-                    <div class="row">
                         <div class="col-md-3 form-group">
                             <label><strong>Fecha Entrega</strong></label>
-                            <input type="date" class="form-control" name="fecha_entrega" value="{{ $lote->fecha_entrega }}">
+                            <input type="date" class="form-control" name="fecha_entrega" value="{{ $lote->fecha_entrega ? \Carbon\Carbon::parse($lote->fecha_entrega)->format('Y-m-d') : '' }}">
                         </div>
                         <div class="col-md-3 form-group">
                             <label><strong>Orden Firmada</strong></label>
                             <select class="form-control custom-select" name="orden_firmada">
-                                <option value="0" {{ $lote->orden_firmada == 0 ? 'selected' : '' }}>NO</option>
-                                <option value="1" {{ $lote->orden_firmada == 1 ? 'selected' : '' }}>SI</option>
+                                <option value="0" {{ !$lote->orden_firmada ? 'selected' : '' }}>NO</option>
+                                <option value="1" {{ $lote->orden_firmada ? 'selected' : '' }}>SI</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3 form-group">
+                            <label><strong>Ejecución</strong></label>
+                            <select class="form-control custom-select" name="ejecucion">
+                                <option value="">Sin iniciar</option>
+                                @foreach(\App\Models\LogisticaLote::EJECUCIONES as $ejecucionOpcion)
+                                    <option value="{{ $ejecucionOpcion }}" {{ $lote->ejecucion === $ejecucionOpcion ? 'selected' : '' }}>{{ $ejecucionOpcion }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="col-md-3 form-group">
                             <label><strong>% Ejecución</strong></label>
-                            <input type="number" class="form-control" name="porcentaje_ejecucion" value="{{ $lote->porcentaje_ejecucion }}">
+                            <input type="number" min="0" max="100" class="form-control" name="porcentaje_ejecucion" value="{{ $lote->porcentaje_ejecucion }}">
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label><strong>Monto Factura</strong></label>
+                            <input type="number" step="0.01" class="form-control" name="monto_factura" value="{{ $lote->monto_factura }}">
                         </div>
                         <div class="col-md-3 form-group">
                             <label><strong>Fecha Venc.</strong></label>
-                            <input type="date" class="form-control" name="fecha_vencimiento" value="{{ $lote->fecha_vencimiento }}">
+                            <input type="date" class="form-control" name="fecha_vencimiento" value="{{ $lote->fecha_vencimiento ? \Carbon\Carbon::parse($lote->fecha_vencimiento)->format('Y-m-d') : '' }}">
                         </div>
                     </div>
 
-                    <div class="form-group mt-3">
-                        <label><strong>Observación</strong></label>
-                        <textarea class="form-control" name="observacion" rows="2">{{ $lote->observacion }}</textarea>
+                    <div class="row">
+                        <div class="col-md-3 form-group">
+                            <label><strong>Fecha de Pago</strong></label>
+                            <input type="date" class="form-control" name="fecha_pago" value="{{ $lote->fecha_pago ? \Carbon\Carbon::parse($lote->fecha_pago)->format('Y-m-d') : '' }}">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer bg-light" style="border-radius: 0 0 15px 15px;">
                     <button type="button" class="btn btn-secondary shadow-none" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-warning px-4 font-weight-bold">Actualizar Registro</button>
+                    <button type="submit" class="btn btn-warning px-4 font-weight-bold">Guardar Cambios</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+@endif
 
-
-
-
-
-
-
-
-
-
-
-
+<!-- Modal Ver (todos los que acceden al módulo) -->
 <div class="modal fade" id="modalVerLote{{ $lote->id }}" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
@@ -978,18 +919,17 @@ textarea:focus {
                 <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
             </div>
             <div class="modal-body p-4">
+                @php $color = $estadoColores[$lote->estado] ?? ['bg' => '#e5e7eb', 'text' => '#374151']; @endphp
                 <div class="row mb-4 bg-light p-3 rounded shadow-sm">
                     <div class="col-md-4">
                         <small class="text-uppercase text-muted d-block">Estado</small>
-                        <span class="badge badge-pill p-2 px-3 {{ $lote->estado == 'Finalizado' ? 'bg-success text-white' : ($lote->estado == 'Proceso' ? 'bg-warning' : 'bg-danger text-white') }}">
-                            {{ $lote->estado }}
-                        </span>
+                        <span class="estado-badge" style="background-color: {{ $color['bg'] }}; color: {{ $color['text'] }};">{{ $lote->estado }}</span>
                     </div>
                     <div class="col-md-4 text-center">
                         <small class="text-uppercase text-muted d-block">Progreso</small>
                         <div class="progress mt-1" style="height: 15px; border-radius: 10px;">
-                            <div class="progress-bar bg-info" role="progressbar" style="width: {{ $lote->porcentaje_ejecucion }}%;" aria-valuenow="{{ $lote->porcentaje_ejecucion }}" aria-valuemin="0" aria-valuemax="100">
-                                {{ $lote->porcentaje_ejecucion }}%
+                            <div class="progress-bar bg-info" role="progressbar" style="width: {{ $lote->porcentaje_ejecucion ?? 0 }}%;" aria-valuenow="{{ $lote->porcentaje_ejecucion ?? 0 }}" aria-valuemin="0" aria-valuemax="100">
+                                {{ $lote->porcentaje_ejecucion ?? 0 }}%
                             </div>
                         </div>
                     </div>
@@ -1003,11 +943,11 @@ textarea:focus {
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label class="text-muted small mb-0">Carpeta / Lote</label>
-                        <p class="font-weight-bold">{{ $lote->carpeta }}</p>
+                        <p class="font-weight-bold">{{ $lote->carpeta ?: '—' }}</p>
                     </div>
                     <div class="col-md-4">
-                        <label class="text-muted small mb-0">Responsable</label>
-                        <p class="font-weight-bold">{{ $lote->responsable }}</p>
+                        <label class="text-muted small mb-0">Atención</label>
+                        <p class="font-weight-bold">{{ $lote->atencion ?: '—' }}</p>
                     </div>
                     <div class="col-md-4">
                         <label class="text-muted small mb-0">Fecha Emisión</label>
@@ -1016,12 +956,27 @@ textarea:focus {
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-4">
-                        <label class="text-muted small mb-0">Número de Carta</label>
-                        <p class="font-weight-bold text-primary">{{ $lote->numero_carta }}</p>
+                        <label class="text-muted small mb-0">Carta de Origen</label>
+                        <p class="font-weight-bold text-primary">
+                            {{ $lote->numero_carta ?? '—' }}
+                            @if($lote->carta_type)
+                                <span class="badge badge-pill badge-light border">{{ $lote->carta_type === \App\Models\ControlCarta::class ? 'SO-PRO' : 'FIS' }}</span>
+                            @endif
+                        </p>
                     </div>
                     <div class="col-md-8">
                         <label class="text-muted small mb-0">Asunto</label>
-                        <p class="font-weight-bold">{{ $lote->asunto }}</p>
+                        <p class="font-weight-bold">{{ $lote->asunto ?: '—' }}</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="text-muted small mb-0">Servicio de Valorización</label>
+                        <p class="font-weight-bold">{{ $lote->servicio_valorizacion ?: '—' }}</p>
+                    </div>
+                    <div class="col-md-8">
+                        <label class="text-muted small mb-0">Tipo de Solicitud</label>
+                        <p class="font-weight-bold">{{ $lote->tipo_solicitud ?: '—' }}</p>
                     </div>
                 </div>
 
@@ -1053,11 +1008,11 @@ textarea:focus {
                     </div>
                     <div class="col-md-3">
                         <label class="text-muted small mb-0">Moneda</label>
-                        <p class="font-weight-bold">{{ $lote->moneda }}</p>
+                        <p class="font-weight-bold">{{ $lote->moneda ?? '—' }}</p>
                     </div>
                     <div class="col-md-3">
                         <label class="text-muted small mb-0">Monto IGV</label>
-                        <p class="font-weight-bold">{{ number_format($lote->monto_igv, 2) }}</p>
+                        <p class="font-weight-bold">{{ number_format($lote->monto_igv ?? 0, 2) }}</p>
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -1067,29 +1022,35 @@ textarea:focus {
                     </div>
                     <div class="col-md-3">
                         <label class="text-muted small mb-0">Monto Factura</label>
-                        <p class="font-weight-bold">{{ number_format($lote->monto_factura, 2) }}</p>
+                        <p class="font-weight-bold">{{ number_format($lote->monto_factura ?? 0, 2) }}</p>
                     </div>
                     <div class="col-md-3">
                         <label class="text-muted small mb-0">F. Vencimiento</label>
                         <p class="font-weight-bold text-danger">{{ $lote->fecha_vencimiento ? \Carbon\Carbon::parse($lote->fecha_vencimiento)->format('d/m/Y') : '-' }}</p>
                     </div>
                     <div class="col-md-3">
+                        <label class="text-muted small mb-0">F. Pago</label>
+                        <p class="font-weight-bold">{{ $lote->fecha_pago ? \Carbon\Carbon::parse($lote->fecha_pago)->format('d/m/Y') : '-' }}</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
                         <label class="text-muted small mb-0">Forma de Pago</label>
-                        <p class="font-weight-bold">{{ $lote->forma_pago }}</p>
+                        <p class="font-weight-bold">{{ $lote->forma_pago ?: '—' }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted small mb-0">Ejecución</label>
+                        <p class="font-weight-bold">{{ $lote->ejecucion ?: 'Sin iniciar' }}</p>
                     </div>
                 </div>
 
-                <h6 class="text-primary font-weight-bold border-bottom pb-2 mb-3"><i class="fas fa-truck mr-2"></i> Seguimiento y Conformidad</h6>
+                <h6 class="text-primary font-weight-bold border-bottom pb-2 mb-3"><i class="fas fa-truck mr-2"></i> Seguimiento</h6>
                 <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label class="text-muted small mb-0">Conformidad</label>
-                        <p class="font-weight-bold">{{ $lote->conformidad ?? 'Pendiente' }}</p>
-                    </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label class="text-muted small mb-0">Fecha Entrega</label>
                         <p class="font-weight-bold">{{ $lote->fecha_entrega ? \Carbon\Carbon::parse($lote->fecha_entrega)->format('d/m/Y') : '-' }}</p>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label class="text-muted small mb-0">Orden Firmada</label>
                         <p class="font-weight-bold">
                             @if($lote->orden_firmada)
@@ -1101,15 +1062,26 @@ textarea:focus {
                     </div>
                 </div>
 
-                <div class="bg-light p-3 rounded" style="border-left: 4px solid #17a2b8;">
-                    <label class="text-muted small mb-1">Observaciones</label>
-                    <p class="mb-0 italic">{{ $lote->observacion ?? 'Sin observaciones registradas.' }}</p>
+                <div class="bg-light p-3 rounded mb-3" style="border-left: 4px solid #17a2b8;">
+                    <label class="text-muted small mb-1">Observación (administración)</label>
+                    <p class="mb-0">{{ $lote->observacion ?? 'Sin observaciones registradas.' }}</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <small class="text-muted d-block">Creado por</small>
+                        <span>{{ $lote->creador->name ?? '—' }} ({{ optional($lote->created_at)->format('d/m/Y H:i') }})</span>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted d-block">Última modificación por</small>
+                        <span>{{ $lote->modificador->name ?? '—' }} ({{ optional($lote->updated_at)->format('d/m/Y H:i') }})</span>
+                    </div>
                 </div>
             </div>
-            
+
             <div class="modal-footer bg-light justify-content-between">
                 <div class="small text-muted">
-                    Creado: {{ $lote->created_at->format('d/m/Y H:i') }}
+                    Creado: {{ optional($lote->created_at)->format('d/m/Y H:i') }}
                 </div>
                 <div>
                     <button type="button" class="btn btn-secondary px-4" data-dismiss="modal">Cerrar</button>
@@ -1122,13 +1094,42 @@ textarea:focus {
     </div>
 </div>
 
-
-
-
-
 @endforeach
 
-
+<!-- Modal Historial (auditoría, compartido) -->
+<div class="modal fade" id="modalHistorialLote" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content" style="border-radius:18px;">
+      <div class="modal-header text-white" style="background: linear-gradient(135deg, #003366, #002B5C); border-radius:18px 18px 0 0;">
+        <h5 class="modal-title mb-0 font-weight-bold">
+          <i class="fas fa-history mr-1"></i> Historial — <span id="historialLoteCodigo">—</span>
+        </h5>
+        <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="historialLoteCargando" class="text-center text-muted py-4" style="display:none;">
+          <i class="fas fa-spinner fa-spin mr-1"></i> Cargando historial...
+        </div>
+        <table class="table table-sm table-bordered">
+          <thead class="thead-light">
+            <tr>
+              <th>Fecha</th>
+              <th>Usuario</th>
+              <th>Acción</th>
+              <th>Cambios</th>
+            </tr>
+          </thead>
+          <tbody id="historialLoteCuerpo">
+            <tr><td colspan="4" class="text-center text-muted">Sin datos.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
   @csrf
@@ -1143,17 +1144,51 @@ textarea:focus {
 <script src="{{ asset('adminlte/dist/js/adminlte.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+// Alterna qué selector de carta de origen se envía (Control de Cartas vs Cartas FIS)
+function toggleOrigenCarta() {
+    var tipo = $('input[name="origen_tipo"]:checked').val();
+    if (tipo === 'control_carta') {
+        $('#grupoOrigenControlCarta').show();
+        $('#selectOrigenControlCarta').prop('disabled', false);
+        $('#grupoOrigenCartaFis').hide();
+        $('#selectOrigenCartaFis').prop('disabled', true);
+    } else {
+        $('#grupoOrigenControlCarta').hide();
+        $('#selectOrigenControlCarta').prop('disabled', true);
+        $('#grupoOrigenCartaFis').show();
+        $('#selectOrigenCartaFis').prop('disabled', false);
+    }
+}
+$(document).on('change', 'input[name="origen_tipo"]', toggleOrigenCarta);
+$(function () { toggleOrigenCarta(); });
+
+// Muestra el campo "especificar" cuando la forma de pago es OTRO
+$(document).on('change', '.forma-pago-select', function () {
+    var $otro = $($(this).data('target'));
+    if ($(this).val() === 'OTRO') {
+        $otro.show();
+    } else {
+        $otro.hide();
+    }
+});
+
+// Cambio rápido de estado (solo Logística Lima ve este selector, el backend igual lo valida)
+const ESTADO_COLORES = {
+    'PENDIENTE': { bg: '#e5e7eb', text: '#374151' },
+    'EN REVISION': { bg: '#dbeafe', text: '#1d4ed8' },
+    'BUENA PRO': { bg: '#cffafe', text: '#0e7490' },
+    'EN PROCESO': { bg: '#fef3c7', text: '#b45309' },
+    'EN EJECUCION': { bg: '#ffedd5', text: '#c2410c' },
+    'EJECUTADO': { bg: '#d1fae5', text: '#047857' },
+    'OBSERVADO': { bg: '#fce7f3', text: '#be185d' },
+    'ORDEN VENCIDA': { bg: '#fee2e2', text: '#b91c1c' },
+    'ANULADO': { bg: '#e2e8f0', text: '#1e293b' }
+};
+
 $(document).on('change', '.cambio-estado-rapido', function() {
     let loteId = $(this).data('id');
     let nuevoEstado = $(this).val();
     let select = $(this);
-
-    // Colores dinámicos para el feedback visual
-    const colores = {
-        'Finalizado': { bg: '#d1fae5', text: '#047857' },
-        'Proceso': { bg: '#fef3c7', text: '#b45309' },
-        'Pendiente': { bg: '#fee2e2', text: '#b91c1c' }
-    };
 
     $.ajax({
         url: "{{ url('logistica_lotes') }}/" + loteId + "/actualizar-estado",
@@ -1162,14 +1197,10 @@ $(document).on('change', '.cambio-estado-rapido', function() {
             _token: "{{ csrf_token() }}",
             estado: nuevoEstado
         },
-        success: function(response) {
-            // Actualizar colores del select instantáneamente
-            select.css({
-                'background-color': colores[nuevoEstado].bg,
-                'color': colores[nuevoEstado].text
-            });
-            
-            // Notificación pequeña (Toast)
+        success: function() {
+            const color = ESTADO_COLORES[nuevoEstado] || { bg: '#e5e7eb', text: '#374151' };
+            select.css({ 'background-color': color.bg, 'color': color.text });
+
             Swal.fire({
                 icon: 'success',
                 title: 'Estado actualizado',
@@ -1184,9 +1215,51 @@ $(document).on('change', '.cambio-estado-rapido', function() {
         }
     });
 });
-</script>
-<script>
-  $(function(){ $('#notificacionesDropdown').on('click', function(){ $('#notiBadge').hide(); }); });
+
+// Historial de auditoría
+function escapeHtml(str) {
+    return $('<div>').text(str == null ? '' : str).html();
+}
+
+$(document).on('click', '.btn-historial', function() {
+    var url = $(this).data('url');
+    var $cuerpo = $('#historialLoteCuerpo');
+    var $cargando = $('#historialLoteCargando');
+
+    $('#historialLoteCodigo').text('...');
+    $cuerpo.empty();
+    $cargando.show();
+
+    fetch(url, { headers: { 'Accept': 'application/json' } })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            $cargando.hide();
+            $('#historialLoteCodigo').text(data.codigo);
+
+            if (!data.logs || data.logs.length === 0) {
+                $cuerpo.html('<tr><td colspan="4" class="text-center text-muted">Sin registros de auditoría.</td></tr>');
+                return;
+            }
+
+            var etiquetas = { creado: 'Creado', actualizado: 'Actualizado', eliminado: 'Eliminado' };
+            var filas = data.logs.map(function(log) {
+                var cambios = log.cambios ? JSON.stringify(log.cambios) : '—';
+                return '<tr>' +
+                    '<td>' + escapeHtml(log.fecha || '—') + '</td>' +
+                    '<td>' + escapeHtml(log.usuario) + '</td>' +
+                    '<td>' + escapeHtml(etiquetas[log.accion] || log.accion) + '</td>' +
+                    '<td><small class="text-muted">' + escapeHtml(cambios) + '</small></td>' +
+                    '</tr>';
+            });
+            $cuerpo.html(filas.join(''));
+        })
+        .catch(function() {
+            $cargando.hide();
+            $cuerpo.html('<tr><td colspan="4" class="text-center text-danger">No se pudo cargar el historial.</td></tr>');
+        });
+});
+
+$(function(){ $('#notificacionesDropdown').on('click', function(){ $('#notiBadge').hide(); }); });
 </script>
 
 </body>

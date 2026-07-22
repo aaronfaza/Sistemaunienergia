@@ -12,8 +12,6 @@ use App\Http\Controllers\AnomaliaController;
 use App\Http\Controllers\FirmaSupervisorController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\BoletaController;
-use App\Exports\LogisticaExport;
-use Maatwebsite\Excel\Facades\Excel;
 
 // Redirect al login por defecto
 Route::get('/', function () {
@@ -124,11 +122,14 @@ Route::resource('logistica_lotes', LogisticaLoteController::class);
 
 Route::get('/logistica-lotes/{id}/pdf', [LogisticaLoteController::class, 'exportPdf'])->name('logistica_lotes.pdf');
 
-Route::post('logistica_lotes/{id}/actualizar-estado', [LogisticaLoteController::class, 'updateEstado']);
+Route::post('logistica_lotes/{id}/actualizar-estado', [LogisticaLoteController::class, 'updateEstado'])
+    ->name('logistica_lotes.update_estado');
 
-Route::get('logistica-export', function () {
-    return Excel::download(new LogisticaExport, 'backup_logistica_'.date('d-m-Y').'.xlsx');
-})->name('logistica.export');
+Route::get('/logistica_lotes/{id}/historial', [LogisticaLoteController::class, 'historial'])
+    ->name('logistica_lotes.historial');
+
+Route::get('logistica-export', [LogisticaLoteController::class, 'exportExcel'])
+    ->name('logistica_lotes.export.excel');
 
 
 
