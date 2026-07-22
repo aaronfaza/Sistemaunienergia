@@ -16,6 +16,7 @@ class CartaManController extends Controller
     public function index(Request $request)
     {
         $buscar = $request->get('buscar');
+        $anio = in_array($request->get('anio'), ['2026', '2027'], true) ? $request->get('anio') : null;
 
         $cartas = CartaMan::with(['creador', 'modificador', 'ropLote'])
             ->when($buscar, function ($query, $buscar) {
@@ -23,11 +24,14 @@ class CartaManController extends Controller
                       ->orWhere('servicio_compra', 'like', "%{$buscar}%")
                       ->orWhere('proveedor_elegido', 'like', "%{$buscar}%");
             })
+            ->when($anio, function ($query, $anio) {
+                $query->where('codigo', 'like', "%-{$anio}");
+            })
             ->orderBy('fecha', 'desc')
             ->paginate(10)
             ->withQueryString();
 
-        return view('cartas_man.index', compact('cartas', 'buscar'));
+        return view('cartas_man.index', compact('cartas', 'buscar', 'anio'));
     }
 
     public function store(Request $request)
