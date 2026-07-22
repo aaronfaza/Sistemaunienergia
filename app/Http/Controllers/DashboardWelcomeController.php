@@ -52,12 +52,16 @@ class DashboardWelcomeController extends Controller
         // (esto es igual para todos: es la parte "social" del panel)
         $usuariosActivos = User::where('last_login_at', '>=', Carbon::now()->subDays(30))->count();
 
-        $kpiCards[] = [
-            'icono' => 'fa-user-check',
-            'color' => 'is-success',
-            'valor' => $usuariosActivos,
-            'label' => 'Usuarios activos (30 días)',
-        ];
+        // Logística ya tiene 4 KPIs propios (Total/% Ejecutados/% Pendientes/
+        // % Vencidos); agregar este 5º card fuerza scroll horizontal en la fila.
+        if (!$vistaLogistica) {
+            $kpiCards[] = [
+                'icono' => 'fa-user-check',
+                'color' => 'is-success',
+                'valor' => $usuariosActivos,
+                'label' => 'Usuarios activos (30 días)',
+            ];
+        }
 
         $ultimasConexiones = User::whereNotNull('last_login_at')
             ->orderByDesc('last_login_at')

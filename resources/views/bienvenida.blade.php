@@ -645,16 +645,6 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-12">
-          <div class="card card-clean">
-            <div class="card-header bg-white"><i class="fas fa-chart-bar mr-1"></i>% de Avance por Expediente</div>
-            <div class="card-body">
-              <canvas id="chartRopAvance"></canvas>
-            </div>
-          </div>
-        </div>
-      </div>
       @endif
 
       {{-- Últimas conexiones + Cumpleaños del mes --}}
@@ -838,20 +828,6 @@
         datasets: [{ label: 'Expedientes creados', data: nombresMes.map((_, i) => porMes[i + 1] ?? 0), tension:.3, fill:false }]
       },
       options: { responsive:true, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true } } }
-    });
-  })();
-
-  (function(){
-    const el = document.getElementById('chartRopAvance');
-    if (!el || !logisticaStats) return;
-    const avance = logisticaStats.avance_por_expediente || [];
-    new Chart(el, {
-      type: 'bar',
-      data: {
-        labels: avance.map(x => x.cod_log),
-        datasets: [{ label: '% Avance', data: avance.map(x => x.porcentaje) }]
-      },
-      options: { responsive:true, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true, max:100 } } }
     });
   })();
 
