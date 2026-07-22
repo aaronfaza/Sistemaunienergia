@@ -500,6 +500,7 @@
         </div>
       </div>
 
+      @unless($vistaLogistica)
       {{-- Actividad reciente (estilo feed social) + gráfico --}}
       <div class="row">
         <div class="col-lg-6">
@@ -572,6 +573,89 @@
           </div>
         </div>
       </div>
+      @endunless
+
+      @if($vistaLogistica)
+      {{-- Panel ROP2026 LOTE IX: mismos indicadores y gráficas del backup Excel,
+           exclusivo del rol logística (Miguel, Esmeralda, Yahaira) --}}
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card card-clean">
+            <div class="card-header bg-white"><i class="fas fa-stream mr-1"></i>Actividad reciente — ROP2026 Lote IX</div>
+            <div class="card-body">
+              <ul class="list-unstyled mb-0 feed-lista">
+                @forelse($actividad as $item)
+                  <li class="feed-item mb-3 d-flex align-items-start">
+                    @if($item['foto'])
+                      <img src="{{ asset('storage/'.$item['foto']) }}" alt="{{ $item['usuario'] }}" class="feed-avatar mr-3">
+                    @else
+                      <span class="feed-icon-badge feed-icon-{{ $item['color'] }} mr-3">
+                        <i class="fas {{ $item['icono'] }}"></i>
+                      </span>
+                    @endif
+                    <div class="flex-grow-1">
+                      <div>
+                        <strong>{{ $item['usuario'] }}</strong>
+                        <span class="text-muted">{{ $item['accion'] }}</span>
+                      </div>
+                      <div class="text-muted small">{{ $item['detalle'] }}</div>
+                      <div class="text-muted small">
+                        <i class="far fa-clock mr-1"></i>{{ $item['created_at']->diffForHumans() }}
+                      </div>
+                    </div>
+                    @if($item['url'])
+                      <a href="{{ $item['url'] }}" class="text-muted ml-2" title="Ver">
+                        <i class="fas fa-external-link-alt"></i>
+                      </a>
+                    @endif
+                  </li>
+                @empty
+                  <li class="text-muted">Sin movimientos recientes</li>
+                @endforelse
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card card-clean">
+            <div class="card-header bg-white"><i class="fas fa-chart-pie mr-1"></i>Distribución por Estado</div>
+            <div class="card-body">
+              <canvas id="chartRopEstados"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card card-clean">
+            <div class="card-header bg-white"><i class="fas fa-chart-pie mr-1"></i>Tasa de Ejecutados vs Pendientes</div>
+            <div class="card-body">
+              <canvas id="chartRopCategorias"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card card-clean">
+            <div class="card-header bg-white"><i class="fas fa-chart-line mr-1"></i>Rendimiento Anual de ROP — {{ $logisticaStats['anio_actual'] }}</div>
+            <div class="card-body">
+              <canvas id="chartRopMensual"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="card card-clean">
+            <div class="card-header bg-white"><i class="fas fa-chart-bar mr-1"></i>% de Avance por Expediente</div>
+            <div class="card-body">
+              <canvas id="chartRopAvance"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      @endif
 
       {{-- Últimas conexiones + Cumpleaños del mes --}}
       <div class="row">
@@ -704,6 +788,70 @@
         datasets: [{ label: etiquetaSerie, data: porDia.map(x => x.total), tension:.3, fill:false }]
       },
       options: { responsive:true, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true } } }
+    });
+  })();
+
+  // Panel ROP2026 Lote IX (solo rol logística)
+  const logisticaStats = @json($logisticaStats);
+
+  (function(){
+    const el = document.getElementById('chartRopEstados');
+    if (!el || !logisticaStats) return;
+    const porEstado = logisticaStats.por_estado;
+    new Chart(el, {
+      type: 'pie',
+      data: {
+        labels: Object.keys(porEstado),
+        datasets: [{ data: Object.values(porEstado) }]
+      },
+      options: { responsive:true, plugins:{ legend:{ display:true, position:'right' } } }
+    });
+  })();
+
+  (function(){
+    const el = document.getElementById('chartRopCategorias');
+    if (!el || !logisticaStats) return;
+    new Chart(el, {
+      type: 'doughnut',
+      data: {
+        labels: ['Ejecutado', 'En proceso', 'Vencido/Observado', 'Anulado'],
+        datasets: [{ data: [
+          logisticaStats.ejecutados,
+          logisticaStats.en_proceso,
+          logisticaStats.vencidos_observados,
+          logisticaStats.anulados
+        ] }]
+      },
+      options: { responsive:true, plugins:{ legend:{ display:true, position:'right' } } }
+    });
+  })();
+
+  (function(){
+    const el = document.getElementById('chartRopMensual');
+    if (!el || !logisticaStats) return;
+    const nombresMes = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    const porMes = logisticaStats.por_mes;
+    new Chart(el, {
+      type: 'line',
+      data: {
+        labels: nombresMes,
+        datasets: [{ label: 'Expedientes creados', data: nombresMes.map((_, i) => porMes[i + 1] ?? 0), tension:.3, fill:false }]
+      },
+      options: { responsive:true, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true } } }
+    });
+  })();
+
+  (function(){
+    const el = document.getElementById('chartRopAvance');
+    if (!el || !logisticaStats) return;
+    const avance = logisticaStats.avance_por_expediente || [];
+    new Chart(el, {
+      type: 'bar',
+      data: {
+        labels: avance.map(x => x.cod_log),
+        datasets: [{ label: '% Avance', data: avance.map(x => x.porcentaje) }]
+      },
+      options: { responsive:true, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true, max:100 } } }
     });
   })();
 
