@@ -303,6 +303,30 @@
       </ul>
 
       <ul class="navbar-nav ml-auto d-flex align-items-center">
+        <li class="nav-item dropdown mr-3">
+          <a class="nav-link position-relative" href="#" id="notificacionesFirmaDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-bell fa-lg text-white"></i>
+            @if($documentosPendientesFirma->isNotEmpty())
+              <span id="notiFirmaBadge" class="badge badge-danger position-absolute" style="top:-4px;right:-8px;font-size:.65rem;">
+                {{ $documentosPendientesFirma->count() }}
+              </span>
+            @endif
+          </a>
+          <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" aria-labelledby="notificacionesFirmaDropdown" style="min-width:320px;max-height:400px;overflow-y:auto;">
+            <h6 class="dropdown-header font-weight-bold text-dark">🔏 Pendientes de tu firma</h6>
+            <div class="dropdown-divider"></div>
+            @forelse($documentosPendientesFirma as $pendiente)
+              <div class="dropdown-item">
+                <div class="d-flex flex-column">
+                  <span class="font-weight-bold text-primary">{{ $pendiente->cod_log }}</span>
+                  <small class="text-muted">{{ $pendiente->asunto ?: 'Sin asunto' }} — {{ $pendiente->estado }}</small>
+                </div>
+              </div>
+            @empty
+              <div class="dropdown-item text-muted text-center">Sin documentos pendientes de firma</div>
+            @endforelse
+          </div>
+        </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle d-flex align-items-center px-3 py-2 rounded-pill shadow-sm text-white"
              href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-expanded="false"
@@ -471,18 +495,6 @@
     @if(session('error'))
         <div class="alert alert-danger mt-3 shadow-sm border-0" style="border-radius:12px;">
             <i class="fas fa-exclamation-circle mr-1"></i> {{ session('error') }}
-        </div>
-    @endif
-
-    @if($documentosPendientesFirma->isNotEmpty())
-        <div class="alert alert-warning mt-3 shadow-sm border-0" style="border-radius:12px;">
-            <i class="fas fa-signature mr-1"></i>
-            <strong>Tienes {{ $documentosPendientesFirma->count() }} {{ $documentosPendientesFirma->count() === 1 ? 'documento pendiente de tu firma' : 'documentos pendientes de tu firma' }}:</strong>
-            <span>
-                @foreach($documentosPendientesFirma as $pendiente)
-                    <span class="badge badge-pill badge-light border mr-1">{{ $pendiente->cod_log }} — {{ $pendiente->estado }}</span>
-                @endforeach
-            </span>
         </div>
     @endif
 
@@ -1426,6 +1438,7 @@ $(document).on('click', '.btn-historial', function() {
 });
 
 $(function(){ $('#notificacionesDropdown').on('click', function(){ $('#notiBadge').hide(); }); });
+$(function(){ $('#notificacionesFirmaDropdown').on('click', function(){ $('#notiFirmaBadge').hide(); }); });
 </script>
 
 </body>

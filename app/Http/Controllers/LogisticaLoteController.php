@@ -6,7 +6,7 @@ use App\Models\CartaFis;
 use App\Models\ControlCarta;
 use App\Models\LogisticaLote;
 use App\Models\User;
-use App\Exports\LogisticaExport;
+use App\Exports\LogisticaBackupExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -255,6 +255,6 @@ class LogisticaLoteController extends Controller
     public function exportExcel()
     {
         $fileName = 'Backup_Logistica_' . now('America/Lima')->format('d-m-Y_His') . '.xlsx';
-        return Excel::download(new LogisticaExport, $fileName);
+        return Excel::download(new LogisticaBackupExport, $fileName);
     }
 }
