@@ -260,15 +260,10 @@
       text-align: center;
     }
 
-    /* Fila expandible con la vista tipo hoja de cálculo (todas las columnas) */
-    .fila-detalle { display: none; background: #f8fafc; box-shadow: none !important; }
-    .fila-detalle.mostrando { display: table-row; }
-    .fila-detalle td { padding: 0 !important; }
-    .detalle-hoja table { margin-bottom: 0; font-size: .78rem; }
-    .detalle-hoja th { white-space: nowrap; font-size: .68rem; }
-    .detalle-hoja td { white-space: nowrap; }
-    .btn-toggle-detalle i { transition: transform .2s ease; }
-    .btn-toggle-detalle.abierto i { transform: rotate(180deg); }
+    /* Tabla ancha tipo hoja de cálculo: todas las columnas visibles, con
+       scroll horizontal (sin botones para desplegar nada). */
+    .tabla-rop th, .tabla-rop td { white-space: nowrap; }
+    .tabla-rop td.wrap { white-space: normal; }
   </style>
 
 </head>
@@ -547,15 +542,36 @@
             </div>
             <div class="card shadow-sm border-0">
                 <div class="card-body p-0"> <div class="table-responsive">
-                        <table class="table table-hover mb-0">
+                        <table class="table table-hover mb-0 tabla-rop">
                             <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>Cod. Log</th>
                                     <th>Carta origen</th>
                                     <th>Asunto</th>
+                                    <th>Carpeta</th>
+                                    <th>Serv. Valoriz.</th>
+                                    <th>Cód. Único</th>
+                                    <th>Tipo Solicitud</th>
                                     <th>Atención</th>
+                                    <th>Responsable (firma pend.)</th>
                                     <th class="text-center">Estado</th>
+                                    <th>N° OC/OS</th>
+                                    <th>F. OC/OS</th>
+                                    <th>RUC</th>
+                                    <th>Empresa Ganadora</th>
+                                    <th>C. Costo</th>
+                                    <th>Moneda</th>
+                                    <th>Monto IGV</th>
+                                    <th>Forma Pago</th>
+                                    <th>F. Entrega</th>
+                                    <th>Ord. Firmada</th>
+                                    <th>Ejecución</th>
+                                    <th>% Ejec.</th>
+                                    <th>Factura</th>
+                                    <th>Monto Fact.</th>
+                                    <th>F. Venc.</th>
+                                    <th>F. Pago</th>
                                     <th class="text-center">Acciones</th>
                                 </tr>
                             </thead>
@@ -584,8 +600,13 @@
                                                 <span class="badge badge-pill badge-light border">{{ $lote->carta_type === \App\Models\ControlCarta::class ? 'SO-PRO' : 'FIS' }}</span>
                                             @endif
                                         </td>
-                                        <td><small>{{ Str::limit($lote->asunto, 40) ?: '—' }}</small></td>
-                                        <td><small>{{ $lote->atencion ?? '—' }}</small></td>
+                                        <td class="wrap">{{ $lote->asunto ?: '—' }}</td>
+                                        <td>{{ $lote->carpeta ?: '—' }}</td>
+                                        <td>{{ $lote->servicio_valorizacion ?: '—' }}</td>
+                                        <td>{{ $lote->codigo_unico ?: '—' }}</td>
+                                        <td>{{ $lote->tipo_solicitud ?: '—' }}</td>
+                                        <td>{{ $lote->atencion ?: '—' }}</td>
+                                        <td>{{ $lote->responsableFirma->name ?? '—' }}</td>
                                        <td class="text-center">
                                             @if(Auth::user()->esLogistica())
                                             <select class="form-control form-control-sm cambio-estado-rapido"
@@ -600,10 +621,23 @@
                                             <span class="estado-badge" style="background-color: {{ $color['bg'] }}; color: {{ $color['text'] }};">{{ $lote->estado }}</span>
                                             @endif
                                         </td>
+                                        <td>{{ $lote->nro_oc_os ?: '—' }}</td>
+                                        <td>{{ $lote->emision_oc_os ? \Carbon\Carbon::parse($lote->emision_oc_os)->format('d/m/Y') : '—' }}</td>
+                                        <td>{{ $lote->ruc ?: '—' }}</td>
+                                        <td>{{ $lote->empresa_ganadora ?: '—' }}</td>
+                                        <td>{{ $lote->centro_costo ?: '—' }}</td>
+                                        <td>{{ $lote->moneda ?: '—' }}</td>
+                                        <td>{{ $lote->monto_igv !== null ? number_format($lote->monto_igv, 2) : '—' }}</td>
+                                        <td>{{ $lote->forma_pago ?: '—' }}</td>
+                                        <td>{{ $lote->fecha_entrega ? \Carbon\Carbon::parse($lote->fecha_entrega)->format('d/m/Y') : '—' }}</td>
+                                        <td>{{ $lote->orden_firmada ? 'SÍ' : 'NO' }}</td>
+                                        <td>{{ $lote->ejecucion ?: 'Sin iniciar' }}</td>
+                                        <td>{{ $lote->porcentaje_ejecucion !== null ? $lote->porcentaje_ejecucion.'%' : '—' }}</td>
+                                        <td>{{ $lote->factura ?: '—' }}</td>
+                                        <td>{{ $lote->monto_factura !== null ? number_format($lote->monto_factura, 2) : '—' }}</td>
+                                        <td>{{ $lote->fecha_vencimiento ? \Carbon\Carbon::parse($lote->fecha_vencimiento)->format('d/m/Y') : '—' }}</td>
+                                        <td>{{ $lote->fecha_pago ? \Carbon\Carbon::parse($lote->fecha_pago)->format('d/m/Y') : '—' }}</td>
                                         <td class="text-center">
-                                            <button type="button" class="btn btn-sm btn-secondary mr-1 btn-toggle-detalle" data-target="#detalleFila{{ $lote->id }}" title="Ver todos los datos (como en la hoja)">
-                                                <i class="fas fa-chevron-down"></i>
-                                            </button>
                                             <button class="btn btn-sm btn-info mr-1" data-toggle="modal" data-target="#modalVerLote{{ $lote->id }}" title="Ver">
                                                 <i class="fas fa-eye"></i>
                                             </button>
@@ -630,65 +664,9 @@
                                             @endif
                                         </td>
                                     </tr>
-                                    <tr class="fila-detalle" id="detalleFila{{ $lote->id }}">
-                                        <td colspan="7" class="p-0">
-                                            <div class="table-responsive detalle-hoja">
-                                                <table class="table table-sm table-bordered mb-0">
-                                                    <thead class="thead-light">
-                                                        <tr>
-                                                            <th>CARPETA</th>
-                                                            <th>SERV. VALORIZ.</th>
-                                                            <th>CÓD. ÚNICO</th>
-                                                            <th>TIPO SOLICITUD</th>
-                                                            <th>N° OC/OS</th>
-                                                            <th>F. OC/OS</th>
-                                                            <th>RUC</th>
-                                                            <th>EMPRESA GANADORA</th>
-                                                            <th>C. COSTO</th>
-                                                            <th>MONEDA</th>
-                                                            <th>MONTO IGV</th>
-                                                            <th>FORMA PAGO</th>
-                                                            <th>F. ENTREGA</th>
-                                                            <th>ORD. FIRMADA</th>
-                                                            <th>EJECUCIÓN</th>
-                                                            <th>% EJEC.</th>
-                                                            <th>FACTURA</th>
-                                                            <th>MONTO FACT.</th>
-                                                            <th>F. VENC.</th>
-                                                            <th>F. PAGO</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>{{ $lote->carpeta ?: '—' }}</td>
-                                                            <td>{{ $lote->servicio_valorizacion ?: '—' }}</td>
-                                                            <td>{{ $lote->codigo_unico ?: '—' }}</td>
-                                                            <td>{{ $lote->tipo_solicitud ?: '—' }}</td>
-                                                            <td>{{ $lote->nro_oc_os ?: '—' }}</td>
-                                                            <td>{{ $lote->emision_oc_os ? \Carbon\Carbon::parse($lote->emision_oc_os)->format('d/m/Y') : '—' }}</td>
-                                                            <td>{{ $lote->ruc ?: '—' }}</td>
-                                                            <td>{{ $lote->empresa_ganadora ?: '—' }}</td>
-                                                            <td>{{ $lote->centro_costo ?: '—' }}</td>
-                                                            <td>{{ $lote->moneda ?: '—' }}</td>
-                                                            <td>{{ $lote->monto_igv !== null ? number_format($lote->monto_igv, 2) : '—' }}</td>
-                                                            <td>{{ $lote->forma_pago ?: '—' }}</td>
-                                                            <td>{{ $lote->fecha_entrega ? \Carbon\Carbon::parse($lote->fecha_entrega)->format('d/m/Y') : '—' }}</td>
-                                                            <td>{{ $lote->orden_firmada ? 'SÍ' : 'NO' }}</td>
-                                                            <td>{{ $lote->ejecucion ?: 'Sin iniciar' }}</td>
-                                                            <td>{{ $lote->porcentaje_ejecucion !== null ? $lote->porcentaje_ejecucion.'%' : '—' }}</td>
-                                                            <td>{{ $lote->factura ?: '—' }}</td>
-                                                            <td>{{ $lote->monto_factura !== null ? number_format($lote->monto_factura, 2) : '—' }}</td>
-                                                            <td>{{ $lote->fecha_vencimiento ? \Carbon\Carbon::parse($lote->fecha_vencimiento)->format('d/m/Y') : '—' }}</td>
-                                                            <td>{{ $lote->fecha_pago ? \Carbon\Carbon::parse($lote->fecha_pago)->format('d/m/Y') : '—' }}</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </td>
-                                    </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center py-4 text-muted">No se encontraron registros de logística.</td>
+                                        <td colspan="28" class="text-center py-4 text-muted">No se encontraron registros de logística.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -767,6 +745,11 @@
                     </div>
 
                     <div class="form-group">
+                        <label><strong>Asunto</strong></label>
+                        <input type="text" class="form-control" name="asunto" placeholder="¿Qué se está solicitando?">
+                    </div>
+
+                    <div class="form-group">
                         <label><strong>Observación</strong></label>
                         <textarea class="form-control" name="observacion" rows="2"></textarea>
                     </div>
@@ -797,15 +780,19 @@
                 @method('PUT')
                 <div class="modal-body p-4">
                     <div class="row bg-light p-3 rounded mb-3">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <small class="text-uppercase text-muted d-block">Cod. Logística</small>
                             <strong>{{ $lote->cod_log }}</strong>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <small class="text-uppercase text-muted d-block">Carta de origen</small>
                             <strong>{{ $lote->numero_carta ?? '—' }}</strong>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <small class="text-uppercase text-muted d-block">Asunto</small>
+                            <span>{{ $lote->asunto ?: '—' }}</span>
+                        </div>
+                        <div class="col-md-3">
                             <small class="text-uppercase text-muted d-block">Observación (de administración)</small>
                             <span>{{ $lote->observacion ?: '—' }}</span>
                         </div>
@@ -829,18 +816,6 @@
                             <input type="text" class="form-control" name="servicio_valorizacion" value="{{ $lote->servicio_valorizacion }}">
                         </div>
                         <div class="col-md-3 form-group">
-                            <label><strong>Atención</strong></label>
-                            <input type="text" class="form-control" value="{{ Auth::user()->name }}" disabled>
-                            <small class="text-muted">Se registra automáticamente con tu usuario.</small>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-8 form-group">
-                            <label><strong>Asunto</strong></label>
-                            <input type="text" class="form-control" name="asunto" value="{{ $lote->asunto }}">
-                        </div>
-                        <div class="col-md-4 form-group">
                             <label><strong>Código Único</strong></label>
                             <input type="text" class="form-control" name="codigo_unico" value="{{ $lote->codigo_unico }}">
                         </div>
@@ -848,8 +823,23 @@
 
                     <div class="row">
                         <div class="col-md-4 form-group">
-                            <label><strong>Fecha Emisión</strong></label>
-                            <input type="date" class="form-control" name="fecha_emision" value="{{ $lote->fecha_emision ? \Carbon\Carbon::parse($lote->fecha_emision)->format('Y-m-d') : '' }}">
+                            <label><strong>Atención (quién procesa la orden)</strong></label>
+                            <select class="form-control custom-select" name="atencion">
+                                <option value="">Sin asignar</option>
+                                @foreach($usuariosLogistica as $usuarioLogistica)
+                                    <option value="{{ $usuarioLogistica->name }}" {{ $lote->atencion === $usuarioLogistica->name ? 'selected' : '' }}>{{ $usuarioLogistica->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label><strong>Responsable (pendiente de firma)</strong></label>
+                            <select class="form-control custom-select" name="responsable_id">
+                                <option value="">Sin asignar</option>
+                                @foreach($usuariosRegistrados as $usuarioRegistrado)
+                                    <option value="{{ $usuarioRegistrado->id }}" {{ (int) $lote->responsable_id === $usuarioRegistrado->id ? 'selected' : '' }}>{{ $usuarioRegistrado->name }}</option>
+                                @endforeach
+                            </select>
+                            <small class="text-muted">Quien tiene pendiente firmar la orden de compra o la conformidad.</small>
                         </div>
                         <div class="col-md-4 form-group">
                             <label><strong>Tipo de Solicitud</strong></label>
@@ -859,6 +849,13 @@
                                     <option value="{{ $tipoOpcion }}" {{ $lote->tipo_solicitud === $tipoOpcion ? 'selected' : '' }}>{{ $tipoOpcion }}</option>
                                 @endforeach
                             </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 form-group">
+                            <label><strong>Fecha Emisión</strong></label>
+                            <input type="date" class="form-control" name="fecha_emision" value="{{ $lote->fecha_emision ? \Carbon\Carbon::parse($lote->fecha_emision)->format('Y-m-d') : '' }}">
                         </div>
                         <div class="col-md-4 form-group">
                             <label><strong>N° OC / OS</strong></label>
@@ -1018,6 +1015,12 @@
                         <label class="text-muted small mb-0">Atención</label>
                         <p class="font-weight-bold">{{ $lote->atencion ?: '—' }}</p>
                     </div>
+                    <div class="col-md-4">
+                        <label class="text-muted small mb-0">Responsable (firma pendiente)</label>
+                        <p class="font-weight-bold">{{ $lote->responsableFirma->name ?? '—' }}</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
                     <div class="col-md-4">
                         <label class="text-muted small mb-0">Fecha Emisión</label>
                         <p class="font-weight-bold">{{ $lote->fecha_emision ? \Carbon\Carbon::parse($lote->fecha_emision)->format('d/m/Y') : '-' }}</p>
@@ -1283,14 +1286,6 @@ $(document).on('change', '.cambio-estado-rapido', function() {
             Swal.fire('Error', 'No se pudo actualizar el estado', 'error');
         }
     });
-});
-
-// Fila expandible con todas las columnas (vista tipo hoja de cálculo)
-$(document).on('click', '.btn-toggle-detalle', function() {
-    var $btn = $(this);
-    var $fila = $($btn.data('target'));
-    $fila.toggleClass('mostrando');
-    $btn.toggleClass('abierto', $fila.hasClass('mostrando'));
 });
 
 // Historial de auditoría

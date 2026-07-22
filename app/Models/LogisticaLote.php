@@ -17,7 +17,7 @@ class LogisticaLote extends Model
     // la carta de origen y solo el rol admin puede definirlos, una sola vez.
     protected $fillable = [
         'cod_log', 'carpeta', 'estado', 'servicio_valorizacion', 'responsable', 'numero_carta',
-        'asunto', 'fecha_emision', 'codigo_unico', 'atencion',
+        'asunto', 'fecha_emision', 'codigo_unico', 'atencion', 'responsable_id',
         'observacion', 'tipo_solicitud', 'nro_oc_os', 'emision_oc_os', 'conformidad', 'factura',
         'ruc', 'empresa_ganadora', 'centro_costo', 'moneda', 'monto_igv', 'forma_pago',
         'fecha_entrega', 'orden_firmada', 'ejecucion', 'porcentaje_ejecucion', 'monto_factura',
@@ -72,5 +72,14 @@ class LogisticaLote extends Model
     public function modificador()
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    /**
+     * Usuario que tiene pendiente firmar el documento (orden de compra o
+     * conformidad) de este expediente.
+     */
+    public function responsableFirma()
+    {
+        return $this->belongsTo(User::class, 'responsable_id');
     }
 }

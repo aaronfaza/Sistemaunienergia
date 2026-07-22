@@ -18,14 +18,41 @@ class LogisticaExport implements FromCollection, WithHeadings, WithStyles, WithC
 {
     public function collection()
     {
-        // Traemos todos los campos solicitados en el orden de los encabezados
-        return LogisticaLote::select(
-            'cod_log', 'carpeta', 'estado', 'servicio_valorizacion', 'responsable', 'numero_carta', 'asunto',
-            'fecha_emision', 'codigo_unico', 'atencion', 'tipo_solicitud', 'nro_oc_os',
-            'emision_oc_os', 'ruc', 'empresa_ganadora', 'centro_costo', 'moneda',
-            'monto_igv', 'forma_pago', 'fecha_entrega', 'orden_firmada', 'conformidad',
-            'factura', 'monto_factura', 'fecha_vencimiento', 'fecha_pago', 'porcentaje_ejecucion', 'observacion'
-        )->get();
+        // Traemos todos los campos solicitados en el orden de los encabezados.
+        // RESPONSABLE se resuelve desde la relación (usuario que tiene pendiente
+        // firmar), no desde la columna `responsable` (texto libre, en desuso).
+        return LogisticaLote::with('responsableFirma')->get()->map(function ($lote) {
+            return [
+                $lote->cod_log,
+                $lote->carpeta,
+                $lote->estado,
+                $lote->servicio_valorizacion,
+                $lote->responsableFirma->name ?? null,
+                $lote->numero_carta,
+                $lote->asunto,
+                $lote->fecha_emision,
+                $lote->codigo_unico,
+                $lote->atencion,
+                $lote->tipo_solicitud,
+                $lote->nro_oc_os,
+                $lote->emision_oc_os,
+                $lote->ruc,
+                $lote->empresa_ganadora,
+                $lote->centro_costo,
+                $lote->moneda,
+                $lote->monto_igv,
+                $lote->forma_pago,
+                $lote->fecha_entrega,
+                $lote->orden_firmada,
+                $lote->conformidad,
+                $lote->factura,
+                $lote->monto_factura,
+                $lote->fecha_vencimiento,
+                $lote->fecha_pago,
+                $lote->porcentaje_ejecucion,
+                $lote->observacion,
+            ];
+        });
     }
 
     public function startCell(): string
@@ -36,7 +63,7 @@ class LogisticaExport implements FromCollection, WithHeadings, WithStyles, WithC
     public function headings(): array
     {
         return [
-            'COD. LOG', 'CARPETA', 'ESTADO', 'SERV. VALORIZ.', 'RESPONSABLE', 'N° CARTA', 'ASUNTO',
+            'COD. LOG', 'CARPETA', 'ESTADO', 'SERV. VALORIZ.', 'RESPONSABLE (FIRMA PEND.)', 'N° CARTA', 'ASUNTO',
             'F. EMISIÓN', 'CÓD. ÚNICO', 'ATENCIÓN', 'TIPO SOLICITUD', 'N° OC/OS',
             'F. OC/OS', 'RUC', 'PROVEEDOR', 'C. COSTO', 'MONEDA',
             'MONTO IGV', 'FORMA PAGO', 'F. ENTREGA', 'ORD. FIRMADA', 'CONFORMIDAD',
