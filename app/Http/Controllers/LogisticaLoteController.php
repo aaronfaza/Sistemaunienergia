@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CartaFis;
 use App\Models\ControlCarta;
 use App\Models\LogisticaLote;
+use App\Models\User;
 use App\Exports\LogisticaExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +29,7 @@ class LogisticaLoteController extends Controller
      */
     public function index(Request $request)
     {
-        $query = LogisticaLote::with(['creador', 'modificador', 'carta']);
+        $query = LogisticaLote::with(['creador', 'modificador', 'carta', 'responsableFirma']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -62,8 +63,14 @@ class LogisticaLoteController extends Controller
             ];
         }
 
+        // Para el desplegable de Atención (solo Logística Lima) y de Responsable
+        // (cualquier usuario registrado puede tener una firma pendiente).
+        $usuariosLogistica = User::where('rol', 'logistica')->orderBy('name')->get(['id', 'name']);
+        $usuariosRegistrados = User::orderBy('name')->get(['id', 'name']);
+
         return view('logistica_lotes.index', compact(
-            'lotes', 'totalRegistros', 'totalEnProceso', 'totalEjecutado', 'totalAlerta', 'cartasDisponibles'
+            'lotes', 'totalRegistros', 'totalEnProceso', 'totalEjecutado', 'totalAlerta',
+            'cartasDisponibles', 'usuariosLogistica', 'usuariosRegistrados'
         ));
     }
 
@@ -80,6 +87,7 @@ class LogisticaLoteController extends Controller
             'cod_log' => 'required|string|max:255|unique:logistica_lotes,cod_log',
             'origen_tipo' => ['required', Rule::in(array_keys(self::ORIGENES_CARTA))],
             'origen_id' => 'required|integer',
+            'asunto' => 'nullable|string',
             'observacion' => 'nullable|string',
         ]);
 
@@ -94,6 +102,7 @@ class LogisticaLoteController extends Controller
 
         $lote = new LogisticaLote();
         $lote->cod_log = $data['cod_log'];
+        $lote->asunto = $data['asunto'] ?? null;
         $lote->observacion = $data['observacion'] ?? null;
         $lote->numero_carta = $carta->codigo;
         $lote->carta_type = $cartaClass;
@@ -114,13 +123,16 @@ class LogisticaLoteController extends Controller
 
         $lote = LogisticaLote::findOrFail($id);
 
+        $nombresLogistica = User::where('rol', 'logistica')->pluck('name')->all();
+
         $data = $request->validate([
             'carpeta' => 'nullable|string|max:255',
             'estado' => ['nullable', Rule::in(LogisticaLote::ESTADOS)],
             'servicio_valorizacion' => 'nullable|string|max:255',
-            'asunto' => 'nullable|string',
             'fecha_emision' => 'nullable|date',
             'codigo_unico' => 'nullable|string|max:255',
+            'atencion' => ['nullable', Rule::in($nombresLogistica)],
+            'responsable_id' => 'nullable|exists:users,id',
             'tipo_solicitud' => ['nullable', Rule::in(LogisticaLote::TIPOS_SOLICITUD)],
             'nro_oc_os' => 'nullable|string|max:255',
             'emision_oc_os' => 'nullable|date',
@@ -145,10 +157,6 @@ class LogisticaLoteController extends Controller
             $data['forma_pago'] = $data['forma_pago_otro'];
         }
         unset($data['forma_pago_otro']);
-
-        // Autocompletado, nunca aceptado del request: quien procesa la orden
-        // es siempre el usuario logueado, no un valor que se pueda escribir.
-        $data['atencion'] = Auth::user()->name;
 
         $lote->update($data);
 
