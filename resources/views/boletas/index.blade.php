@@ -421,9 +421,9 @@
               <p class="ms-2 mb-0">ROP2026 LOTE IX</p>
           </a>
       </li>
-          @elseif(Auth::user()->puedeVerCartasMan())
-          <li class="nav-item has-treeview {{ request()->routeIs('cartas_man.*') ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ request()->routeIs('cartas_man.*') ? 'active' : '' }}">
+          @elseif(Auth::user()->puedeVerCartasMan() || Auth::user()->puedeVerCartasFis())
+          <li class="nav-item has-treeview {{ request()->routeIs('cartas_man.*', 'cartas_fis.*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->routeIs('cartas_man.*', 'cartas_fis.*') ? 'active' : '' }}">
               <i class="nav-icon fas fa-folder-open" style="color: var(--brand-info);"></i>
               <p>
                 Control Cartas
@@ -431,8 +431,8 @@
               </p>
             </a>
             <ul class="nav nav-treeview ml-2">
-              <li class="nav-item has-treeview {{ request()->routeIs('cartas_man.*') && request()->query('anio', '2026') === '2026' ? 'menu-open' : '' }}">
-                <a href="#" class="nav-link {{ request()->routeIs('cartas_man.*') && request()->query('anio', '2026') === '2026' ? 'active' : '' }}">
+              <li class="nav-item has-treeview {{ request()->routeIs('cartas_man.*', 'cartas_fis.*') && request()->query('anio', '2026') === '2026' ? 'menu-open' : '' }}">
+                <a href="#" class="nav-link {{ request()->routeIs('cartas_man.*', 'cartas_fis.*') && request()->query('anio', '2026') === '2026' ? 'active' : '' }}">
                   <i class="nav-icon fas fa-calendar-alt" style="color: var(--brand-accent);"></i>
                   <p>
                     2026
@@ -440,6 +440,13 @@
                   </p>
                 </a>
                 <ul class="nav nav-treeview ml-2">
+                  <li class="nav-item">
+                    <a href="{{ route('cartas_fis.index', ['anio' => 2026]) }}"
+                      class="nav-link {{ request()->routeIs('cartas_fis.*') && request()->query('anio', '2026') === '2026' ? 'active' : '' }}">
+                      <i class="far fa-clipboard nav-icon" style="color: var(--brand-info);"></i>
+                      <p>FIS</p>
+                    </a>
+                  </li>
                   <li class="nav-item">
                     <a href="{{ route('cartas_man.index', ['anio' => 2026]) }}"
                       class="nav-link {{ request()->routeIs('cartas_man.*') && request()->query('anio', '2026') === '2026' ? 'active' : '' }}">
@@ -449,8 +456,8 @@
                   </li>
                 </ul>
               </li>
-              <li class="nav-item has-treeview {{ request()->routeIs('cartas_man.*') && request()->query('anio') === '2027' ? 'menu-open' : '' }}">
-                <a href="#" class="nav-link {{ request()->routeIs('cartas_man.*') && request()->query('anio') === '2027' ? 'active' : '' }}">
+              <li class="nav-item has-treeview {{ request()->routeIs('cartas_man.*', 'cartas_fis.*') && request()->query('anio') === '2027' ? 'menu-open' : '' }}">
+                <a href="#" class="nav-link {{ request()->routeIs('cartas_man.*', 'cartas_fis.*') && request()->query('anio') === '2027' ? 'active' : '' }}">
                   <i class="nav-icon fas fa-calendar-alt" style="color: var(--brand-secondary);"></i>
                   <p>
                     2027
@@ -458,6 +465,13 @@
                   </p>
                 </a>
                 <ul class="nav nav-treeview ml-2">
+                  <li class="nav-item">
+                    <a href="{{ route('cartas_fis.index', ['anio' => 2027]) }}"
+                      class="nav-link {{ request()->routeIs('cartas_fis.*') && request()->query('anio') === '2027' ? 'active' : '' }}">
+                      <i class="far fa-clipboard nav-icon" style="color: var(--brand-info);"></i>
+                      <p>FIS</p>
+                    </a>
+                  </li>
                   <li class="nav-item">
                     <a href="{{ route('cartas_man.index', ['anio' => 2027]) }}"
                       class="nav-link {{ request()->routeIs('cartas_man.*') && request()->query('anio') === '2027' ? 'active' : '' }}">
