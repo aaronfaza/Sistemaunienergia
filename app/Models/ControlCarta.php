@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ControlCarta extends Model
 {
-    use HasFactory;
+    use HasFactory, Auditable;
 
     protected $table = 'control_cartas';
 
@@ -41,4 +42,14 @@ class ControlCarta extends Model
         'monto_soles' => 'decimal:2',
         'monto_dolares' => 'decimal:2',
     ];
+
+    public function creador()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function modificador()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }

@@ -17,7 +17,8 @@ class ControlCartaController extends Controller
     {
         $buscar = $request->get('buscar');
 
-    $cartas = ControlCarta::when($buscar, function ($query, $buscar) {
+    $cartas = ControlCarta::with(['creador', 'modificador'])
+        ->when($buscar, function ($query, $buscar) {
             $query->where('codigo', 'like', "%{$buscar}%")
                   ->orWhere('servicio_compra', 'like', "%{$buscar}%")
                   ->orWhere('proveedor_elegido', 'like', "%{$buscar}%");
@@ -29,16 +30,10 @@ class ControlCartaController extends Controller
     return view('control_cartas.index', compact('cartas', 'buscar'));
     }
 
-    /**
-     * Guardar carta
-     */
+   
     public function store(Request $request)
     {
-        $data = $request->all();
-        $data['estado'] = $data['estado'] ?? 'Pendiente';
-        ControlCarta::create($data);
-
-        $request->validate([
+        $data = $request->validate([
             'codigo' => 'required|unique:control_cartas,codigo',
             'fecha' => 'required|date',
             'mes' => 'nullable|string',
@@ -57,9 +52,12 @@ class ControlCartaController extends Controller
             'fecha_vencimiento' => 'nullable|date',
             'fecha_pago' => 'nullable|date',
             'area' => 'nullable|string',
+            'estado' => 'nullable|in:Pendiente,Rechazado,Ejecutado',
         ]);
 
-        ControlCarta::create($request->all());
+        $data['estado'] = $data['estado'] ?? 'Pendiente';
+
+        ControlCarta::create($data);
 
         return redirect()
             ->route('control_cartas.index')
@@ -73,13 +71,29 @@ class ControlCartaController extends Controller
     {
         $carta = ControlCarta::findOrFail($id);
 
-        $request->validate([
+        $data = $request->validate([
             'codigo' => 'required|unique:control_cartas,codigo,' . $carta->id,
             'fecha' => 'required|date',
+            'mes' => 'nullable|string',
             'servicio_compra' => 'required|string',
+            'descripcion' => 'nullable|string',
+            'proveedor_elegido' => 'nullable|string',
+            'cotizaciones_consideradas' => 'nullable|string',
+            'equipo' => 'nullable|string',
+            'especificacion' => 'nullable|string',
+            'monto_soles' => 'nullable|numeric',
+            'monto_dolares' => 'nullable|numeric',
+            'nro_orden' => 'nullable|string',
+            'autorizado_por' => 'nullable|string',
+            'factura_nro' => 'nullable|string',
+            'fecha_recepcion' => 'nullable|date',
+            'fecha_vencimiento' => 'nullable|date',
+            'fecha_pago' => 'nullable|date',
+            'area' => 'nullable|string',
+            'estado' => 'nullable|in:Pendiente,Rechazado,Ejecutado',
         ]);
 
-        $carta->update($request->all());
+        $carta->update($data);
 
         return redirect()
             ->route('control_cartas.index')
@@ -132,6 +146,31 @@ class ControlCartaController extends Controller
             $carta->save();
 
             return back();
+        }
+
+        /**
+         * Historial de auditoría de una carta (quién creó/modificó/qué cambió).
+         */
+        public function historial($id)
+        {
+            $carta = ControlCarta::findOrFail($id);
+
+            $logs = $carta->auditLogs()
+                ->with('usuario:id,name')
+                ->get()
+                ->map(function ($log) {
+                    return [
+                        'accion' => $log->accion,
+                        'usuario' => $log->usuario->name ?? 'Sistema',
+                        'fecha' => optional($log->created_at)->format('d/m/Y H:i'),
+                        'cambios' => $log->cambios,
+                    ];
+                });
+
+            return response()->json([
+                'codigo' => $carta->codigo,
+                'logs' => $logs,
+            ]);
         }
 
 
