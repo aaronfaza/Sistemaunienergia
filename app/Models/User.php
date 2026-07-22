@@ -114,6 +114,15 @@ class User extends Authenticatable
     }
 
     /**
+     * ¿Puede ver y gestionar únicamente las Cartas FIS (Fiscalización) de
+     * Control de Cartas? El supervisor de mantenimiento y admin.
+     */
+    public function puedeVerCartasFis(): bool
+    {
+        return $this->esSupervisorMantenimiento() || $this->tieneAccesoCompleto();
+    }
+
+    /**
      * ¿Es una cuenta autoregistrada que todavía no tiene rol asignado por
      * un administrador? No tiene acceso a ningún módulo de negocio.
      */
