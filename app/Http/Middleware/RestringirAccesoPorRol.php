@@ -27,6 +27,9 @@ class RestringirAccesoPorRol
         'rrhh' => [
             'bienvenida', 'perfil.*', 'boletas.*', 'logout',
         ],
+        'logistica' => [
+            'bienvenida', 'perfil.*', 'logistica_lotes.*', 'logout',
+        ],
     ];
 
     protected array $permitidasPorDefecto = [

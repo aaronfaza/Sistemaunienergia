@@ -52,4 +52,9 @@ class ControlCarta extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
+    public function ropLote()
+    {
+        return $this->morphOne(LogisticaLote::class, 'carta');
+    }
 }

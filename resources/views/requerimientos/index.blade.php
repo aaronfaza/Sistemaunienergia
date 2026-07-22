@@ -718,7 +718,7 @@
           <a href="{{ route('logistica_lotes.index') }}"
             class="nav-link {{ request()->routeIs('logistica_lotes.*') ? 'active' : '' }}">
               <i class="nav-icon fas fa-boxes" style="color: var(--brand-primary-light);"></i>
-              <p class="ms-2 mb-0">Logística Lote</p>
+              <p class="ms-2 mb-0">ROP2026 LOTE IX</p>
           </a>
       </li>
           @endif
