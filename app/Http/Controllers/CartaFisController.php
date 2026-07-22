@@ -30,9 +30,14 @@ class CartaFisController extends Controller
             });
         }
 
+        $anio = in_array($request->get('anio'), ['2026', '2027'], true) ? $request->get('anio') : null;
+        if ($anio) {
+            $query->where('codigo', 'like', "%-{$anio}");
+        }
+
         $cartas = $query->orderByDesc('id')->paginate(10)->withQueryString();
 
-        return view('cartas_fis.index', compact('cartas'));
+        return view('cartas_fis.index', compact('cartas', 'anio'));
     }
 
     /**

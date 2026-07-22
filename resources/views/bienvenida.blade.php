@@ -411,40 +411,97 @@
           </a>
 
           <ul class="nav nav-treeview ml-2">
-            <li class="nav-item">
-              <a href="{{ route('control_cartas.index') }}"
-                class="nav-link {{ request()->routeIs('control_cartas.*') ? 'active' : '' }}">
-                <i class="far fa-envelope nav-icon" style="color: var(--brand-accent);"></i>
-                <p>SO-PRO</p>
+            <li class="nav-item has-treeview">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-calendar-alt" style="color: var(--brand-accent);"></i>
+                <p>
+                  2026
+                  <i class="right fas fa-angle-left"></i>
+                </p>
               </a>
+              <ul class="nav nav-treeview ml-2">
+                <li class="nav-item">
+                  <a href="{{ route('control_cartas.index', ['anio' => 2026]) }}"
+                    class="nav-link {{ request()->routeIs('control_cartas.*') && request()->query('anio', '2026') === '2026' ? 'active' : '' }}">
+                    <i class="far fa-envelope nav-icon" style="color: var(--brand-accent);"></i>
+                    <p>SO-PRO</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ route('cartas_fis.index', ['anio' => 2026]) }}"
+                    class="nav-link {{ request()->routeIs('cartas_fis.*') && request()->query('anio', '2026') === '2026' ? 'active' : '' }}">
+                    <i class="far fa-clipboard nav-icon" style="color: var(--brand-info);"></i>
+                    <p>FIS</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ route('cartas_ipf.index', ['anio' => 2026]) }}"
+                    class="nav-link {{ request()->routeIs('cartas_ipf.*') && request()->query('anio', '2026') === '2026' ? 'active' : '' }}">
+                    <i class="fas fa-drafting-compass nav-icon" style="color: var(--brand-accent);"></i>
+                    <p>IPF</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ route('cartas_man.index', ['anio' => 2026]) }}"
+                    class="nav-link {{ request()->routeIs('cartas_man.*') && request()->query('anio', '2026') === '2026' ? 'active' : '' }}">
+                    <i class="fas fa-wrench nav-icon" style="color: var(--brand-info);"></i>
+                    <p>MAN</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ route('cartas_log.index', ['anio' => 2026]) }}"
+                    class="nav-link {{ request()->routeIs('cartas_log.*') && request()->query('anio', '2026') === '2026' ? 'active' : '' }}">
+                    <i class="fas fa-warehouse nav-icon" style="color: var(--brand-accent);"></i>
+                    <p>LOG</p>
+                  </a>
+                </li>
+              </ul>
             </li>
-            <li class="nav-item">
-              <a href="{{ route('cartas_fis.index') }}"
-                class="nav-link {{ request()->routeIs('cartas_fis.*') ? 'active' : '' }}">
-                <i class="far fa-clipboard nav-icon" style="color: var(--brand-info);"></i>
-                <p>FIS</p>
+            <li class="nav-item has-treeview">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-calendar-alt" style="color: var(--brand-secondary);"></i>
+                <p>
+                  2027
+                  <i class="right fas fa-angle-left"></i>
+                </p>
               </a>
-            </li>
-            <li class="nav-item">
-              <a href="{{ route('cartas_ipf.index') }}"
-                class="nav-link {{ request()->routeIs('cartas_ipf.*') ? 'active' : '' }}">
-                <i class="fas fa-drafting-compass nav-icon" style="color: var(--brand-accent);"></i>
-                <p>IPF</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="{{ route('cartas_man.index') }}"
-                class="nav-link {{ request()->routeIs('cartas_man.*') ? 'active' : '' }}">
-                <i class="fas fa-wrench nav-icon" style="color: var(--brand-info);"></i>
-                <p>MAN</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="{{ route('cartas_log.index') }}"
-                class="nav-link {{ request()->routeIs('cartas_log.*') ? 'active' : '' }}">
-                <i class="fas fa-warehouse nav-icon" style="color: var(--brand-accent);"></i>
-                <p>LOG</p>
-              </a>
+              <ul class="nav nav-treeview ml-2">
+                <li class="nav-item">
+                  <a href="{{ route('control_cartas.index', ['anio' => 2027]) }}"
+                    class="nav-link {{ request()->routeIs('control_cartas.*') && request()->query('anio') === '2027' ? 'active' : '' }}">
+                    <i class="far fa-envelope nav-icon" style="color: var(--brand-accent);"></i>
+                    <p>SO-PRO</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ route('cartas_fis.index', ['anio' => 2027]) }}"
+                    class="nav-link {{ request()->routeIs('cartas_fis.*') && request()->query('anio') === '2027' ? 'active' : '' }}">
+                    <i class="far fa-clipboard nav-icon" style="color: var(--brand-info);"></i>
+                    <p>FIS</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ route('cartas_ipf.index', ['anio' => 2027]) }}"
+                    class="nav-link {{ request()->routeIs('cartas_ipf.*') && request()->query('anio') === '2027' ? 'active' : '' }}">
+                    <i class="fas fa-drafting-compass nav-icon" style="color: var(--brand-accent);"></i>
+                    <p>IPF</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ route('cartas_man.index', ['anio' => 2027]) }}"
+                    class="nav-link {{ request()->routeIs('cartas_man.*') && request()->query('anio') === '2027' ? 'active' : '' }}">
+                    <i class="fas fa-wrench nav-icon" style="color: var(--brand-info);"></i>
+                    <p>MAN</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ route('cartas_log.index', ['anio' => 2027]) }}"
+                    class="nav-link {{ request()->routeIs('cartas_log.*') && request()->query('anio') === '2027' ? 'active' : '' }}">
+                    <i class="fas fa-warehouse nav-icon" style="color: var(--brand-accent);"></i>
+                    <p>LOG</p>
+                  </a>
+                </li>
+              </ul>
             </li>
           </ul>
         </li>
