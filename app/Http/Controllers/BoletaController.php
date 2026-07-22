@@ -13,6 +13,7 @@ class BoletaController extends Controller
     public function index(Request $request)
     {
         $puedeGestionar = Auth::user()->puedeGestionarBoletas();
+        $anio = in_array($request->get('anio'), ['2026', '2027'], true) ? $request->get('anio') : null;
 
         if ($puedeGestionar) {
             $query = Boleta::with('trabajador')->orderByDesc('id');
@@ -25,6 +26,10 @@ class BoletaController extends Controller
                 $query->where('tipo', $request->tipo);
             }
 
+            if ($anio) {
+                $query->where('periodo', 'like', "{$anio}-%");
+            }
+
             $boletas = $query->get();
             $trabajadores = User::orderBy('name')->get(['id', 'name', 'cargo']);
         } else {
@@ -34,11 +39,15 @@ class BoletaController extends Controller
                 $query->where('tipo', $request->tipo);
             }
 
+            if ($anio) {
+                $query->where('periodo', 'like', "{$anio}-%");
+            }
+
             $boletas = $query->get();
             $trabajadores = collect();
         }
 
-        return view('boletas.index', compact('boletas', 'trabajadores', 'puedeGestionar'));
+        return view('boletas.index', compact('boletas', 'trabajadores', 'puedeGestionar', 'anio'));
     }
 
     public function store(Request $request)

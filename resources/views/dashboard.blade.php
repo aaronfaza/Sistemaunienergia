@@ -372,19 +372,110 @@
         </li>
         @endif
 
+        @if(Auth::user()->puedeGestionarBoletas())
+        <li class="nav-item has-treeview {{ request()->routeIs('boletas.*') ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ request()->routeIs('boletas.*') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-users" style="color: var(--brand-accent);"></i>
+            <p>
+              RRHH
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview ml-2">
+            <li class="nav-item has-treeview {{ request()->routeIs('boletas.*') && request()->query('anio', '2026') === '2026' ? 'menu-open' : '' }}">
+              <a href="#" class="nav-link {{ request()->routeIs('boletas.*') && request()->query('anio', '2026') === '2026' ? 'active' : '' }}">
+                <i class="nav-icon fas fa-calendar-alt" style="color: var(--brand-accent);"></i>
+                <p>
+                  2026
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview ml-2">
+                <li class="nav-item">
+                  <a href="{{ route('boletas.index', ['anio' => 2026]) }}"
+                    class="nav-link {{ request()->routeIs('boletas.*') && request()->query('anio', '2026') === '2026' ? 'active' : '' }}">
+                    <i class="fas fa-file-invoice-dollar nav-icon" style="color: var(--brand-accent);"></i>
+                    <p>Boletas 2026</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item has-treeview {{ request()->routeIs('boletas.*') && request()->query('anio') === '2027' ? 'menu-open' : '' }}">
+              <a href="#" class="nav-link {{ request()->routeIs('boletas.*') && request()->query('anio') === '2027' ? 'active' : '' }}">
+                <i class="nav-icon fas fa-calendar-alt" style="color: var(--brand-secondary);"></i>
+                <p>
+                  2027
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview ml-2">
+                <li class="nav-item">
+                  <a href="{{ route('boletas.index', ['anio' => 2027]) }}"
+                    class="nav-link {{ request()->routeIs('boletas.*') && request()->query('anio') === '2027' ? 'active' : '' }}">
+                    <i class="fas fa-file-invoice-dollar nav-icon" style="color: var(--brand-accent);"></i>
+                    <p>Boletas 2027</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        @else
         <li class="nav-item">
           <a href="{{ route('boletas.index') }}" class="nav-link {{ request()->routeIs('boletas.*') ? 'active' : '' }}">
             <i class="nav-icon fas fa-file-invoice-dollar" style="color: var(--brand-accent);"></i>
-            <p class="ml-2 mb-0">{{ Auth::user()->puedeGestionarBoletas() ? 'Gestionar Boletas' : 'Mis Boletas' }}</p>
+            <p class="ml-2 mb-0">Mis Boletas</p>
           </a>
         </li>
+        @endif
 
           @if(Auth::user()->tieneAccesoCompleto())
-          <li class="nav-item">
-            <a href="{{ route('requerimientos.index') }}" class="nav-link {{ request()->routeIs('requerimientos.*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-file-alt" style="color: var(--brand-info);"></i>
-              <p class="ml-2 mb-0">Requerimientos</p>
+          <li class="nav-item has-treeview {{ request()->routeIs('requerimientos.*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->routeIs('requerimientos.*') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-briefcase" style="color: var(--brand-info);"></i>
+              <p>
+                Administración
+                <i class="right fas fa-angle-left"></i>
+              </p>
             </a>
+            <ul class="nav nav-treeview ml-2">
+              <li class="nav-item has-treeview {{ request()->routeIs('requerimientos.*') && request()->query('anio', '2026') === '2026' ? 'menu-open' : '' }}">
+                <a href="#" class="nav-link {{ request()->routeIs('requerimientos.*') && request()->query('anio', '2026') === '2026' ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-calendar-alt" style="color: var(--brand-accent);"></i>
+                  <p>
+                    2026
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview ml-2">
+                  <li class="nav-item">
+                    <a href="{{ route('requerimientos.index', ['anio' => 2026]) }}"
+                      class="nav-link {{ request()->routeIs('requerimientos.*') && request()->query('anio', '2026') === '2026' ? 'active' : '' }}">
+                      <i class="fas fa-file-alt nav-icon" style="color: var(--brand-info);"></i>
+                      <p>Requerimientos</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="nav-item has-treeview {{ request()->routeIs('requerimientos.*') && request()->query('anio') === '2027' ? 'menu-open' : '' }}">
+                <a href="#" class="nav-link {{ request()->routeIs('requerimientos.*') && request()->query('anio') === '2027' ? 'active' : '' }}">
+                  <i class="nav-icon fas fa-calendar-alt" style="color: var(--brand-secondary);"></i>
+                  <p>
+                    2027
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview ml-2">
+                  <li class="nav-item">
+                    <a href="{{ route('requerimientos.index', ['anio' => 2027]) }}"
+                      class="nav-link {{ request()->routeIs('requerimientos.*') && request()->query('anio') === '2027' ? 'active' : '' }}">
+                      <i class="fas fa-file-alt nav-icon" style="color: var(--brand-info);"></i>
+                      <p>Requerimientos</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
           </li>
 
         <li class="nav-item has-treeview {{ request()->routeIs('control_cartas.*', 'cartas_fis.*', 'cartas_ipf.*', 'cartas_man.*', 'cartas_log.*', 'cartas_hse.*') ? 'menu-open' : '' }}">

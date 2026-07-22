@@ -32,6 +32,7 @@ class RequerimientoController extends Controller
     $fecha   = trim((string) $request->get('fecha', ''));
     $area    = trim((string) $request->get('area_solicitante', ''));
     $nombre  = trim((string) $request->get('nombre_solicitante', ''));
+    $anio    = in_array($request->get('anio'), ['2026', '2027'], true) ? $request->get('anio') : null;
 
     $query = Requerimiento::query();
 
@@ -49,6 +50,10 @@ class RequerimientoController extends Controller
 
     if ($nombre !== '') {
         $query->where('nombre_solicitante', 'like', "%{$nombre}%");
+    }
+
+    if ($anio !== null) {
+        $query->whereYear('fecha', $anio);
     }
 
     $totalRequerimientos = $query->count();
@@ -84,6 +89,7 @@ class RequerimientoController extends Controller
         'requerimientos',
         'totalRequerimientos',
         'notificaciones',
+        'anio',
         // Dashboard
         'total',
         'hoy',
