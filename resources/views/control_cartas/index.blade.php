@@ -623,6 +623,14 @@ textarea:focus {
                     <i class="fas fa-edit"></i>
                   </button>
 
+                  <!-- Historial (auditoría) -->
+                  <button type="button" class="btn btn-sm btn-secondary btn-historial"
+                          data-bs-toggle="modal" data-bs-target="#modalHistorial"
+                          data-url="{{ route('control_cartas.historial', $carta->id) }}"
+                          title="Historial de cambios">
+                    <i class="fas fa-history"></i>
+                  </button>
+
                   <!-- Eliminar -->
                   <form action="{{ route('control_cartas.destroy', $carta->id) }}" method="POST" class="d-inline-block"
                         onsubmit="return confirm('¿Eliminar la carta con código {{ $carta->codigo }}? Esta acción no se puede deshacer.');">
@@ -1079,6 +1087,27 @@ textarea:focus {
                       </div>
                     </div>
 
+                    <!-- BLOQUE: AUDITORÍA -->
+                    <div class="card shadow-sm border-0 mt-3">
+                      <div class="card-body">
+                        <h6 class="text-primary font-weight-bold mb-3">
+                          <i class="fas fa-user-shield mr-1"></i> Auditoría
+                        </h6>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <strong>Creado por</strong><br>
+                            {{ $carta->creador->name ?? '—' }}
+                            <span class="text-muted">({{ optional($carta->created_at)->format('d/m/Y H:i') ?? '—' }})</span>
+                          </div>
+                          <div class="col-md-6">
+                            <strong>Última modificación por</strong><br>
+                            {{ $carta->modificador->name ?? '—' }}
+                            <span class="text-muted">({{ optional($carta->updated_at)->format('d/m/Y H:i') ?? '—' }})</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
 
                  <!-- FOOTER -->
@@ -1124,8 +1153,42 @@ textarea:focus {
   
 </section>
 
+<!-- Modal Historial (auditoría) -->
+<div class="modal fade" id="modalHistorial" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content" style="border-radius:18px;">
+      <div class="modal-header text-white" style="background: linear-gradient(135deg, #003366, #002B5C); border-radius:18px 18px 0 0;">
+        <h5 class="modal-title mb-0 font-weight-bold">
+          <i class="fas fa-history mr-1"></i> Historial — <span id="historialCodigo">—</span>
+        </h5>
+        <button type="button" class="close text-white" data-bs-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="historialCargando" class="text-center text-muted py-4" style="display:none;">
+          <i class="fas fa-spinner fa-spin mr-1"></i> Cargando historial...
+        </div>
+        <table class="table table-sm table-bordered" id="historialTabla">
+          <thead class="thead-light">
+            <tr>
+              <th>Fecha</th>
+              <th>Usuario</th>
+              <th>Acción</th>
+              <th>Cambios</th>
+            </tr>
+          </thead>
+          <tbody id="historialCuerpo">
+            <tr><td colspan="4" class="text-center text-muted">Sin datos.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-  
+
 <a href="{{ route('control_cartas.export.excel', ['buscar' => $buscar]) }}"
    class="btn btn-success shadow-sm">
     <i class="fas fa-file-excel mr-1"></i> Backup Excel
@@ -1159,6 +1222,49 @@ textarea:focus {
         // Ocultar el badge de notificaciones al hacer clic
         $('#notificacionesDropdown').on('click', function() {
             $('#notiBadge').hide();
+        });
+
+        // Cargar historial de auditoría al abrir el modal
+        function escapeHtml(str) {
+            return $('<div>').text(str == null ? '' : str).html();
+        }
+
+        $(document).on('click', '.btn-historial', function() {
+            var url = $(this).data('url');
+            var $cuerpo = $('#historialCuerpo');
+            var $cargando = $('#historialCargando');
+
+            $('#historialCodigo').text('...');
+            $cuerpo.empty();
+            $cargando.show();
+
+            fetch(url, { headers: { 'Accept': 'application/json' } })
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    $cargando.hide();
+                    $('#historialCodigo').text(data.codigo);
+
+                    if (!data.logs || data.logs.length === 0) {
+                        $cuerpo.html('<tr><td colspan="4" class="text-center text-muted">Sin registros de auditoría.</td></tr>');
+                        return;
+                    }
+
+                    var etiquetas = { creado: 'Creado', actualizado: 'Actualizado', eliminado: 'Eliminado' };
+                    var filas = data.logs.map(function(log) {
+                        var cambios = log.cambios ? JSON.stringify(log.cambios) : '—';
+                        return '<tr>' +
+                            '<td>' + escapeHtml(log.fecha || '—') + '</td>' +
+                            '<td>' + escapeHtml(log.usuario) + '</td>' +
+                            '<td>' + escapeHtml(etiquetas[log.accion] || log.accion) + '</td>' +
+                            '<td><small class="text-muted">' + escapeHtml(cambios) + '</small></td>' +
+                            '</tr>';
+                    });
+                    $cuerpo.html(filas.join(''));
+                })
+                .catch(function() {
+                    $cargando.hide();
+                    $cuerpo.html('<tr><td colspan="4" class="text-center text-danger">No se pudo cargar el historial.</td></tr>');
+                });
         });
     });
 </script>

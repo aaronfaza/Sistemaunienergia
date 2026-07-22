@@ -73,11 +73,7 @@ Route::middleware(['auth', 'rol.restriccion'])->group(function () {
     // Ruta para imprimir PDF de requerimientos
     Route::get('/requerimientos/{id}/pdf', [RequerimientoController::class, 'imprimir'])
     ->name('requerimientos.imprimir');
-    
 
-    // Inspección vehicular (nuevo caso de uso)
-    Route::resource('inspecciones', InspeccionVehicularController::class)
-        ->parameters(['inspecciones' => 'inspeccione']); // para el model binding
 
     Route::resource('requerimientos', RequerimientoController::class);
     
@@ -103,9 +99,14 @@ Route::get(
     [ControlCartaController::class, 'exportPdfIndividual']
 )->name('control_cartas.export.pdf.individual');
 
-Route::patch('/control_cartas/{id}/estado', 
+Route::patch('/control_cartas/{id}/estado',
   [ControlCartaController::class, 'updateEstado']
 )->name('control_cartas.update_estado');
+
+Route::get(
+    '/control_cartas/{id}/historial',
+    [ControlCartaController::class, 'historial']
+)->name('control_cartas.historial');
 
 Route::resource('cartas_fis', \App\Http\Controllers\CartaFisController::class)
     ->only(['index','store','update','destroy']);
