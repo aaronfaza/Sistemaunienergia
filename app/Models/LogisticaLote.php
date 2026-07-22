@@ -82,4 +82,60 @@ class LogisticaLote extends Model
     {
         return $this->belongsTo(User::class, 'responsable_id');
     }
+
+    /**
+     * Indicadores de gestión de ROP2026 Lote IX (KPIs + series para
+     * gráficas). Única fuente de verdad usada tanto por la hoja "Dashboard"
+     * del backup Excel como por el panel de Bienvenida del rol logística,
+     * para no duplicar la misma lógica de negocio en dos lugares.
+     */
+    public static function estadisticasGenerales(): array
+    {
+        $registros = static::orderBy('id')->get();
+        $total = $registros->count();
+
+        $porEstado = collect(self::ESTADOS)->mapWithKeys(function ($estado) use ($registros) {
+            return [$estado => $registros->where('estado', $estado)->count()];
+        });
+
+        $ejecutados = $porEstado['EJECUTADO'] ?? 0;
+        $anulados = $porEstado['ANULADO'] ?? 0;
+        $vencidosObservados = ($porEstado['ORDEN VENCIDA'] ?? 0) + ($porEstado['OBSERVADO'] ?? 0);
+        $enProceso = $total - $ejecutados - $anulados - $vencidosObservados;
+        $pendientes = $total - $ejecutados - $anulados;
+
+        $pct = fn (int $parte) => $total > 0 ? round($parte / $total * 100, 1) : 0.0;
+
+        $promedioAvance = $total > 0
+            ? round($registros->avg(fn ($r) => $r->porcentaje_ejecucion ?? 0), 1)
+            : 0.0;
+
+        $anioActual = now()->year;
+        $porMes = [];
+        for ($mes = 1; $mes <= 12; $mes++) {
+            $porMes[$mes] = $registros->filter(function ($r) use ($anioActual, $mes) {
+                return $r->created_at && $r->created_at->year === $anioActual && $r->created_at->month === $mes;
+            })->count();
+        }
+
+        return [
+            'total' => $total,
+            'por_estado' => $porEstado,
+            'ejecutados' => $ejecutados,
+            'anulados' => $anulados,
+            'vencidos_observados' => $vencidosObservados,
+            'en_proceso' => $enProceso,
+            'pendientes' => $pendientes,
+            'pct_ejecutados' => $pct($ejecutados),
+            'pct_pendientes' => $pct($pendientes),
+            'pct_vencidos' => $pct($vencidosObservados),
+            'promedio_avance' => $promedioAvance,
+            'anio_actual' => $anioActual,
+            'por_mes' => $porMes,
+            'avance_por_expediente' => $registros->map(fn ($r) => [
+                'cod_log' => $r->cod_log,
+                'porcentaje' => $r->porcentaje_ejecucion ?? 0,
+            ])->values(),
+        ];
+    }
 }

@@ -6,6 +6,7 @@ use App\Models\Requerimiento;
 use App\Models\ReporteMantenimiento;
 use App\Models\Anomalia;
 use App\Models\Boleta;
+use App\Models\LogisticaLote;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -26,7 +27,9 @@ class DashboardWelcomeController extends Controller
         // no ve datos de negocio de ningún módulo.
         $vistaMantenimiento = Auth::user()->tieneAccesoLimitadoAMantenimiento();
         $vistaRRHH = Auth::user()->esRRHH();
+        $vistaLogistica = Auth::user()->esLogistica();
         $vistaPendiente = Auth::user()->esCuentaPendiente();
+        $logisticaStats = null;
 
         if ($vistaMantenimiento) {
             [$kpiCards, $actividad, $porArea, $porDia, $eventos, $notificaciones] =
@@ -34,6 +37,9 @@ class DashboardWelcomeController extends Controller
         } elseif ($vistaRRHH) {
             [$kpiCards, $actividad, $porArea, $porDia, $eventos, $notificaciones] =
                 $this->datosRRHH($hoy, $inicioMes, $finMes);
+        } elseif ($vistaLogistica) {
+            [$kpiCards, $actividad, $porArea, $porDia, $eventos, $notificaciones, $logisticaStats] =
+                $this->datosLogistica();
         } elseif ($vistaPendiente) {
             [$kpiCards, $actividad, $porArea, $porDia, $eventos, $notificaciones] =
                 $this->datosPendiente();
@@ -76,7 +82,9 @@ class DashboardWelcomeController extends Controller
             'cumpleañosMes',
             'vistaMantenimiento',
             'vistaRRHH',
-            'vistaPendiente'
+            'vistaLogistica',
+            'vistaPendiente',
+            'logisticaStats'
         ));
     }
 
@@ -285,6 +293,52 @@ class DashboardWelcomeController extends Controller
         $notificaciones = Boleta::latest('created_at')->take(5)->get();
 
         return [$kpiCards, $actividad, $porArea, $porDia, $eventos, $notificaciones];
+    }
+
+    /**
+     * Datos para Logística Lima (Miguel, Esmeralda, Yahaira): panel de
+     * ROP2026 Lote IX. Los KPIs y las series de las gráficas vienen de
+     * LogisticaLote::estadisticasGenerales(), la misma fuente que usa la
+     * hoja "Dashboard" del backup Excel, para que ambos siempre coincidan.
+     */
+    private function datosLogistica(): array
+    {
+        $stats = LogisticaLote::estadisticasGenerales();
+
+        $kpiCards = [
+            ['icono' => 'fa-folder-open', 'color' => 'is-primary', 'valor' => $stats['total'], 'label' => 'Total expedientes'],
+            ['icono' => 'fa-check-double', 'color' => 'is-success', 'valor' => $stats['pct_ejecutados'] . '%', 'label' => '% Ejecutados'],
+            ['icono' => 'fa-hourglass-half', 'color' => 'is-info', 'valor' => $stats['pct_pendientes'] . '%', 'label' => '% Pendientes'],
+            ['icono' => 'fa-exclamation-triangle', 'color' => 'is-danger', 'valor' => $stats['pct_vencidos'] . '%', 'label' => '% Vencidos/Observados'],
+        ];
+
+        $nombresUsuarios = $this->mapaFotosPorNombre();
+
+        $actividad = LogisticaLote::with(['creador', 'modificador'])
+            ->latest('updated_at')
+            ->limit(8)
+            ->get()
+            ->map(function ($lote) use ($nombresUsuarios) {
+                $nombre = $lote->modificador->name ?? $lote->creador->name ?? 'Sistema';
+
+                return $this->itemFeed(
+                    'fa-boxes',
+                    'primary',
+                    $nombre,
+                    $nombresUsuarios[$nombre] ?? null,
+                    'actualizó el expediente',
+                    $lote->cod_log . ' · ' . $lote->estado,
+                    $lote->updated_at,
+                    route('logistica_lotes.index')
+                );
+            });
+
+        $porArea = collect();
+        $porDia = collect();
+        $eventos = collect();
+        $notificaciones = LogisticaLote::latest('created_at')->take(5)->get();
+
+        return [$kpiCards, $actividad, $porArea, $porDia, $eventos, $notificaciones, $stats];
     }
 
     /**

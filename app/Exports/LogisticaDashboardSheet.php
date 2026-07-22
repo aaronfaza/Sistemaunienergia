@@ -30,7 +30,6 @@ class LogisticaDashboardSheet implements WithTitle, WithEvents, WithCharts
     private const FILA_TABLA_MENSUAL = 48;
     private const FILA_TABLA_AVANCE = 67;
 
-    protected $registros;
     protected $total;
     protected $porEstado;
     protected $ejecutados;
@@ -41,33 +40,23 @@ class LogisticaDashboardSheet implements WithTitle, WithEvents, WithCharts
     protected $promedioAvance;
     protected $porMes;
     protected $anioActual;
+    protected $avancePorExpediente;
 
     public function __construct()
     {
-        $this->registros = LogisticaLote::orderBy('id')->get();
-        $this->total = $this->registros->count();
+        $stats = LogisticaLote::estadisticasGenerales();
 
-        $this->porEstado = collect(LogisticaLote::ESTADOS)->mapWithKeys(function ($estado) {
-            return [$estado => $this->registros->where('estado', $estado)->count()];
-        });
-
-        $this->ejecutados = $this->porEstado['EJECUTADO'] ?? 0;
-        $this->anulados = $this->porEstado['ANULADO'] ?? 0;
-        $this->vencidosObservados = ($this->porEstado['ORDEN VENCIDA'] ?? 0) + ($this->porEstado['OBSERVADO'] ?? 0);
-        $this->enProceso = $this->total - $this->ejecutados - $this->anulados - $this->vencidosObservados;
-        $this->pendientes = $this->total - $this->ejecutados - $this->anulados;
-
-        $this->promedioAvance = $this->total > 0
-            ? round($this->registros->avg(fn ($r) => $r->porcentaje_ejecucion ?? 0), 1)
-            : 0;
-
-        $this->anioActual = now()->year;
-        $this->porMes = [];
-        for ($mes = 1; $mes <= 12; $mes++) {
-            $this->porMes[$mes] = $this->registros->filter(function ($r) use ($mes) {
-                return $r->created_at && $r->created_at->year === $this->anioActual && $r->created_at->month === $mes;
-            })->count();
-        }
+        $this->total = $stats['total'];
+        $this->porEstado = $stats['por_estado'];
+        $this->ejecutados = $stats['ejecutados'];
+        $this->anulados = $stats['anulados'];
+        $this->vencidosObservados = $stats['vencidos_observados'];
+        $this->enProceso = $stats['en_proceso'];
+        $this->pendientes = $stats['pendientes'];
+        $this->promedioAvance = $stats['promedio_avance'];
+        $this->anioActual = $stats['anio_actual'];
+        $this->porMes = $stats['por_mes'];
+        $this->avancePorExpediente = $stats['avance_por_expediente'];
     }
 
     public function title(): string
@@ -253,9 +242,9 @@ class LogisticaDashboardSheet implements WithTitle, WithEvents, WithCharts
             $sheet->setCellValue("B{$f}", 'Sin expedientes registrados');
             $sheet->setCellValue("C{$f}", 0);
         } else {
-            foreach ($this->registros as $registro) {
-                $sheet->setCellValue("B{$f}", $registro->cod_log);
-                $sheet->setCellValue("C{$f}", $registro->porcentaje_ejecucion ?? 0);
+            foreach ($this->avancePorExpediente as $registro) {
+                $sheet->setCellValue("B{$f}", $registro['cod_log']);
+                $sheet->setCellValue("C{$f}", $registro['porcentaje']);
                 $f++;
             }
         }
