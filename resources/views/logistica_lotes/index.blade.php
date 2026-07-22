@@ -259,6 +259,16 @@
       min-width: 140px;
       text-align: center;
     }
+
+    /* Fila expandible con la vista tipo hoja de cálculo (todas las columnas) */
+    .fila-detalle { display: none; background: #f8fafc; box-shadow: none !important; }
+    .fila-detalle.mostrando { display: table-row; }
+    .fila-detalle td { padding: 0 !important; }
+    .detalle-hoja table { margin-bottom: 0; font-size: .78rem; }
+    .detalle-hoja th { white-space: nowrap; font-size: .68rem; }
+    .detalle-hoja td { white-space: nowrap; }
+    .btn-toggle-detalle i { transition: transform .2s ease; }
+    .btn-toggle-detalle.abierto i { transform: rotate(180deg); }
   </style>
 
 </head>
@@ -591,6 +601,9 @@
                                             @endif
                                         </td>
                                         <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-secondary mr-1 btn-toggle-detalle" data-target="#detalleFila{{ $lote->id }}" title="Ver todos los datos (como en la hoja)">
+                                                <i class="fas fa-chevron-down"></i>
+                                            </button>
                                             <button class="btn btn-sm btn-info mr-1" data-toggle="modal" data-target="#modalVerLote{{ $lote->id }}" title="Ver">
                                                 <i class="fas fa-eye"></i>
                                             </button>
@@ -615,6 +628,62 @@
                                                 </button>
                                             </form>
                                             @endif
+                                        </td>
+                                    </tr>
+                                    <tr class="fila-detalle" id="detalleFila{{ $lote->id }}">
+                                        <td colspan="7" class="p-0">
+                                            <div class="table-responsive detalle-hoja">
+                                                <table class="table table-sm table-bordered mb-0">
+                                                    <thead class="thead-light">
+                                                        <tr>
+                                                            <th>CARPETA</th>
+                                                            <th>SERV. VALORIZ.</th>
+                                                            <th>CÓD. ÚNICO</th>
+                                                            <th>TIPO SOLICITUD</th>
+                                                            <th>N° OC/OS</th>
+                                                            <th>F. OC/OS</th>
+                                                            <th>RUC</th>
+                                                            <th>EMPRESA GANADORA</th>
+                                                            <th>C. COSTO</th>
+                                                            <th>MONEDA</th>
+                                                            <th>MONTO IGV</th>
+                                                            <th>FORMA PAGO</th>
+                                                            <th>F. ENTREGA</th>
+                                                            <th>ORD. FIRMADA</th>
+                                                            <th>EJECUCIÓN</th>
+                                                            <th>% EJEC.</th>
+                                                            <th>FACTURA</th>
+                                                            <th>MONTO FACT.</th>
+                                                            <th>F. VENC.</th>
+                                                            <th>F. PAGO</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>{{ $lote->carpeta ?: '—' }}</td>
+                                                            <td>{{ $lote->servicio_valorizacion ?: '—' }}</td>
+                                                            <td>{{ $lote->codigo_unico ?: '—' }}</td>
+                                                            <td>{{ $lote->tipo_solicitud ?: '—' }}</td>
+                                                            <td>{{ $lote->nro_oc_os ?: '—' }}</td>
+                                                            <td>{{ $lote->emision_oc_os ? \Carbon\Carbon::parse($lote->emision_oc_os)->format('d/m/Y') : '—' }}</td>
+                                                            <td>{{ $lote->ruc ?: '—' }}</td>
+                                                            <td>{{ $lote->empresa_ganadora ?: '—' }}</td>
+                                                            <td>{{ $lote->centro_costo ?: '—' }}</td>
+                                                            <td>{{ $lote->moneda ?: '—' }}</td>
+                                                            <td>{{ $lote->monto_igv !== null ? number_format($lote->monto_igv, 2) : '—' }}</td>
+                                                            <td>{{ $lote->forma_pago ?: '—' }}</td>
+                                                            <td>{{ $lote->fecha_entrega ? \Carbon\Carbon::parse($lote->fecha_entrega)->format('d/m/Y') : '—' }}</td>
+                                                            <td>{{ $lote->orden_firmada ? 'SÍ' : 'NO' }}</td>
+                                                            <td>{{ $lote->ejecucion ?: 'Sin iniciar' }}</td>
+                                                            <td>{{ $lote->porcentaje_ejecucion !== null ? $lote->porcentaje_ejecucion.'%' : '—' }}</td>
+                                                            <td>{{ $lote->factura ?: '—' }}</td>
+                                                            <td>{{ $lote->monto_factura !== null ? number_format($lote->monto_factura, 2) : '—' }}</td>
+                                                            <td>{{ $lote->fecha_vencimiento ? \Carbon\Carbon::parse($lote->fecha_vencimiento)->format('d/m/Y') : '—' }}</td>
+                                                            <td>{{ $lote->fecha_pago ? \Carbon\Carbon::parse($lote->fecha_pago)->format('d/m/Y') : '—' }}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </td>
                                     </tr>
                                 @empty
@@ -1214,6 +1283,14 @@ $(document).on('change', '.cambio-estado-rapido', function() {
             Swal.fire('Error', 'No se pudo actualizar el estado', 'error');
         }
     });
+});
+
+// Fila expandible con todas las columnas (vista tipo hoja de cálculo)
+$(document).on('click', '.btn-toggle-detalle', function() {
+    var $btn = $(this);
+    var $fila = $($btn.data('target'));
+    $fila.toggleClass('mostrando');
+    $btn.toggleClass('abierto', $fila.hasClass('mostrando'));
 });
 
 // Historial de auditoría
