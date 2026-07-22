@@ -128,7 +128,6 @@ class LogisticaLoteController extends Controller
         $data = $request->validate([
             'carpeta' => 'nullable|string|max:255',
             'estado' => ['nullable', Rule::in(LogisticaLote::ESTADOS)],
-            'servicio_valorizacion' => 'nullable|string|max:255',
             'fecha_emision' => 'nullable|date',
             'codigo_unico' => 'nullable|string|max:255',
             'atencion' => ['nullable', Rule::in($nombresLogistica)],

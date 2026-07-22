@@ -384,12 +384,14 @@
         </li>
         @endif
 
+        @unless(Auth::user()->esLogistica())
         <li class="nav-item">
           <a href="{{ route('boletas.index') }}" class="nav-link {{ request()->routeIs('boletas.*') ? 'active' : '' }}">
             <i class="nav-icon fas fa-file-invoice-dollar" style="color: var(--brand-accent);"></i>
             <p class="ml-2 mb-0">{{ Auth::user()->puedeGestionarBoletas() ? 'Gestionar Boletas' : 'Mis Boletas' }}</p>
           </a>
         </li>
+        @endunless
 
           @if(Auth::user()->tieneAccesoCompleto())
           <li class="nav-item">
