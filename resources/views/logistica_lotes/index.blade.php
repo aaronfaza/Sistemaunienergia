@@ -264,6 +264,23 @@
        scroll horizontal (sin botones para desplegar nada). */
     .tabla-rop th, .tabla-rop td { white-space: nowrap; }
     .tabla-rop td.wrap { white-space: normal; }
+    .tabla-rop .col-asunto { min-width: 280px; max-width: 360px; white-space: normal; }
+    .tabla-rop .col-carpeta { max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* Barra de scroll horizontal "pegajosa": siempre alcanzable sin bajar
+       hasta el final de la tabla, se queda pegada al fondo de la pantalla
+       mientras la tabla está a la vista. */
+    .rop-scroll-sticky {
+      overflow-x: auto;
+      overflow-y: hidden;
+      height: 14px;
+      position: sticky;
+      bottom: 0;
+      background: #f1f5f9;
+      border-top: 1px solid #e2e8f0;
+      z-index: 20;
+    }
+    .rop-scroll-sticky > div { height: 1px; }
   </style>
 
 </head>
@@ -362,12 +379,14 @@
         </li>
         @endif
 
+        @unless(Auth::user()->esLogistica())
         <li class="nav-item">
           <a href="{{ route('boletas.index') }}" class="nav-link {{ request()->routeIs('boletas.*') ? 'active' : '' }}">
             <i class="nav-icon fas fa-file-invoice-dollar" style="color: var(--brand-accent);"></i>
             <p class="ml-2 mb-0">{{ Auth::user()->puedeGestionarBoletas() ? 'Gestionar Boletas' : 'Mis Boletas' }}</p>
           </a>
         </li>
+        @endunless
 
           @if(Auth::user()->tieneAccesoCompleto())
           <li class="nav-item">
@@ -541,16 +560,15 @@
                 </div>
             </div>
             <div class="card shadow-sm border-0">
-                <div class="card-body p-0"> <div class="table-responsive">
-                        <table class="table table-hover mb-0 tabla-rop">
+                <div class="card-body p-0"> <div class="table-responsive" id="ropTableWrap">
+                        <table class="table table-hover mb-0 tabla-rop" id="ropTable">
                             <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>Cod. Log</th>
                                     <th>Carta origen</th>
-                                    <th>Asunto</th>
-                                    <th>Carpeta</th>
-                                    <th>Serv. Valoriz.</th>
+                                    <th class="col-asunto">Asunto</th>
+                                    <th class="col-carpeta">Carpeta</th>
                                     <th>Cód. Único</th>
                                     <th>Tipo Solicitud</th>
                                     <th>Atención</th>
@@ -600,9 +618,8 @@
                                                 <span class="badge badge-pill badge-light border">{{ $lote->carta_type === \App\Models\ControlCarta::class ? 'SO-PRO' : 'FIS' }}</span>
                                             @endif
                                         </td>
-                                        <td class="wrap">{{ $lote->asunto ?: '—' }}</td>
-                                        <td>{{ $lote->carpeta ?: '—' }}</td>
-                                        <td>{{ $lote->servicio_valorizacion ?: '—' }}</td>
+                                        <td class="wrap col-asunto">{{ $lote->asunto ?: '—' }}</td>
+                                        <td class="col-carpeta" title="{{ $lote->carpeta }}">{{ $lote->carpeta ?: '—' }}</td>
                                         <td>{{ $lote->codigo_unico ?: '—' }}</td>
                                         <td>{{ $lote->tipo_solicitud ?: '—' }}</td>
                                         <td>{{ $lote->atencion ?: '—' }}</td>
@@ -666,7 +683,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="28" class="text-center py-4 text-muted">No se encontraron registros de logística.</td>
+                                        <td colspan="27" class="text-center py-4 text-muted">No se encontraron registros de logística.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -676,6 +693,9 @@
                         </p>
                         </table>
 
+                    </div>
+                    <div class="rop-scroll-sticky" id="ropScrollSticky">
+                        <div id="ropScrollStickyInner"></div>
                     </div>
                 </div>
             </div>
@@ -799,11 +819,11 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-3 form-group">
+                        <div class="col-md-4 form-group">
                             <label><strong>Carpeta</strong></label>
                             <input type="text" class="form-control" name="carpeta" value="{{ $lote->carpeta }}">
                         </div>
-                        <div class="col-md-3 form-group">
+                        <div class="col-md-4 form-group">
                             <label><strong>Estado</strong></label>
                             <select class="form-control custom-select border-warning" name="estado">
                                 @foreach(\App\Models\LogisticaLote::ESTADOS as $estadoOpcion)
@@ -811,11 +831,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3 form-group">
-                            <label><strong>Servicio de Valorización</strong></label>
-                            <input type="text" class="form-control" name="servicio_valorizacion" value="{{ $lote->servicio_valorizacion }}">
-                        </div>
-                        <div class="col-md-3 form-group">
+                        <div class="col-md-4 form-group">
                             <label><strong>Código Único</strong></label>
                             <input type="text" class="form-control" name="codigo_unico" value="{{ $lote->codigo_unico }}">
                         </div>
@@ -1042,10 +1058,6 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label class="text-muted small mb-0">Servicio de Valorización</label>
-                        <p class="font-weight-bold">{{ $lote->servicio_valorizacion ?: '—' }}</p>
-                    </div>
                     <div class="col-md-8">
                         <label class="text-muted small mb-0">Tipo de Solicitud</label>
                         <p class="font-weight-bold">{{ $lote->tipo_solicitud ?: '—' }}</p>
@@ -1233,6 +1245,37 @@ function toggleOrigenCarta() {
 }
 $(document).on('change', 'input[name="origen_tipo"]', toggleOrigenCarta);
 $(function () { toggleOrigenCarta(); });
+
+// Barra de scroll horizontal pegajosa: sincronizada con el scroll real de
+// la tabla, siempre alcanzable sin bajar hasta el final.
+(function () {
+    var wrap = document.getElementById('ropTableWrap');
+    var table = document.getElementById('ropTable');
+    var sticky = document.getElementById('ropScrollSticky');
+    var stickyInner = document.getElementById('ropScrollStickyInner');
+    if (!wrap || !table || !sticky || !stickyInner) return;
+
+    function syncWidth() {
+        stickyInner.style.width = table.scrollWidth + 'px';
+    }
+    syncWidth();
+    window.addEventListener('resize', syncWidth);
+    window.addEventListener('load', syncWidth);
+
+    var syncing = false;
+    wrap.addEventListener('scroll', function () {
+        if (syncing) return;
+        syncing = true;
+        sticky.scrollLeft = wrap.scrollLeft;
+        syncing = false;
+    });
+    sticky.addEventListener('scroll', function () {
+        if (syncing) return;
+        syncing = true;
+        wrap.scrollLeft = sticky.scrollLeft;
+        syncing = false;
+    });
+})();
 
 // Muestra el campo "especificar" cuando la forma de pago es OTRO
 $(document).on('change', '.forma-pago-select', function () {
