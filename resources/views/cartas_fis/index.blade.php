@@ -444,6 +444,27 @@ textarea:focus {
                 <p>FIS</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="{{ route('cartas_ipf.index') }}"
+                class="nav-link {{ request()->routeIs('cartas_ipf.*') ? 'active' : '' }}">
+                <i class="fas fa-drafting-compass nav-icon" style="color: var(--brand-accent);"></i>
+                <p>IPF</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('cartas_man.index') }}"
+                class="nav-link {{ request()->routeIs('cartas_man.*') ? 'active' : '' }}">
+                <i class="fas fa-wrench nav-icon" style="color: var(--brand-info);"></i>
+                <p>MAN</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('cartas_log.index') }}"
+                class="nav-link {{ request()->routeIs('cartas_log.*') ? 'active' : '' }}">
+                <i class="fas fa-warehouse nav-icon" style="color: var(--brand-accent);"></i>
+                <p>LOG</p>
+              </a>
+            </li>
           </ul>
         </li>
          <li class="nav-item">

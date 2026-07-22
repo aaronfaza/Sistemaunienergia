@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\CartaFis;
+use App\Models\CartaIpf;
+use App\Models\CartaMan;
+use App\Models\CartaLog;
 use App\Models\ControlCarta;
 use App\Models\LogisticaLote;
 use App\Models\User;
@@ -22,6 +25,9 @@ class LogisticaLoteController extends Controller
     private const ORIGENES_CARTA = [
         'control_carta' => ControlCarta::class,
         'carta_fis' => CartaFis::class,
+        'carta_ipf' => CartaIpf::class,
+        'carta_man' => CartaMan::class,
+        'carta_log' => CartaLog::class,
     ];
 
     /**
@@ -64,6 +70,9 @@ class LogisticaLoteController extends Controller
             $cartasDisponibles = [
                 'control_carta' => ControlCarta::whereDoesntHave('ropLote')->orderByDesc('id')->pluck('codigo', 'id'),
                 'carta_fis' => CartaFis::whereDoesntHave('ropLote')->orderByDesc('id')->pluck('codigo', 'id'),
+                'carta_ipf' => CartaIpf::whereDoesntHave('ropLote')->orderByDesc('id')->pluck('codigo', 'id'),
+                'carta_man' => CartaMan::whereDoesntHave('ropLote')->orderByDesc('id')->pluck('codigo', 'id'),
+                'carta_log' => CartaLog::whereDoesntHave('ropLote')->orderByDesc('id')->pluck('codigo', 'id'),
             ];
         }
 

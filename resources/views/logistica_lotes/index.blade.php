@@ -444,6 +444,27 @@
                 <p>FIS</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="{{ route('cartas_ipf.index') }}"
+                class="nav-link {{ request()->routeIs('cartas_ipf.*') ? 'active' : '' }}">
+                <i class="fas fa-drafting-compass nav-icon" style="color: var(--brand-accent);"></i>
+                <p>IPF</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('cartas_man.index') }}"
+                class="nav-link {{ request()->routeIs('cartas_man.*') ? 'active' : '' }}">
+                <i class="fas fa-wrench nav-icon" style="color: var(--brand-info);"></i>
+                <p>MAN</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('cartas_log.index') }}"
+                class="nav-link {{ request()->routeIs('cartas_log.*') ? 'active' : '' }}">
+                <i class="fas fa-warehouse nav-icon" style="color: var(--brand-accent);"></i>
+                <p>LOG</p>
+              </a>
+            </li>
           </ul>
         </li>
          <li class="nav-item">
@@ -678,7 +699,14 @@
                                         <td>
                                             {{ $lote->numero_carta ?? '—' }}
                                             @if($lote->carta_type)
-                                                <span class="badge badge-pill badge-light border">{{ $lote->carta_type === \App\Models\ControlCarta::class ? 'SO-PRO' : 'FIS' }}</span>
+                                                <span class="badge badge-pill badge-light border">{{ match($lote->carta_type) {
+                                                    \App\Models\ControlCarta::class => 'SO-PRO',
+                                                    \App\Models\CartaFis::class => 'FIS',
+                                                    \App\Models\CartaIpf::class => 'IPF',
+                                                    \App\Models\CartaMan::class => 'MAN',
+                                                    \App\Models\CartaLog::class => 'LOG',
+                                                    default => '—',
+                                                } }}</span>
                                             @endif
                                         </td>
                                         <td class="wrap col-asunto">{{ $lote->asunto ?: '—' }}</td>
@@ -805,6 +833,18 @@
                                 <input type="radio" id="origenCartaFis" name="origen_tipo" value="carta_fis" class="custom-control-input">
                                 <label class="custom-control-label" for="origenCartaFis">Cartas FIS</label>
                             </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="origenCartaIpf" name="origen_tipo" value="carta_ipf" class="custom-control-input">
+                                <label class="custom-control-label" for="origenCartaIpf">Cartas IPF</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="origenCartaMan" name="origen_tipo" value="carta_man" class="custom-control-input">
+                                <label class="custom-control-label" for="origenCartaMan">Cartas MAN</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="origenCartaLog" name="origen_tipo" value="carta_log" class="custom-control-input">
+                                <label class="custom-control-label" for="origenCartaLog">Cartas LOG</label>
+                            </div>
                         </div>
                     </div>
 
@@ -822,6 +862,33 @@
                         <select class="form-control" name="origen_id" id="selectOrigenCartaFis" disabled>
                             <option value="">Selecciona una carta...</option>
                             @foreach($cartasDisponibles['carta_fis'] ?? [] as $idCarta => $codigoCarta)
+                                <option value="{{ $idCarta }}">{{ $codigoCarta }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group" id="grupoOrigenCartaIpf" style="display:none;">
+                        <label>Carta IPF</label>
+                        <select class="form-control" name="origen_id" id="selectOrigenCartaIpf" disabled>
+                            <option value="">Selecciona una carta...</option>
+                            @foreach($cartasDisponibles['carta_ipf'] ?? [] as $idCarta => $codigoCarta)
+                                <option value="{{ $idCarta }}">{{ $codigoCarta }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group" id="grupoOrigenCartaMan" style="display:none;">
+                        <label>Carta MAN</label>
+                        <select class="form-control" name="origen_id" id="selectOrigenCartaMan" disabled>
+                            <option value="">Selecciona una carta...</option>
+                            @foreach($cartasDisponibles['carta_man'] ?? [] as $idCarta => $codigoCarta)
+                                <option value="{{ $idCarta }}">{{ $codigoCarta }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group" id="grupoOrigenCartaLog" style="display:none;">
+                        <label>Carta LOG</label>
+                        <select class="form-control" name="origen_id" id="selectOrigenCartaLog" disabled>
+                            <option value="">Selecciona una carta...</option>
+                            @foreach($cartasDisponibles['carta_log'] ?? [] as $idCarta => $codigoCarta)
                                 <option value="{{ $idCarta }}">{{ $codigoCarta }}</option>
                             @endforeach
                         </select>
@@ -1111,7 +1178,14 @@
                         <p class="font-weight-bold text-primary">
                             {{ $lote->numero_carta ?? '—' }}
                             @if($lote->carta_type)
-                                <span class="badge badge-pill badge-light border">{{ $lote->carta_type === \App\Models\ControlCarta::class ? 'SO-PRO' : 'FIS' }}</span>
+                                <span class="badge badge-pill badge-light border">{{ match($lote->carta_type) {
+                                    \App\Models\ControlCarta::class => 'SO-PRO',
+                                    \App\Models\CartaFis::class => 'FIS',
+                                    \App\Models\CartaIpf::class => 'IPF',
+                                    \App\Models\CartaMan::class => 'MAN',
+                                    \App\Models\CartaLog::class => 'LOG',
+                                    default => '—',
+                                } }}</span>
                             @endif
                         </p>
                     </div>
@@ -1291,20 +1365,21 @@
 <script src="{{ asset('adminlte/dist/js/adminlte.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-// Alterna qué selector de carta de origen se envía (Control de Cartas vs Cartas FIS)
+// Alterna qué selector de carta de origen se envía (SO-PRO / FIS / IPF / MAN / LOG)
+var ORIGENES_CARTA_MAP = {
+    'control_carta': 'ControlCarta',
+    'carta_fis': 'CartaFis',
+    'carta_ipf': 'CartaIpf',
+    'carta_man': 'CartaMan',
+    'carta_log': 'CartaLog',
+};
 function toggleOrigenCarta() {
     var tipo = $('input[name="origen_tipo"]:checked').val();
-    if (tipo === 'control_carta') {
-        $('#grupoOrigenControlCarta').show();
-        $('#selectOrigenControlCarta').prop('disabled', false);
-        $('#grupoOrigenCartaFis').hide();
-        $('#selectOrigenCartaFis').prop('disabled', true);
-    } else {
-        $('#grupoOrigenControlCarta').hide();
-        $('#selectOrigenControlCarta').prop('disabled', true);
-        $('#grupoOrigenCartaFis').show();
-        $('#selectOrigenCartaFis').prop('disabled', false);
-    }
+    $.each(ORIGENES_CARTA_MAP, function (valor, sufijo) {
+        var activo = valor === tipo;
+        $('#grupoOrigen' + sufijo).toggle(activo);
+        $('#selectOrigen' + sufijo).prop('disabled', !activo);
+    });
 }
 $(document).on('change', 'input[name="origen_tipo"]', toggleOrigenCarta);
 $(function () { toggleOrigenCarta(); });
