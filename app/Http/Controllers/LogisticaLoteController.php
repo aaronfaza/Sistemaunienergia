@@ -6,6 +6,7 @@ use App\Models\CartaFis;
 use App\Models\CartaIpf;
 use App\Models\CartaMan;
 use App\Models\CartaLog;
+use App\Models\CartaHse;
 use App\Models\ControlCarta;
 use App\Models\LogisticaLote;
 use App\Models\User;
@@ -28,6 +29,7 @@ class LogisticaLoteController extends Controller
         'carta_ipf' => CartaIpf::class,
         'carta_man' => CartaMan::class,
         'carta_log' => CartaLog::class,
+        'carta_hse' => CartaHse::class,
     ];
 
     /**
@@ -73,6 +75,7 @@ class LogisticaLoteController extends Controller
                 'carta_ipf' => CartaIpf::whereDoesntHave('ropLote')->orderByDesc('id')->pluck('codigo', 'id'),
                 'carta_man' => CartaMan::whereDoesntHave('ropLote')->orderByDesc('id')->pluck('codigo', 'id'),
                 'carta_log' => CartaLog::whereDoesntHave('ropLote')->orderByDesc('id')->pluck('codigo', 'id'),
+                'carta_hse' => CartaHse::whereDoesntHave('ropLote')->orderByDesc('id')->pluck('codigo', 'id'),
             ];
         }
 

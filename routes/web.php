@@ -10,6 +10,7 @@ use App\Http\Controllers\CartaFisController;
 use App\Http\Controllers\CartaIpfController;
 use App\Http\Controllers\CartaManController;
 use App\Http\Controllers\CartaLogController;
+use App\Http\Controllers\CartaHseController;
 use App\Http\Controllers\LogisticaLoteController;
 use App\Http\Controllers\AnomaliaController;
 use App\Http\Controllers\FirmaSupervisorController;
@@ -189,6 +190,29 @@ Route::get(
     '/cartas_log/{id}/historial',
     [CartaLogController::class, 'historial']
 )->name('cartas_log.historial');
+
+// ===== Cartas SO-HSE (Área de HSE) =====
+Route::get('/cartas_hse', [CartaHseController::class, 'index'])->name('cartas_hse.index');
+Route::resource('cartas_hse', CartaHseController::class);
+
+Route::get(
+    '/cartas_hse/export/excel',
+    [CartaHseController::class, 'exportExcel']
+)->name('cartas_hse.export.excel');
+
+Route::get(
+    '/cartas_hse/{id}/export/pdf',
+    [CartaHseController::class, 'exportPdfIndividual']
+)->name('cartas_hse.export.pdf.individual');
+
+Route::patch('/cartas_hse/{id}/estado',
+    [CartaHseController::class, 'updateEstado']
+)->name('cartas_hse.update_estado');
+
+Route::get(
+    '/cartas_hse/{id}/historial',
+    [CartaHseController::class, 'historial']
+)->name('cartas_hse.historial');
 
 
 Route::resource('logistica_lotes', LogisticaLoteController::class);
