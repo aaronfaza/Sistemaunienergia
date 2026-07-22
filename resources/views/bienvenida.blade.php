@@ -214,7 +214,6 @@
 /* ===== SIDEBAR MÁS MODERNA ===== */
 .nav-sidebar .nav-link {
   padding: .55rem .9rem;
-  font-size: .9rem;
   transition: all .2s ease;
 }
 .nav-sidebar .nav-link.active {
@@ -243,7 +242,6 @@
   scroll-behavior: smooth;
 }
 .nav-treeview .nav-link {
-  font-size: .85rem;
   opacity: .85;
 }
 
