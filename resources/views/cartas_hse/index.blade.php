@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Control y Seguimiento Cartas SO-IPF</title>
+  <title>Control y Seguimiento Cartas SO-HSE</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Icono -->
@@ -444,7 +444,7 @@
   <div class="content-header py-3 border-bottom" style="background-color: #f9fafb;">
     <div class="container-fluid d-flex justify-content-between align-items-center">
       <h1 class="m-0 font-weight-bold heading-font" style="color: #333; font-size: 1.5rem;">
-        📋 CONTROL Y SEGUIMIENTO DE CARTAS - INGENIERÍA DE PRODUCCIÓN Y FACILIDADES
+        📋 CONTROL Y SEGUIMIENTO DE CARTAS - ÁREA DE HSE
       </h1>
       <button class="btn btn-success" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#modalAgregar">
         Nueva Carta
@@ -460,7 +460,7 @@
         <!-- Buscador -->
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="m-0">Listado de Cartas</h5>
-        <form method="GET" action="{{ route('cartas_ipf.index') }}" class="form-inline">
+        <form method="GET" action="{{ route('cartas_hse.index') }}" class="form-inline">
           <div class="input-group">
             <input type="text" name="buscar" value="{{ request('buscar') }}" class="form-control" placeholder="Buscar...">
             <div class="input-group-append">
@@ -508,7 +508,7 @@
                 <td>{{ $carta->monto_soles }}</td>
                 <td>{{ $carta->monto_dolares }}</td>
                 <td class="text-center">
-                <form action="{{ route('cartas_ipf.update_estado', $carta->id) }}" method="POST">
+                <form action="{{ route('cartas_hse.update_estado', $carta->id) }}" method="POST">
                   @csrf
                   @method('PATCH')
 
@@ -550,13 +550,13 @@
                   <!-- Historial (auditoría) -->
                   <button type="button" class="btn btn-sm btn-secondary btn-historial"
                           data-bs-toggle="modal" data-bs-target="#modalHistorial"
-                          data-url="{{ route('cartas_ipf.historial', $carta->id) }}"
+                          data-url="{{ route('cartas_hse.historial', $carta->id) }}"
                           title="Historial de cambios">
                     <i class="fas fa-history"></i>
                   </button>
 
                   <!-- Eliminar -->
-                  <form action="{{ route('cartas_ipf.destroy', $carta->id) }}" method="POST" class="d-inline-block"
+                  <form action="{{ route('cartas_hse.destroy', $carta->id) }}" method="POST" class="d-inline-block"
                         onsubmit="return confirm('¿Eliminar la carta con código {{ $carta->codigo }}? Esta acción no se puede deshacer.');">
                     @csrf
                     @method('DELETE')
@@ -578,7 +578,7 @@
                     </button>
                   </div>
 
-                  <form action="{{ route('cartas_ipf.update', $carta->id) }}" method="POST">
+                  <form action="{{ route('cartas_hse.update', $carta->id) }}" method="POST">
                     @csrf
                     @method('PUT')
 
@@ -709,7 +709,7 @@
                       style="background: linear-gradient(135deg, #003366, #002B5C); border-radius:18px 18px 0 0;">
                     <div>
                       <h5 class="modal-title mb-0 font-weight-bold">
-                        📄 Carta SO-IPF — {{ $carta->codigo }}
+                        📄 Carta SO-HSE — {{ $carta->codigo }}
                       </h5>
                       <small class="opacity-75">
                         Registrada el {{ \Carbon\Carbon::parse($carta->fecha)->format('d/m/Y') }}
@@ -874,7 +874,7 @@
                 </div>
 
                 <div>
-                  <a href="{{ route('cartas_ipf.export.pdf.individual', $carta->id) }}"
+                  <a href="{{ route('cartas_hse.export.pdf.individual', $carta->id) }}"
                     class="btn btn-danger shadow-sm"
                     target="_blank">
                     <i class="fas fa-file-pdf mr-1"></i> Descargar PDF
@@ -917,14 +917,14 @@
       <div class="modal-header text-white"
            style="background:linear-gradient(135deg,#10b981,#047857); border-radius:16px 16px 0 0;">
         <h5 class="modal-title font-weight-bold" id="modalAgregarLabel">
-          <i class="fas fa-file-alt mr-2"></i> Registro de Carta SO-IPF
+          <i class="fas fa-file-alt mr-2"></i> Registro de Carta SO-HSE
         </h5>
         <button type="button" class="close text-white" data-bs-dismiss="modal">
           <span>&times;</span>
         </button>
       </div>
 
-      <form action="{{ route('cartas_ipf.store') }}" method="POST">
+      <form action="{{ route('cartas_hse.store') }}" method="POST">
         @csrf
 
         <div class="modal-body">
@@ -942,7 +942,7 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
                     </div>
-                    <input type="text" class="form-control" name="codigo" required placeholder="Ej: UNIE-SO-IPF-L-IX-001-2026">
+                    <input type="text" class="form-control" name="codigo" required placeholder="Ej: UNIE-SO-HSE-L-IX-003-2026">
                   </div>
                 </div>
 
@@ -1134,7 +1134,7 @@
 </div>
 
 
-<a href="{{ route('cartas_ipf.export.excel', ['buscar' => $buscar]) }}"
+<a href="{{ route('cartas_hse.export.excel', ['buscar' => $buscar]) }}"
    class="btn btn-success shadow-sm">
     <i class="fas fa-file-excel mr-1"></i> Backup Excel
 </a>

@@ -420,8 +420,8 @@
             </a>
           </li>
 
-        <li class="nav-item has-treeview {{ request()->routeIs('control_cartas.*', 'cartas_fis.*', 'cartas_ipf.*', 'cartas_man.*', 'cartas_log.*') ? 'menu-open' : '' }}">
-          <a href="#" class="nav-link {{ request()->routeIs('control_cartas.*', 'cartas_fis.*', 'cartas_ipf.*', 'cartas_man.*', 'cartas_log.*') ? 'active' : '' }}">
+        <li class="nav-item has-treeview {{ request()->routeIs('control_cartas.*', 'cartas_fis.*', 'cartas_ipf.*', 'cartas_man.*', 'cartas_log.*', 'cartas_hse.*') ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ request()->routeIs('control_cartas.*', 'cartas_fis.*', 'cartas_ipf.*', 'cartas_man.*', 'cartas_log.*', 'cartas_hse.*') ? 'active' : '' }}">
             <i class="nav-icon fas fa-folder-open" style="color: var(--brand-info);"></i>
             <p>
               Control Cartas
@@ -430,8 +430,8 @@
           </a>
 
           <ul class="nav nav-treeview ml-2">
-            <li class="nav-item has-treeview {{ request()->routeIs('control_cartas.*', 'cartas_fis.*', 'cartas_ipf.*', 'cartas_man.*', 'cartas_log.*') && request()->query('anio', '2026') === '2026' ? 'menu-open' : '' }}">
-              <a href="#" class="nav-link {{ request()->routeIs('control_cartas.*', 'cartas_fis.*', 'cartas_ipf.*', 'cartas_man.*', 'cartas_log.*') && request()->query('anio', '2026') === '2026' ? 'active' : '' }}">
+            <li class="nav-item has-treeview {{ request()->routeIs('control_cartas.*', 'cartas_fis.*', 'cartas_ipf.*', 'cartas_man.*', 'cartas_log.*', 'cartas_hse.*') && request()->query('anio', '2026') === '2026' ? 'menu-open' : '' }}">
+              <a href="#" class="nav-link {{ request()->routeIs('control_cartas.*', 'cartas_fis.*', 'cartas_ipf.*', 'cartas_man.*', 'cartas_log.*', 'cartas_hse.*') && request()->query('anio', '2026') === '2026' ? 'active' : '' }}">
                 <i class="nav-icon fas fa-calendar-alt" style="color: var(--brand-accent);"></i>
                 <p>
                   2026
@@ -474,10 +474,17 @@
                     <p>LOG</p>
                   </a>
                 </li>
+                <li class="nav-item">
+                  <a href="{{ route('cartas_hse.index', ['anio' => 2026]) }}"
+                    class="nav-link {{ request()->routeIs('cartas_hse.*') && request()->query('anio', '2026') === '2026' ? 'active' : '' }}">
+                    <i class="fas fa-hard-hat nav-icon" style="color: var(--brand-info);"></i>
+                    <p>HSE</p>
+                  </a>
+                </li>
               </ul>
             </li>
-            <li class="nav-item has-treeview {{ request()->routeIs('control_cartas.*', 'cartas_fis.*', 'cartas_ipf.*', 'cartas_man.*', 'cartas_log.*') && request()->query('anio') === '2027' ? 'menu-open' : '' }}">
-              <a href="#" class="nav-link {{ request()->routeIs('control_cartas.*', 'cartas_fis.*', 'cartas_ipf.*', 'cartas_man.*', 'cartas_log.*') && request()->query('anio') === '2027' ? 'active' : '' }}">
+            <li class="nav-item has-treeview {{ request()->routeIs('control_cartas.*', 'cartas_fis.*', 'cartas_ipf.*', 'cartas_man.*', 'cartas_log.*', 'cartas_hse.*') && request()->query('anio') === '2027' ? 'menu-open' : '' }}">
+              <a href="#" class="nav-link {{ request()->routeIs('control_cartas.*', 'cartas_fis.*', 'cartas_ipf.*', 'cartas_man.*', 'cartas_log.*', 'cartas_hse.*') && request()->query('anio') === '2027' ? 'active' : '' }}">
                 <i class="nav-icon fas fa-calendar-alt" style="color: var(--brand-secondary);"></i>
                 <p>
                   2027
@@ -518,6 +525,13 @@
                     class="nav-link {{ request()->routeIs('cartas_log.*') && request()->query('anio') === '2027' ? 'active' : '' }}">
                     <i class="fas fa-warehouse nav-icon" style="color: var(--brand-accent);"></i>
                     <p>LOG</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ route('cartas_hse.index', ['anio' => 2027]) }}"
+                    class="nav-link {{ request()->routeIs('cartas_hse.*') && request()->query('anio') === '2027' ? 'active' : '' }}">
+                    <i class="fas fa-hard-hat nav-icon" style="color: var(--brand-info);"></i>
+                    <p>HSE</p>
                   </a>
                 </li>
               </ul>
@@ -762,6 +776,7 @@
                                                     \App\Models\CartaIpf::class => 'IPF',
                                                     \App\Models\CartaMan::class => 'MAN',
                                                     \App\Models\CartaLog::class => 'LOG',
+                                                    \App\Models\CartaHse::class => 'HSE',
                                                     default => '—',
                                                 } }}</span>
                                             @endif
@@ -902,6 +917,10 @@
                                 <input type="radio" id="origenCartaLog" name="origen_tipo" value="carta_log" class="custom-control-input">
                                 <label class="custom-control-label" for="origenCartaLog">Cartas LOG</label>
                             </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="origenCartaHse" name="origen_tipo" value="carta_hse" class="custom-control-input">
+                                <label class="custom-control-label" for="origenCartaHse">Cartas HSE</label>
+                            </div>
                         </div>
                     </div>
 
@@ -946,6 +965,15 @@
                         <select class="form-control" name="origen_id" id="selectOrigenCartaLog" disabled>
                             <option value="">Selecciona una carta...</option>
                             @foreach($cartasDisponibles['carta_log'] ?? [] as $idCarta => $codigoCarta)
+                                <option value="{{ $idCarta }}">{{ $codigoCarta }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group" id="grupoOrigenCartaHse" style="display:none;">
+                        <label>Carta HSE</label>
+                        <select class="form-control" name="origen_id" id="selectOrigenCartaHse" disabled>
+                            <option value="">Selecciona una carta...</option>
+                            @foreach($cartasDisponibles['carta_hse'] ?? [] as $idCarta => $codigoCarta)
                                 <option value="{{ $idCarta }}">{{ $codigoCarta }}</option>
                             @endforeach
                         </select>
@@ -1241,6 +1269,7 @@
                                     \App\Models\CartaIpf::class => 'IPF',
                                     \App\Models\CartaMan::class => 'MAN',
                                     \App\Models\CartaLog::class => 'LOG',
+                                    \App\Models\CartaHse::class => 'HSE',
                                     default => '—',
                                 } }}</span>
                             @endif
@@ -1429,6 +1458,7 @@ var ORIGENES_CARTA_MAP = {
     'carta_ipf': 'CartaIpf',
     'carta_man': 'CartaMan',
     'carta_log': 'CartaLog',
+    'carta_hse': 'CartaHse',
 };
 function toggleOrigenCarta() {
     var tipo = $('input[name="origen_tipo"]:checked').val();
