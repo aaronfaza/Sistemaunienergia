@@ -148,9 +148,10 @@ class LogisticaLoteController extends Controller
 
         $lote = new LogisticaLote();
         $lote->cod_log = $data['cod_log'];
-        // Se nombra sola al registrar, como ruta (no solo el código), en vez
-        // de quedar en blanco hasta que Logística Lima la escriba a mano.
-        $lote->carpeta = 'ROP 2026/' . $data['cod_log'];
+        // Se nombra sola al registrar, con la ruta real absoluta en el
+        // servidor (sigue el disco 'rop2026' configurado, así que se ajusta
+        // sola el día que ese disco pase a apuntar al mount de red real).
+        $lote->carpeta = Storage::disk('rop2026')->path($data['cod_log']);
         $lote->asunto = $data['asunto'] ?? null;
         $lote->observacion = $data['observacion'] ?? null;
         $lote->numero_carta = $carta->codigo;
