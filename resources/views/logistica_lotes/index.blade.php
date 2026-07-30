@@ -1397,12 +1397,22 @@
 
                     <div class="row">
                         <div class="col-md-6 form-group">
-                            <label><strong>Factura (documento)</strong></label>
-                            <input type="file" name="archivo_factura" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-                            @if($lote->archivo_factura)
+                            <label><strong>Factura — XML</strong></label>
+                            <input type="file" name="archivo_factura_xml" class="form-control-file" accept=".xml">
+                            @if($lote->archivo_factura_xml)
                                 <small class="text-muted d-block mt-1">
-                                    Actual: {{ basename($lote->archivo_factura) }} (subir uno nuevo lo reemplaza) —
-                                    <a href="{{ route('logistica_lotes.documentos.preview', [$lote->id, 'factura']) }}" target="_blank">previsualizar</a>
+                                    Actual: {{ basename($lote->archivo_factura_xml) }} (subir uno nuevo lo reemplaza) —
+                                    <a href="{{ route('logistica_lotes.documentos.preview', [$lote->id, 'factura_xml']) }}" target="_blank">previsualizar</a>
+                                </small>
+                            @endif
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label><strong>Factura — PDF</strong></label>
+                            <input type="file" name="archivo_factura_pdf" class="form-control-file" accept=".pdf">
+                            @if($lote->archivo_factura_pdf)
+                                <small class="text-muted d-block mt-1">
+                                    Actual: {{ basename($lote->archivo_factura_pdf) }} (subir uno nuevo lo reemplaza) —
+                                    <a href="{{ route('logistica_lotes.documentos.preview', [$lote->id, 'factura_pdf']) }}" target="_blank">previsualizar</a>
                                 </small>
                             @endif
                         </div>
@@ -1673,7 +1683,7 @@
                     @endforeach
                 </div>
                 <div class="row text-center mb-3">
-                    @foreach(['informe' => 'Informe (servicio)', 'gre' => 'GRE (compra)', 'conformidad' => 'Conformidad', 'factura' => 'Factura (documento)'] as $campo => $etiqueta)
+                    @foreach(['informe' => 'Informe (servicio)', 'gre' => 'GRE (compra)', 'conformidad' => 'Conformidad', 'factura_xml' => 'Factura — XML', 'factura_pdf' => 'Factura — PDF'] as $campo => $etiqueta)
                         <div class="col-md-3 mb-2">
                             <div class="border rounded p-2 h-100">
                                 <div class="mb-1">{{ $etiqueta }}</div>

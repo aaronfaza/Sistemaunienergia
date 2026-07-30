@@ -44,14 +44,17 @@ class RopDocumentoService
         'informe' => '05 INFORMES',
         'gre' => '05 GRE',
         'conformidad' => '06 CONFORMIDAD',
-        'factura' => '07 FACTURA',
+        // La factura electrónica real son 2 archivos (XML = documento legal,
+        // PDF = representación impresa), no uno solo.
+        'factura_xml' => '07 FACTURA',
+        'factura_pdf' => '07 FACTURA',
     ];
 
     public const CAMPOS = [
         'carta', 'carta_jefe_operaciones', 'requerimiento',
         'cotizacion_1', 'cotizacion_2', 'cotizacion_3', 'cotizacion_4', 'cotizacion_5', 'cotizacion_6',
         'acta_comite', 'certificacion_presupuestal',
-        'orden', 'informe', 'gre', 'conformidad', 'factura',
+        'orden', 'informe', 'gre', 'conformidad', 'factura_xml', 'factura_pdf',
     ];
 
     /**

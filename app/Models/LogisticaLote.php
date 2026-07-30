@@ -24,7 +24,8 @@ class LogisticaLote extends Model
         'fecha_vencimiento', 'fecha_pago',
         'archivo_carta', 'archivo_carta_jefe_operaciones', 'archivo_requerimiento',
         'archivo_orden', 'archivo_acta_comite', 'archivo_certificacion_presupuestal',
-        'archivo_informe', 'archivo_gre', 'archivo_conformidad', 'archivo_factura',
+        'archivo_informe', 'archivo_gre', 'archivo_conformidad',
+        'archivo_factura_xml', 'archivo_factura_pdf',
         'archivo_cotizacion_1', 'archivo_cotizacion_2', 'archivo_cotizacion_3',
         'archivo_cotizacion_4', 'archivo_cotizacion_5', 'archivo_cotizacion_6',
     ];

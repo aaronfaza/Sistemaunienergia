@@ -228,7 +228,8 @@ class LogisticaLoteController extends Controller
             'archivo_orden' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
             'archivo_acta_comite' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
             'archivo_certificacion_presupuestal' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
-            'archivo_factura' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'archivo_factura_xml' => 'nullable|file|mimes:xml|max:10240',
+            'archivo_factura_pdf' => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
         if (($data['forma_pago'] ?? null) === 'OTRO' && !empty($data['forma_pago_otro'])) {
@@ -244,11 +245,12 @@ class LogisticaLoteController extends Controller
             'orden' => $data['archivo_orden'] ?? null,
             'acta_comite' => $data['archivo_acta_comite'] ?? null,
             'certificacion_presupuestal' => $data['archivo_certificacion_presupuestal'] ?? null,
-            'factura' => $data['archivo_factura'] ?? null,
+            'factura_xml' => $data['archivo_factura_xml'] ?? null,
+            'factura_pdf' => $data['archivo_factura_pdf'] ?? null,
         ];
         unset(
             $data['archivo_orden'], $data['archivo_acta_comite'], $data['archivo_certificacion_presupuestal'],
-            $data['archivo_factura']
+            $data['archivo_factura_xml'], $data['archivo_factura_pdf']
         );
 
         try {
