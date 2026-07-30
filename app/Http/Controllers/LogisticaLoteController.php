@@ -228,8 +228,6 @@ class LogisticaLoteController extends Controller
             'archivo_orden' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
             'archivo_acta_comite' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
             'archivo_certificacion_presupuestal' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
-            'archivo_factura_xml' => 'nullable|file|mimes:xml|max:10240',
-            'archivo_factura_pdf' => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
         if (($data['forma_pago'] ?? null) === 'OTRO' && !empty($data['forma_pago_otro'])) {
@@ -237,21 +235,12 @@ class LogisticaLoteController extends Controller
         }
         unset($data['forma_pago_otro']);
 
-        // archivo_informe/archivo_gre/archivo_conformidad NO se suben aquí:
-        // esos documentos son del área usuaria (quien espera el informe/GRE
-        // del proveedor y emite la conformidad), no de Logística Lima — se
-        // suben desde updateDocumentosArea(), solo Admin.
         $archivos = [
             'orden' => $data['archivo_orden'] ?? null,
             'acta_comite' => $data['archivo_acta_comite'] ?? null,
             'certificacion_presupuestal' => $data['archivo_certificacion_presupuestal'] ?? null,
-            'factura_xml' => $data['archivo_factura_xml'] ?? null,
-            'factura_pdf' => $data['archivo_factura_pdf'] ?? null,
         ];
-        unset(
-            $data['archivo_orden'], $data['archivo_acta_comite'], $data['archivo_certificacion_presupuestal'],
-            $data['archivo_factura_xml'], $data['archivo_factura_pdf']
-        );
+        unset($data['archivo_orden'], $data['archivo_acta_comite'], $data['archivo_certificacion_presupuestal']);
 
         try {
             $data = array_merge($data, $rop->guardarDocumentos($lote, $archivos, $lote->cod_log));
@@ -280,12 +269,16 @@ class LogisticaLoteController extends Controller
             'archivo_informe' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
             'archivo_gre' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
             'archivo_conformidad' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'archivo_factura_xml' => 'nullable|file|mimes:xml|max:10240',
+            'archivo_factura_pdf' => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
         $archivos = [
             'informe' => $data['archivo_informe'] ?? null,
             'gre' => $data['archivo_gre'] ?? null,
             'conformidad' => $data['archivo_conformidad'] ?? null,
+            'factura_xml' => $data['archivo_factura_xml'] ?? null,
+            'factura_pdf' => $data['archivo_factura_pdf'] ?? null,
         ];
 
         try {

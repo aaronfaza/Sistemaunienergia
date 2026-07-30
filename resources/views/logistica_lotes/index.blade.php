@@ -1396,29 +1396,6 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label><strong>Factura — XML</strong></label>
-                            <input type="file" name="archivo_factura_xml" class="form-control-file" accept=".xml">
-                            @if($lote->archivo_factura_xml)
-                                <small class="text-muted d-block mt-1">
-                                    Actual: {{ basename($lote->archivo_factura_xml) }} (subir uno nuevo lo reemplaza) —
-                                    <a href="{{ route('logistica_lotes.documentos.preview', [$lote->id, 'factura_xml']) }}" target="_blank">previsualizar</a>
-                                </small>
-                            @endif
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label><strong>Factura — PDF</strong></label>
-                            <input type="file" name="archivo_factura_pdf" class="form-control-file" accept=".pdf">
-                            @if($lote->archivo_factura_pdf)
-                                <small class="text-muted d-block mt-1">
-                                    Actual: {{ basename($lote->archivo_factura_pdf) }} (subir uno nuevo lo reemplaza) —
-                                    <a href="{{ route('logistica_lotes.documentos.preview', [$lote->id, 'factura_pdf']) }}" target="_blank">previsualizar</a>
-                                </small>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="row">
                         <div class="col-md-3 form-group">
                             <label><strong>Ejecución</strong></label>
                             <select class="form-control custom-select" name="ejecucion">
@@ -1725,6 +1702,14 @@
                                 <div class="col-md-6 form-group mb-2">
                                     <label class="small mb-1"><strong>Certificado de Conformidad</strong></label>
                                     <input type="file" name="archivo_conformidad" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                                </div>
+                                <div class="col-md-6 form-group mb-2">
+                                    <label class="small mb-1"><strong>Factura — XML</strong></label>
+                                    <input type="file" name="archivo_factura_xml" class="form-control-file" accept=".xml">
+                                </div>
+                                <div class="col-md-6 form-group mb-2">
+                                    <label class="small mb-1"><strong>Factura — PDF</strong></label>
+                                    <input type="file" name="archivo_factura_pdf" class="form-control-file" accept=".pdf">
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-sm" style="background:#6f42c1;color:#fff;">
