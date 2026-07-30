@@ -22,9 +22,15 @@ class LogisticaLote extends Model
         'ruc', 'empresa_ganadora', 'centro_costo', 'moneda', 'monto_igv', 'forma_pago',
         'fecha_entrega', 'orden_firmada', 'ejecucion', 'porcentaje_ejecucion', 'monto_factura',
         'fecha_vencimiento', 'fecha_pago',
-        'archivo_carta', 'archivo_cotizacion', 'archivo_requerimiento',
+        'archivo_carta', 'archivo_carta_jefe_operaciones', 'archivo_requerimiento',
         'archivo_orden', 'archivo_acta_comite',
+        'archivo_cotizacion_1', 'archivo_cotizacion_2', 'archivo_cotizacion_3',
+        'archivo_cotizacion_4', 'archivo_cotizacion_5', 'archivo_cotizacion_6',
     ];
+
+    // Slots de cotización disponibles (1 a 6, según la cantidad real que se
+    // reciba por proceso de compra/servicio).
+    public const COTIZACION_SLOTS = 6;
 
     protected $casts = [
         'fecha_emision' => 'date',
@@ -83,6 +89,24 @@ class LogisticaLote extends Model
     public function responsableFirma()
     {
         return $this->belongsTo(User::class, 'responsable_id');
+    }
+
+    /**
+     * Rutas de las cotizaciones realmente subidas (ignora los slots vacíos),
+     * para no listar 6 casillas "No subido" cuando solo hay 1 o 2 reales.
+     */
+    public function cotizacionesSubidas(): array
+    {
+        $rutas = [];
+
+        for ($i = 1; $i <= self::COTIZACION_SLOTS; $i++) {
+            $ruta = $this->{"archivo_cotizacion_{$i}"};
+            if ($ruta) {
+                $rutas["cotizacion_{$i}"] = $ruta;
+            }
+        }
+
+        return $rutas;
     }
 
     public function verificadoPor()

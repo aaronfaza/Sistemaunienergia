@@ -21,10 +21,17 @@ class RopDocumentoService
 {
     public const DISK = 'rop2026';
 
-    // 'carta'/'cotizacion'/'requerimiento' los sube Admin al registrar el ROP;
-    // 'orden'/'acta_comite' los sube Logística Lima como parte de su propio
-    // proceso (orden de compra/servicio firmada, acta del comité evaluador).
-    public const CAMPOS = ['carta', 'cotizacion', 'requerimiento', 'orden', 'acta_comite'];
+    // 'carta' (área solicitante), 'carta_jefe_operaciones' (obligatoria solo
+    // si la compra/servicio supera US$ 1,000 — no se valida automático,
+    // depende de un criterio que Admin ya conoce al registrar), 'cotizacion_1'
+    // a 'cotizacion_6' (1 a 6 cotizaciones según el proceso) y 'requerimiento'
+    // los sube Admin al registrar el ROP; 'orden'/'acta_comite' los sube
+    // Logística Lima como parte de su propio proceso.
+    public const CAMPOS = [
+        'carta', 'carta_jefe_operaciones',
+        'cotizacion_1', 'cotizacion_2', 'cotizacion_3', 'cotizacion_4', 'cotizacion_5', 'cotizacion_6',
+        'requerimiento', 'orden', 'acta_comite',
+    ];
 
     /**
      * El mount CIFS puede caerse dejando /mnt/rop2026 como una carpeta local
@@ -104,13 +111,17 @@ class RopDocumentoService
             $this->eliminarDocumento($pathAnterior);
         }
 
-        // Reemplazar el documento de la carta invalida cualquier verificación
-        // previa: no puede seguir figurando "verificado" un documento distinto
-        // al que el admin realmente revisó. Se aplica con forceFill() directo
-        // sobre el modelo (no vía $resultado) porque estos 3 campos están
+        // Reemplazar cualquiera de las cartas (área solicitante o jefe de
+        // operaciones) invalida cualquier verificación previa: no puede
+        // seguir figurando "verificado" un documento distinto al que el
+        // admin realmente revisó. Se aplica con forceFill() directo sobre el
+        // modelo (no vía $resultado) porque estos 3 campos están
         // deliberadamente fuera de $fillable — si viajaran en $resultado, el
         // update($data) del controlador los descartaría en silencio.
-        if (isset($resultado['archivo_carta']) && $modelo->firmado_verificado) {
+        if (
+            (isset($resultado['archivo_carta']) || isset($resultado['archivo_carta_jefe_operaciones']))
+            && $modelo->firmado_verificado
+        ) {
             $modelo->forceFill([
                 'firmado_verificado' => false,
                 'verificado_por' => null,

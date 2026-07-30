@@ -127,7 +127,13 @@ class LogisticaLoteController extends Controller
             'asunto' => 'nullable|string',
             'observacion' => 'nullable|string',
             'archivo_carta' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
-            'archivo_cotizacion' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'archivo_carta_jefe_operaciones' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'archivo_cotizacion_1' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'archivo_cotizacion_2' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'archivo_cotizacion_3' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'archivo_cotizacion_4' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'archivo_cotizacion_5' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'archivo_cotizacion_6' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
             'archivo_requerimiento' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ]);
 
@@ -157,7 +163,13 @@ class LogisticaLoteController extends Controller
 
             $documentos = $rop->guardarDocumentos($lote, [
                 'carta' => $data['archivo_carta'] ?? null,
-                'cotizacion' => $data['archivo_cotizacion'] ?? null,
+                'carta_jefe_operaciones' => $data['archivo_carta_jefe_operaciones'] ?? null,
+                'cotizacion_1' => $data['archivo_cotizacion_1'] ?? null,
+                'cotizacion_2' => $data['archivo_cotizacion_2'] ?? null,
+                'cotizacion_3' => $data['archivo_cotizacion_3'] ?? null,
+                'cotizacion_4' => $data['archivo_cotizacion_4'] ?? null,
+                'cotizacion_5' => $data['archivo_cotizacion_5'] ?? null,
+                'cotizacion_6' => $data['archivo_cotizacion_6'] ?? null,
                 'requerimiento' => $data['archivo_requerimiento'] ?? null,
             ], $data['cod_log']);
         } catch (RopDiskNoDisponibleException|\InvalidArgumentException $e) {

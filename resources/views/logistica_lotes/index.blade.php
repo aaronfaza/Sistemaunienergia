@@ -1146,18 +1146,30 @@
                         Se guardan directamente en la carpeta ROP2026 que coincide con el Cod. Logística de arriba.
                     </p>
                     <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label>Carta</label>
+                        <div class="form-group col-md-6">
+                            <label>Carta — Área Solicitante</label>
                             <input type="file" name="archivo_carta" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
                         </div>
-                        <div class="form-group col-md-4">
-                            <label>Cotización</label>
-                            <input type="file" name="archivo_cotizacion" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                        <div class="form-group col-md-6">
+                            <label>Carta — Jefe de Operaciones</label>
+                            <input type="file" name="archivo_carta_jefe_operaciones" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                            <small class="text-muted">Obligatoria solo si la compra/servicio supera los US$ 1,000.</small>
                         </div>
-                        <div class="form-group col-md-4">
-                            <label>Requerimiento</label>
-                            <input type="file" name="archivo_requerimiento" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Requerimiento</label>
+                        <input type="file" name="archivo_requerimiento" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                    </div>
+
+                    <label class="mb-1"><strong>Cotizaciones</strong> <small class="text-muted">(sube las que correspondan, de 1 a 6)</small></label>
+                    <div class="form-row">
+                        @for($i = 1; $i <= \App\Models\LogisticaLote::COTIZACION_SLOTS; $i++)
+                            <div class="form-group col-md-4">
+                                <label class="small text-muted mb-1">Cotización {{ $i }}</label>
+                                <input type="file" name="archivo_cotizacion_{{ $i }}" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                            </div>
+                        @endfor
                     </div>
 
                     <div class="form-group">
@@ -1587,7 +1599,7 @@
                     @endif
                 </div>
                 <div class="row text-center mb-3">
-                    @foreach(['carta' => 'Carta', 'cotizacion' => 'Cotización', 'requerimiento' => 'Requerimiento'] as $campo => $etiqueta)
+                    @foreach(['carta' => 'Carta — Área Solicitante', 'carta_jefe_operaciones' => 'Carta — Jefe de Operaciones', 'requerimiento' => 'Requerimiento'] as $campo => $etiqueta)
                         <div class="col-md-4 mb-2">
                             <div class="border rounded p-2 h-100">
                                 <div class="mb-1">{{ $etiqueta }}</div>
@@ -1602,6 +1614,18 @@
                             </div>
                         </div>
                     @endforeach
+                </div>
+                <div class="mb-3">
+                    <div class="mb-1"><strong class="small text-muted">Cotizaciones</strong></div>
+                    @if(count($lote->cotizacionesSubidas()) === 0)
+                        <span class="badge badge-light border text-muted">Ninguna subida</span>
+                    @else
+                        @foreach($lote->cotizacionesSubidas() as $campo => $ruta)
+                            <a href="{{ route('logistica_lotes.documentos.preview', [$lote->id, $campo]) }}" target="_blank" class="btn btn-sm btn-outline-primary mr-1 mb-1">
+                                <i class="fas fa-eye mr-1"></i> {{ ucfirst(str_replace('_', ' ', $campo)) }}
+                            </a>
+                        @endforeach
+                    @endif
                 </div>
                 <div class="row text-center mb-3">
                     @foreach(['orden' => 'Orden de Compra/Servicio', 'acta_comite' => 'Acta Comité Evaluador'] as $campo => $etiqueta)
