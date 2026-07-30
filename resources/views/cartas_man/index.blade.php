@@ -605,6 +605,21 @@
     </div>
   </div>
 
+  @if(session('success'))
+    <div class="container-fluid mt-3">
+      <div class="alert alert-success shadow-sm mb-0">
+        <i class="fas fa-check-circle mr-1"></i> {{ session('success') }}
+      </div>
+    </div>
+  @endif
+  @if(session('error'))
+    <div class="container-fluid mt-3">
+      <div class="alert alert-danger shadow-sm mb-0">
+        <i class="fas fa-exclamation-triangle mr-1"></i> {{ session('error') }}
+      </div>
+    </div>
+  @endif
+
  <!-- Contenido principal -->
 <section class="content mt-4">
   <div class="container-fluid">

@@ -730,6 +730,11 @@ textarea:focus {
         <i class="fas fa-check-circle mr-1"></i> {{ session('success') }}
       </div>
     @endif
+    @if(session('error'))
+      <div class="alert alert-danger mt-3 shadow-sm">
+        <i class="fas fa-exclamation-triangle mr-1"></i> {{ session('error') }}
+      </div>
+    @endif
 
     <section class="content mt-4">
       <div class="container-fluid">

@@ -773,6 +773,21 @@ textarea:focus {
     </div>
   </div>
 
+  @if(session('success'))
+    <div class="container-fluid mt-3">
+      <div class="alert alert-success shadow-sm mb-0">
+        <i class="fas fa-check-circle mr-1"></i> {{ session('success') }}
+      </div>
+    </div>
+  @endif
+  @if(session('error'))
+    <div class="container-fluid mt-3">
+      <div class="alert alert-danger shadow-sm mb-0">
+        <i class="fas fa-exclamation-triangle mr-1"></i> {{ session('error') }}
+      </div>
+    </div>
+  @endif
+
  <!-- Contenido principal -->
 <section class="content mt-4">
   <div class="container-fluid">
@@ -1047,229 +1062,6 @@ textarea:focus {
             </div>
 
 
-<!-- Modal Agregar Carta -->
-<div class="modal fade" id="modalAgregar" tabindex="-1" role="dialog" aria-labelledby="modalAgregarLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-    <div class="modal-content shadow-lg" style="border-radius:16px;">
-
-      <!-- HEADER -->
-      <div class="modal-header text-white"
-           style="background:linear-gradient(135deg,#10b981,#047857); border-radius:16px 16px 0 0;">
-        <h5 class="modal-title font-weight-bold" id="modalAgregarLabel">
-          <i class="fas fa-file-alt mr-2"></i> Registro de Carta SO-PRO
-        </h5>
-        <button type="button" class="close text-white" data-bs-dismiss="modal">
-          <span>&times;</span>
-        </button>
-      </div>
-
-      <form action="{{ route('control_cartas.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-
-        <div class="modal-body">
-
-          <!-- ================= DATOS GENERALES ================= -->
-          <div class="card mb-3 border-0 shadow-sm">
-            <div class="card-header bg-light font-weight-bold text-success">
-              <i class="fas fa-info-circle mr-1"></i> Datos generales
-            </div>
-            <div class="card-body">
-              <div class="form-row">
-                <div class="form-group col-md-4">
-                  <label>Código</label>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-                    </div>
-                    <input type="text" class="form-control" name="codigo" required>
-                  </div>
-                </div>
-
-                <div class="form-group col-md-4">
-                  <label>Fecha</label>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="fas fa-calendar-day"></i></span>
-                    </div>
-                    <input type="date" class="form-control" name="fecha" required>
-                  </div>
-                </div>
-
-                <div class="form-group col-md-4">
-                  <label>Mes</label>
-                  <input type="text" class="form-control" name="mes" placeholder="Ej: Marzo" required>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ================= SERVICIO ================= -->
-          <div class="card mb-3 border-0 shadow-sm">
-            <div class="card-header bg-light font-weight-bold text-primary">
-              <i class="fas fa-briefcase mr-1"></i> Servicio / Compra
-            </div>
-            <div class="card-body">
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <label>Servicio o Compra</label>
-                  <input type="text" class="form-control" name="servicio_compra" required>
-                </div>
-
-                <div class="form-group col-md-6">
-                  <label>Descripción</label>
-                  <textarea class="form-control" name="descripcion" rows="2" required></textarea>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ================= PROVEEDOR ================= -->
-          <div class="card mb-3 border-0 shadow-sm">
-            <div class="card-header bg-light font-weight-bold text-info">
-              <i class="fas fa-industry mr-1"></i> Proveedor
-            </div>
-            <div class="card-body">
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <label>Proveedor elegido</label>
-                  <input type="text" class="form-control" name="proveedor_elegido" required>
-                </div>
-
-                <div class="form-group col-md-6">
-                  <label>Cotizaciones consideradas</label>
-                  <input type="text" class="form-control" name="cotizaciones_consideradas"
-                         placeholder="Ej: 3 cotizaciones">
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ================= EQUIPO Y MONTOS ================= -->
-          <div class="card mb-3 border-0 shadow-sm">
-            <div class="card-header bg-light font-weight-bold text-warning">
-              <i class="fas fa-tools mr-1"></i> Equipo y montos
-            </div>
-            <div class="card-body">
-
-              <div class="form-row">
-                <div class="form-group col-md-4">
-                  <label>Equipo</label>
-                  <input type="text" class="form-control" name="equipo">
-                </div>
-
-                <div class="form-group col-md-4">
-                  <label>Especificación</label>
-                  <input type="text" class="form-control" name="especificacion">
-                </div>
-
-                <div class="form-group col-md-4">
-                  <label>N° Orden</label>
-                  <input type="text" class="form-control" name="n_orden">
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group col-md-3">
-                  <label>Monto (S/)</label>
-                  <input type="number" step="0.01" class="form-control" name="monto_soles">
-                </div>
-
-                <div class="form-group col-md-3">
-                  <label>Monto ($)</label>
-                  <input type="number" step="0.01" class="form-control" name="monto_dolares">
-                </div>
-
-                <div class="form-group col-md-6">
-                  <label>Autorizado por</label>
-                  <input type="text" class="form-control" name="autorizado_por">
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- ================= FECHAS ================= -->
-          <div class="card border-0 shadow-sm">
-            <div class="card-header bg-light font-weight-bold text-secondary">
-              <i class="fas fa-calendar-alt mr-1"></i> Control de fechas
-            </div>
-            <div class="card-body">
-              <div class="form-row">
-                <div class="form-group col-md-4">
-                  <label>N° Factura</label>
-                  <input type="text" class="form-control" name="factura_n">
-                </div>
-
-                <div class="form-group col-md-4">
-                  <label>Fecha recepción</label>
-                  <input type="date" class="form-control" name="fecha_recepcion">
-                </div>
-
-                <div class="form-group col-md-4">
-                  <label>Fecha vencimiento</label>
-                  <input type="date" class="form-control" name="fecha_vencimiento">
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group col-md-4">
-                  <label>Fecha de pago</label>
-                  <input type="date" class="form-control" name="fecha_pago">
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ================= DOCUMENTOS ================= -->
-          <div class="card border-0 shadow-sm mt-3">
-            <div class="card-header bg-light font-weight-bold text-success">
-              <i class="fas fa-folder-open mr-1"></i> Documentos (no es necesario que estén firmados aún)
-            </div>
-            <div class="card-body">
-              <div class="form-row">
-                <div class="form-group col-md-4">
-                  <label>Carta</label>
-                  <input type="file" name="archivo_carta" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-                </div>
-                <div class="form-group col-md-4">
-                  <label>Cotización</label>
-                  <input type="file" name="archivo_cotizacion" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-                </div>
-                <div class="form-group col-md-4">
-                  <label>Requerimiento</label>
-                  <input type="file" name="archivo_requerimiento" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-                </div>
-              </div>
-              <div class="form-group mb-0">
-                <label>Carpeta ROP2026 destino</label>
-                <input type="text" name="carpeta_rop" list="carpetasRopAgregar" class="form-control js-carpetas-input"
-                       placeholder="Ej: ROP260298" autocomplete="off">
-                <datalist id="carpetasRopAgregar" class="js-carpetas-datalist"></datalist>
-                <small class="text-muted js-carpetas-origen"></small>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- FOOTER -->
-        <div class="modal-footer bg-light">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-            Cancelar
-          </button>
-          <button type="submit" class="btn btn-success px-4">
-            <i class="fas fa-save mr-1"></i> Guardar Carta
-          </button>
-        </div>
-
-      </form>
-    </div>
-  </div>
-</div>
-
-
-
-
       <!-- Modal Ver Detalle (UX Mejorado) -->
             <div class="modal fade" id="modalVer{{ $carta->id }}" tabindex="-1" role="dialog">
               <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
@@ -1528,6 +1320,225 @@ textarea:focus {
   </div>
   
 </section>
+<!-- Modal Agregar Carta -->
+<div class="modal fade" id="modalAgregar" tabindex="-1" role="dialog" aria-labelledby="modalAgregarLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-content shadow-lg" style="border-radius:16px;">
+
+      <!-- HEADER -->
+      <div class="modal-header text-white"
+           style="background:linear-gradient(135deg,#10b981,#047857); border-radius:16px 16px 0 0;">
+        <h5 class="modal-title font-weight-bold" id="modalAgregarLabel">
+          <i class="fas fa-file-alt mr-2"></i> Registro de Carta SO-PRO
+        </h5>
+        <button type="button" class="close text-white" data-bs-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+
+      <form action="{{ route('control_cartas.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+
+        <div class="modal-body">
+
+          <!-- ================= DATOS GENERALES ================= -->
+          <div class="card mb-3 border-0 shadow-sm">
+            <div class="card-header bg-light font-weight-bold text-success">
+              <i class="fas fa-info-circle mr-1"></i> Datos generales
+            </div>
+            <div class="card-body">
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label>Código</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                    </div>
+                    <input type="text" class="form-control" name="codigo" required>
+                  </div>
+                </div>
+
+                <div class="form-group col-md-4">
+                  <label>Fecha</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fas fa-calendar-day"></i></span>
+                    </div>
+                    <input type="date" class="form-control" name="fecha" required>
+                  </div>
+                </div>
+
+                <div class="form-group col-md-4">
+                  <label>Mes</label>
+                  <input type="text" class="form-control" name="mes" placeholder="Ej: Marzo" required>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= SERVICIO ================= -->
+          <div class="card mb-3 border-0 shadow-sm">
+            <div class="card-header bg-light font-weight-bold text-primary">
+              <i class="fas fa-briefcase mr-1"></i> Servicio / Compra
+            </div>
+            <div class="card-body">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>Servicio o Compra</label>
+                  <input type="text" class="form-control" name="servicio_compra" required>
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label>Descripción</label>
+                  <textarea class="form-control" name="descripcion" rows="2" required></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= PROVEEDOR ================= -->
+          <div class="card mb-3 border-0 shadow-sm">
+            <div class="card-header bg-light font-weight-bold text-info">
+              <i class="fas fa-industry mr-1"></i> Proveedor
+            </div>
+            <div class="card-body">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>Proveedor elegido</label>
+                  <input type="text" class="form-control" name="proveedor_elegido" required>
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label>Cotizaciones consideradas</label>
+                  <input type="text" class="form-control" name="cotizaciones_consideradas"
+                         placeholder="Ej: 3 cotizaciones">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= EQUIPO Y MONTOS ================= -->
+          <div class="card mb-3 border-0 shadow-sm">
+            <div class="card-header bg-light font-weight-bold text-warning">
+              <i class="fas fa-tools mr-1"></i> Equipo y montos
+            </div>
+            <div class="card-body">
+
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label>Equipo</label>
+                  <input type="text" class="form-control" name="equipo">
+                </div>
+
+                <div class="form-group col-md-4">
+                  <label>Especificación</label>
+                  <input type="text" class="form-control" name="especificacion">
+                </div>
+
+                <div class="form-group col-md-4">
+                  <label>N° Orden</label>
+                  <input type="text" class="form-control" name="n_orden">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-md-3">
+                  <label>Monto (S/)</label>
+                  <input type="number" step="0.01" class="form-control" name="monto_soles">
+                </div>
+
+                <div class="form-group col-md-3">
+                  <label>Monto ($)</label>
+                  <input type="number" step="0.01" class="form-control" name="monto_dolares">
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label>Autorizado por</label>
+                  <input type="text" class="form-control" name="autorizado_por">
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ================= FECHAS ================= -->
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light font-weight-bold text-secondary">
+              <i class="fas fa-calendar-alt mr-1"></i> Control de fechas
+            </div>
+            <div class="card-body">
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label>N° Factura</label>
+                  <input type="text" class="form-control" name="factura_n">
+                </div>
+
+                <div class="form-group col-md-4">
+                  <label>Fecha recepción</label>
+                  <input type="date" class="form-control" name="fecha_recepcion">
+                </div>
+
+                <div class="form-group col-md-4">
+                  <label>Fecha vencimiento</label>
+                  <input type="date" class="form-control" name="fecha_vencimiento">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label>Fecha de pago</label>
+                  <input type="date" class="form-control" name="fecha_pago">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= DOCUMENTOS ================= -->
+          <div class="card border-0 shadow-sm mt-3">
+            <div class="card-header bg-light font-weight-bold text-success">
+              <i class="fas fa-folder-open mr-1"></i> Documentos (no es necesario que estén firmados aún)
+            </div>
+            <div class="card-body">
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label>Carta</label>
+                  <input type="file" name="archivo_carta" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+                <div class="form-group col-md-4">
+                  <label>Cotización</label>
+                  <input type="file" name="archivo_cotizacion" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+                <div class="form-group col-md-4">
+                  <label>Requerimiento</label>
+                  <input type="file" name="archivo_requerimiento" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+              </div>
+              <div class="form-group mb-0">
+                <label>Carpeta ROP2026 destino</label>
+                <input type="text" name="carpeta_rop" list="carpetasRopAgregar" class="form-control js-carpetas-input"
+                       placeholder="Ej: ROP260298" autocomplete="off">
+                <datalist id="carpetasRopAgregar" class="js-carpetas-datalist"></datalist>
+                <small class="text-muted js-carpetas-origen"></small>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-success px-4">
+            <i class="fas fa-save mr-1"></i> Guardar Carta
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
 
 <!-- Modal Historial (auditoría) -->
 <div class="modal fade" id="modalHistorial" tabindex="-1" role="dialog" aria-hidden="true">
