@@ -124,6 +124,26 @@ class RopDocumentoService
         }
     }
 
+    /**
+     * Crea la carpeta del ROP en el disco (idempotente) aunque todavía no se
+     * suba ningún documento — así el expediente queda listo para recibir
+     * archivos (subidos después, o copiados manualmente por Logística Lima
+     * mientras esta carpeta se comparte con Lima) desde el momento en que se
+     * registra el ROP.
+     */
+    public function crearCarpeta(string $carpeta): void
+    {
+        if (!$this->mountDisponible()) {
+            throw new RopDiskNoDisponibleException();
+        }
+
+        $carpeta = $this->sanitizarCarpeta($carpeta);
+
+        if (!Storage::disk(self::DISK)->exists($carpeta)) {
+            Storage::disk(self::DISK)->makeDirectory($carpeta);
+        }
+    }
+
     private function sanitizarCarpeta(string $carpeta): string
     {
         $carpeta = trim($carpeta);

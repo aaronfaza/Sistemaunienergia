@@ -150,6 +150,11 @@ class LogisticaLoteController extends Controller
         $lote->estado = LogisticaLote::ESTADOS[0]; // 'PENDIENTE'
 
         try {
+            // La carpeta se crea siempre, aunque no se suba ningún archivo
+            // todavía — así el expediente queda listo para recibir documentos
+            // más tarde (subidos desde el sistema o copiados manualmente).
+            $rop->crearCarpeta($data['cod_log']);
+
             $documentos = $rop->guardarDocumentos($lote, [
                 'carta' => $data['archivo_carta'] ?? null,
                 'cotizacion' => $data['archivo_cotizacion'] ?? null,
