@@ -69,13 +69,15 @@ class LogisticaLoteController extends Controller
 
         $cartasDisponibles = [];
         if (Auth::user()->tieneAccesoCompleto()) {
+            // Solo cartas con documentos ya verificados como firmados por Admin
+            // pueden usarse como origen de un ROP nuevo (ver RopDocumentoService).
             $cartasDisponibles = [
-                'control_carta' => ControlCarta::whereDoesntHave('ropLote')->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
-                'carta_fis' => CartaFis::whereDoesntHave('ropLote')->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
-                'carta_ipf' => CartaIpf::whereDoesntHave('ropLote')->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
-                'carta_man' => CartaMan::whereDoesntHave('ropLote')->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
-                'carta_log' => CartaLog::whereDoesntHave('ropLote')->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
-                'carta_hse' => CartaHse::whereDoesntHave('ropLote')->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
+                'control_carta' => ControlCarta::whereDoesntHave('ropLote')->where('firmado_verificado', true)->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
+                'carta_fis' => CartaFis::whereDoesntHave('ropLote')->where('firmado_verificado', true)->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
+                'carta_ipf' => CartaIpf::whereDoesntHave('ropLote')->where('firmado_verificado', true)->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
+                'carta_man' => CartaMan::whereDoesntHave('ropLote')->where('firmado_verificado', true)->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
+                'carta_log' => CartaLog::whereDoesntHave('ropLote')->where('firmado_verificado', true)->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
+                'carta_hse' => CartaHse::whereDoesntHave('ropLote')->where('firmado_verificado', true)->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
             ];
         }
 

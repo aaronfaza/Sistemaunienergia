@@ -32,6 +32,10 @@ class CartaIpf extends Model
         'fecha_pago',
         'area',
         'estado',
+        'archivo_carta',
+        'archivo_cotizacion',
+        'archivo_requerimiento',
+        'carpeta_rop',
     ];
 
     protected $casts = [
@@ -51,6 +55,11 @@ class CartaIpf extends Model
     public function modificador()
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function verificadoPor()
+    {
+        return $this->belongsTo(User::class, 'verificado_por');
     }
 
     public function ropLote()

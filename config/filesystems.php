@@ -53,6 +53,15 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
         ],
 
+        // Carpeta compartida de red \\Hp-server\Operaciones\LOGISTICA\ROP 2026,
+        // montada por CIFS/SMB en el servidor (ver PROJECT_HANDOFF para el
+        // procedimiento de montaje). Sin este mount, RopDocumentoService detecta
+        // la falla vía el canario '.mount_ok' y no permite subir documentos.
+        'rop2026' => [
+            'driver' => 'local',
+            'root' => env('ROP2026_MOUNT_PATH', '/mnt/rop2026'),
+        ],
+
     ],
 
     /*
