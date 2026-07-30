@@ -174,7 +174,7 @@ class LogisticaLoteController extends Controller
      * Completa/actualiza un registro existente. Solo Logística Lima: todo
      * excepto cod_log/carta de origen/observación (de administración).
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, RopDocumentoService $rop)
     {
         abort_if(!Auth::user()->esLogistica(), 403);
 
@@ -209,12 +209,26 @@ class LogisticaLoteController extends Controller
             'monto_factura' => 'nullable|numeric',
             'fecha_vencimiento' => 'nullable|date',
             'fecha_pago' => 'nullable|date',
+            'archivo_orden' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'archivo_acta_comite' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ]);
 
         if (($data['forma_pago'] ?? null) === 'OTRO' && !empty($data['forma_pago_otro'])) {
             $data['forma_pago'] = $data['forma_pago_otro'];
         }
         unset($data['forma_pago_otro']);
+
+        $archivos = [
+            'orden' => $data['archivo_orden'] ?? null,
+            'acta_comite' => $data['archivo_acta_comite'] ?? null,
+        ];
+        unset($data['archivo_orden'], $data['archivo_acta_comite']);
+
+        try {
+            $data = array_merge($data, $rop->guardarDocumentos($lote, $archivos, $lote->cod_log));
+        } catch (RopDiskNoDisponibleException|\InvalidArgumentException $e) {
+            return back()->withInput()->with('error', $e->getMessage());
+        }
 
         $lote->update($data);
 

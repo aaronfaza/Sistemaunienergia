@@ -20,7 +20,11 @@ use InvalidArgumentException;
 class RopDocumentoService
 {
     public const DISK = 'rop2026';
-    public const CAMPOS = ['carta', 'cotizacion', 'requerimiento'];
+
+    // 'carta'/'cotizacion'/'requerimiento' los sube Admin al registrar el ROP;
+    // 'orden'/'acta_comite' los sube Logística Lima como parte de su propio
+    // proceso (orden de compra/servicio firmada, acta del comité evaluador).
+    public const CAMPOS = ['carta', 'cotizacion', 'requerimiento', 'orden', 'acta_comite'];
 
     /**
      * El mount CIFS puede caerse dejando /mnt/rop2026 como una carpeta local

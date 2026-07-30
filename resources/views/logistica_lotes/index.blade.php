@@ -1191,7 +1191,7 @@
                 <h5 class="modal-title font-weight-bold"><i class="fas fa-edit mr-2"></i> Procesar Registro: {{ $lote->cod_log }}</h5>
                 <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
             </div>
-            <form action="{{ route('logistica_lotes.update', $lote->id) }}" method="POST">
+            <form action="{{ route('logistica_lotes.update', $lote->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="modal-body p-4">
@@ -1342,6 +1342,29 @@
                                 <option value="0" {{ !$lote->orden_firmada ? 'selected' : '' }}>NO</option>
                                 <option value="1" {{ $lote->orden_firmada ? 'selected' : '' }}>SI</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label><strong>Orden de Compra/Servicio (documento)</strong></label>
+                            <input type="file" name="archivo_orden" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                            @if($lote->archivo_orden)
+                                <small class="text-muted d-block mt-1">
+                                    Actual: {{ basename($lote->archivo_orden) }} (subir uno nuevo lo reemplaza) —
+                                    <a href="{{ route('logistica_lotes.documentos.preview', [$lote->id, 'orden']) }}" target="_blank">previsualizar</a>
+                                </small>
+                            @endif
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label><strong>Acta de Comité Evaluador</strong></label>
+                            <input type="file" name="archivo_acta_comite" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                            @if($lote->archivo_acta_comite)
+                                <small class="text-muted d-block mt-1">
+                                    Actual: {{ basename($lote->archivo_acta_comite) }} (subir uno nuevo lo reemplaza) —
+                                    <a href="{{ route('logistica_lotes.documentos.preview', [$lote->id, 'acta_comite']) }}" target="_blank">previsualizar</a>
+                                </small>
+                            @endif
                         </div>
                     </div>
 
@@ -1575,6 +1598,23 @@
                                     </a>
                                 @else
                                     <span class="badge badge-light border text-muted">No subido</span>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="row text-center mb-3">
+                    @foreach(['orden' => 'Orden de Compra/Servicio', 'acta_comite' => 'Acta Comité Evaluador'] as $campo => $etiqueta)
+                        <div class="col-md-6 mb-2">
+                            <div class="border rounded p-2 h-100">
+                                <div class="mb-1">{{ $etiqueta }}</div>
+                                @if($lote->{"archivo_{$campo}"})
+                                    <span class="badge badge-light border text-success mb-1"><i class="fas fa-check"></i> Subido</span><br>
+                                    <a href="{{ route('logistica_lotes.documentos.preview', [$lote->id, $campo]) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye mr-1"></i> Previsualizar
+                                    </a>
+                                @else
+                                    <span class="badge badge-light border text-muted">No subido (lo sube Logística Lima)</span>
                                 @endif
                             </div>
                         </div>

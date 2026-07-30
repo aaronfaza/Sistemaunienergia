@@ -23,6 +23,7 @@ class LogisticaLote extends Model
         'fecha_entrega', 'orden_firmada', 'ejecucion', 'porcentaje_ejecucion', 'monto_factura',
         'fecha_vencimiento', 'fecha_pago',
         'archivo_carta', 'archivo_cotizacion', 'archivo_requerimiento',
+        'archivo_orden', 'archivo_acta_comite',
     ];
 
     protected $casts = [
