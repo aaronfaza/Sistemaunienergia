@@ -1267,7 +1267,7 @@
                         </div>
                         <div class="col-md-4 form-group">
                             <label><strong>Tipo de Solicitud</strong></label>
-                            <select class="form-control custom-select" name="tipo_solicitud">
+                            <select class="form-control custom-select tipo-solicitud-select" name="tipo_solicitud" data-target="#informeGre{{ $lote->id }}">
                                 <option value="">Selecciona...</option>
                                 @foreach(\App\Models\LogisticaLote::TIPOS_SOLICITUD as $tipoOpcion)
                                     <option value="{{ $tipoOpcion }}" {{ $lote->tipo_solicitud === $tipoOpcion ? 'selected' : '' }}>{{ $tipoOpcion }}</option>
@@ -1371,10 +1371,75 @@
                         <div class="col-md-6 form-group">
                             <label><strong>Acta de Comité Evaluador</strong></label>
                             <input type="file" name="archivo_acta_comite" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                            <small class="text-muted d-block">Junto con la certificación presupuestal, solo si la compra/servicio supera los US$ 1,000.</small>
                             @if($lote->archivo_acta_comite)
                                 <small class="text-muted d-block mt-1">
                                     Actual: {{ basename($lote->archivo_acta_comite) }} (subir uno nuevo lo reemplaza) —
                                     <a href="{{ route('logistica_lotes.documentos.preview', [$lote->id, 'acta_comite']) }}" target="_blank">previsualizar</a>
+                                </small>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label><strong>Certificación Presupuestal</strong></label>
+                            <input type="file" name="archivo_certificacion_presupuestal" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                            <small class="text-muted d-block">Firmada por el Gerente de Administración y Finanzas.</small>
+                            @if($lote->archivo_certificacion_presupuestal)
+                                <small class="text-muted d-block mt-1">
+                                    Actual: {{ basename($lote->archivo_certificacion_presupuestal) }} (subir uno nuevo lo reemplaza) —
+                                    <a href="{{ route('logistica_lotes.documentos.preview', [$lote->id, 'certificacion_presupuestal']) }}" target="_blank">previsualizar</a>
+                                </small>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="row" id="informeGre{{ $lote->id }}"
+                         style="{{ !in_array($lote->tipo_solicitud, ['SERVICIO', 'COMPRA LOCAL'], true) ? 'display:none;' : '' }}">
+                        <div class="col-md-6 form-group" style="{{ $lote->tipo_solicitud !== 'COMPRA LOCAL' ? '' : 'display:none;' }}" data-tipo="SERVICIO">
+                            <label><strong>Informe</strong></label>
+                            <input type="file" name="archivo_informe" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                            <small class="text-muted d-block">Del proveedor, cuando el proceso es un servicio.</small>
+                            @if($lote->archivo_informe)
+                                <small class="text-muted d-block mt-1">
+                                    Actual: {{ basename($lote->archivo_informe) }} (subir uno nuevo lo reemplaza) —
+                                    <a href="{{ route('logistica_lotes.documentos.preview', [$lote->id, 'informe']) }}" target="_blank">previsualizar</a>
+                                </small>
+                            @endif
+                        </div>
+                        <div class="col-md-6 form-group" style="{{ $lote->tipo_solicitud === 'COMPRA LOCAL' ? '' : 'display:none;' }}" data-tipo="COMPRA LOCAL">
+                            <label><strong>GRE (Guía de Remisión Electrónica)</strong></label>
+                            <input type="file" name="archivo_gre" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                            <small class="text-muted d-block">Firmada y sellada por almacén, cuando el proceso es una compra.</small>
+                            @if($lote->archivo_gre)
+                                <small class="text-muted d-block mt-1">
+                                    Actual: {{ basename($lote->archivo_gre) }} (subir uno nuevo lo reemplaza) —
+                                    <a href="{{ route('logistica_lotes.documentos.preview', [$lote->id, 'gre']) }}" target="_blank">previsualizar</a>
+                                </small>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label><strong>Certificado de Conformidad</strong></label>
+                            <input type="file" name="archivo_conformidad" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                            <small class="text-muted d-block">Emitido por el área usuaria tras revisar el informe/GRE del proveedor.</small>
+                            @if($lote->archivo_conformidad)
+                                <small class="text-muted d-block mt-1">
+                                    Actual: {{ basename($lote->archivo_conformidad) }} (subir uno nuevo lo reemplaza) —
+                                    <a href="{{ route('logistica_lotes.documentos.preview', [$lote->id, 'conformidad']) }}" target="_blank">previsualizar</a>
+                                </small>
+                            @endif
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label><strong>Factura (documento)</strong></label>
+                            <input type="file" name="archivo_factura" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                            @if($lote->archivo_factura)
+                                <small class="text-muted d-block mt-1">
+                                    Actual: {{ basename($lote->archivo_factura) }} (subir uno nuevo lo reemplaza) —
+                                    <a href="{{ route('logistica_lotes.documentos.preview', [$lote->id, 'factura']) }}" target="_blank">previsualizar</a>
                                 </small>
                             @endif
                         </div>
@@ -1628,8 +1693,8 @@
                     @endif
                 </div>
                 <div class="row text-center mb-3">
-                    @foreach(['orden' => 'Orden de Compra/Servicio', 'acta_comite' => 'Acta Comité Evaluador'] as $campo => $etiqueta)
-                        <div class="col-md-6 mb-2">
+                    @foreach(['acta_comite' => 'Acta Comité Evaluador', 'certificacion_presupuestal' => 'Certificación Presupuestal', 'orden' => 'Orden de Compra/Servicio'] as $campo => $etiqueta)
+                        <div class="col-md-4 mb-2">
                             <div class="border rounded p-2 h-100">
                                 <div class="mb-1">{{ $etiqueta }}</div>
                                 @if($lote->{"archivo_{$campo}"})
@@ -1639,6 +1704,23 @@
                                     </a>
                                 @else
                                     <span class="badge badge-light border text-muted">No subido (lo sube Logística Lima)</span>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="row text-center mb-3">
+                    @foreach(['informe' => 'Informe (servicio)', 'gre' => 'GRE (compra)', 'conformidad' => 'Conformidad', 'factura' => 'Factura (documento)'] as $campo => $etiqueta)
+                        <div class="col-md-3 mb-2">
+                            <div class="border rounded p-2 h-100">
+                                <div class="mb-1">{{ $etiqueta }}</div>
+                                @if($lote->{"archivo_{$campo}"})
+                                    <span class="badge badge-light border text-success mb-1"><i class="fas fa-check"></i> Subido</span><br>
+                                    <a href="{{ route('logistica_lotes.documentos.preview', [$lote->id, $campo]) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye mr-1"></i> Previsualizar
+                                    </a>
+                                @else
+                                    <span class="badge badge-light border text-muted">No subido</span>
                                 @endif
                             </div>
                         </div>
@@ -1806,6 +1888,20 @@ $(document).on('change', '.forma-pago-select', function () {
         $otro.show();
     } else {
         $otro.hide();
+    }
+});
+
+// Alterna Informe (servicio) / GRE (compra) según el Tipo de Solicitud
+$(document).on('change', '.tipo-solicitud-select', function () {
+    var $wrap = $($(this).data('target'));
+    var tipo = $(this).val();
+
+    if (tipo === 'SERVICIO' || tipo === 'COMPRA LOCAL') {
+        $wrap.show();
+        $wrap.find('[data-tipo="SERVICIO"]').toggle(tipo === 'SERVICIO');
+        $wrap.find('[data-tipo="COMPRA LOCAL"]').toggle(tipo === 'COMPRA LOCAL');
+    } else {
+        $wrap.hide();
     }
 });
 

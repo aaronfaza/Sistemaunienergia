@@ -227,6 +227,11 @@ class LogisticaLoteController extends Controller
             'fecha_pago' => 'nullable|date',
             'archivo_orden' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
             'archivo_acta_comite' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'archivo_certificacion_presupuestal' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'archivo_informe' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'archivo_gre' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'archivo_conformidad' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'archivo_factura' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ]);
 
         if (($data['forma_pago'] ?? null) === 'OTRO' && !empty($data['forma_pago_otro'])) {
@@ -237,8 +242,16 @@ class LogisticaLoteController extends Controller
         $archivos = [
             'orden' => $data['archivo_orden'] ?? null,
             'acta_comite' => $data['archivo_acta_comite'] ?? null,
+            'certificacion_presupuestal' => $data['archivo_certificacion_presupuestal'] ?? null,
+            'informe' => $data['archivo_informe'] ?? null,
+            'gre' => $data['archivo_gre'] ?? null,
+            'conformidad' => $data['archivo_conformidad'] ?? null,
+            'factura' => $data['archivo_factura'] ?? null,
         ];
-        unset($data['archivo_orden'], $data['archivo_acta_comite']);
+        unset(
+            $data['archivo_orden'], $data['archivo_acta_comite'], $data['archivo_certificacion_presupuestal'],
+            $data['archivo_informe'], $data['archivo_gre'], $data['archivo_conformidad'], $data['archivo_factura']
+        );
 
         try {
             $data = array_merge($data, $rop->guardarDocumentos($lote, $archivos, $lote->cod_log));

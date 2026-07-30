@@ -10,27 +10,48 @@ use Illuminate\Support\Str;
 use InvalidArgumentException;
 
 /**
- * Sube/reemplaza/sirve los documentos (carta, cotización, requerimiento) de
- * un expediente ROP2026, guardándolos en el disco de red 'rop2026'
- * (\\Hp-server\Operaciones\LOGISTICA\ROP 2026), dentro de la carpeta que ya
- * corresponde a ese ROP (cod_log, ej. "ROP260298") — no hay selector de
- * carpeta aparte, el cod_log que Admin ya escribe al crear el registro ES el
- * nombre de la carpeta real en el share.
+ * Sube/reemplaza/sirve los documentos de un expediente ROP2026, respetando la
+ * estructura real de carpetas que usa Logística en el disco de red
+ * (\\Hp-server\Operaciones\LOGISTICA\ROP 2026\{cod_log}\01 CARTA, 02
+ * PROPUESTA, 03 EVALUACION, 04 ORDEN, 05 INFORMES / 05 GRE, 06 CONFORMIDAD,
+ * 07 FACTURA). El cod_log que Admin escribe al crear el registro ES el
+ * nombre de la carpeta raíz del expediente en el share.
  */
 class RopDocumentoService
 {
     public const DISK = 'rop2026';
 
-    // 'carta' (área solicitante), 'carta_jefe_operaciones' (obligatoria solo
-    // si la compra/servicio supera US$ 1,000 — no se valida automático,
-    // depende de un criterio que Admin ya conoce al registrar), 'cotizacion_1'
-    // a 'cotizacion_6' (1 a 6 cotizaciones según el proceso) y 'requerimiento'
-    // los sube Admin al registrar el ROP; 'orden'/'acta_comite' los sube
-    // Logística Lima como parte de su propio proceso.
+    /**
+     * Subcarpeta real donde va cada tipo de documento, según el orden de
+     * proceso mostrado en el explorador de archivos de Logística. '05
+     * INFORMES' y '05 GRE' son excluyentes (servicio vs. compra), pero se
+     * crean ambas de una vez porque tipo_solicitud recién se define después
+     * del registro inicial del ROP.
+     */
+    public const SUBCARPETA_POR_CAMPO = [
+        'carta' => '01 CARTA',
+        'carta_jefe_operaciones' => '01 CARTA',
+        'requerimiento' => '01 CARTA',
+        'cotizacion_1' => '02 PROPUESTA',
+        'cotizacion_2' => '02 PROPUESTA',
+        'cotizacion_3' => '02 PROPUESTA',
+        'cotizacion_4' => '02 PROPUESTA',
+        'cotizacion_5' => '02 PROPUESTA',
+        'cotizacion_6' => '02 PROPUESTA',
+        'acta_comite' => '03 EVALUACION',
+        'certificacion_presupuestal' => '03 EVALUACION',
+        'orden' => '04 ORDEN',
+        'informe' => '05 INFORMES',
+        'gre' => '05 GRE',
+        'conformidad' => '06 CONFORMIDAD',
+        'factura' => '07 FACTURA',
+    ];
+
     public const CAMPOS = [
-        'carta', 'carta_jefe_operaciones',
+        'carta', 'carta_jefe_operaciones', 'requerimiento',
         'cotizacion_1', 'cotizacion_2', 'cotizacion_3', 'cotizacion_4', 'cotizacion_5', 'cotizacion_6',
-        'requerimiento', 'orden', 'acta_comite',
+        'acta_comite', 'certificacion_presupuestal',
+        'orden', 'informe', 'gre', 'conformidad', 'factura',
     ];
 
     /**
@@ -49,10 +70,11 @@ class RopDocumentoService
     }
 
     /**
-     * Sube los archivos presentes en $archivos (claves: carta, cotizacion,
-     * requerimiento) a la carpeta $carpeta (el cod_log del ROP), y arma el
-     * array de columnas a mezclar en $data antes de create()/update() del
-     * registro. Los campos ausentes o null en $archivos no se tocan.
+     * Sube los archivos presentes en $archivos (claves: ver CAMPOS) dentro de
+     * la subcarpeta real que corresponde a cada tipo (ver
+     * SUBCARPETA_POR_CAMPO), y arma el array de columnas a mezclar en $data
+     * antes de create()/update() del registro. Los campos ausentes o null en
+     * $archivos no se tocan.
      *
      * @param array<string, UploadedFile|null> $archivos
      * @return array<string, mixed>
@@ -82,6 +104,7 @@ class RopDocumentoService
 
         foreach ($archivos as $campo => $file) {
             $columna = "archivo_{$campo}";
+            $rutaCarpeta = $carpeta . '/' . self::SUBCARPETA_POR_CAMPO[$campo];
             $nombre = sprintf(
                 '%s_%s_%s.%s',
                 $campo,
@@ -90,7 +113,7 @@ class RopDocumentoService
                 strtolower($file->getClientOriginalExtension())
             );
 
-            $path = $file->storeAs($carpeta, $nombre, self::DISK);
+            $path = $file->storeAs($rutaCarpeta, $nombre, self::DISK);
 
             if (!$path || Storage::disk(self::DISK)->size($path) !== $file->getSize()) {
                 if ($path) {
@@ -140,11 +163,11 @@ class RopDocumentoService
     }
 
     /**
-     * Crea la carpeta del ROP en el disco (idempotente) aunque todavía no se
-     * suba ningún documento — así el expediente queda listo para recibir
-     * archivos (subidos después, o copiados manualmente por Logística Lima
-     * mientras esta carpeta se comparte con Lima) desde el momento en que se
-     * registra el ROP.
+     * Crea la carpeta del ROP y sus 7 subcarpetas reales (idempotente),
+     * aunque todavía no se suba ningún documento — así el expediente queda
+     * listo para recibir archivos (subidos después, o copiados manualmente
+     * por Logística Lima mientras esta carpeta se comparte con Lima) desde
+     * el momento en que se registra el ROP.
      */
     public function crearCarpeta(string $carpeta): void
     {
@@ -156,6 +179,13 @@ class RopDocumentoService
 
         if (!Storage::disk(self::DISK)->exists($carpeta)) {
             Storage::disk(self::DISK)->makeDirectory($carpeta);
+        }
+
+        foreach (array_unique(array_values(self::SUBCARPETA_POR_CAMPO)) as $subcarpeta) {
+            $ruta = $carpeta . '/' . $subcarpeta;
+            if (!Storage::disk(self::DISK)->exists($ruta)) {
+                Storage::disk(self::DISK)->makeDirectory($ruta);
+            }
         }
     }
 
