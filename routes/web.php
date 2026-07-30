@@ -231,6 +231,9 @@ Route::get('/logistica_lotes/{id}/documentos/{campo}', [LogisticaLoteController:
 Route::patch('/logistica_lotes/{id}/verificacion', [LogisticaLoteController::class, 'updateVerificacion'])
     ->name('logistica_lotes.update_verificacion');
 
+Route::patch('/logistica_lotes/{id}/documentos-area', [LogisticaLoteController::class, 'updateDocumentosArea'])
+    ->name('logistica_lotes.update_documentos_area');
+
 Route::get('logistica-export', [LogisticaLoteController::class, 'exportExcel'])
     ->name('logistica_lotes.export.excel');
 
