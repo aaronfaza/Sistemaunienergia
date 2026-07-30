@@ -148,10 +148,9 @@ class LogisticaLoteController extends Controller
 
         $lote = new LogisticaLote();
         $lote->cod_log = $data['cod_log'];
-        // La carpeta real en el disco de red se llama igual que cod_log — se
-        // nombra sola al registrar, en vez de quedar en blanco hasta que
-        // Logística Lima la escriba a mano.
-        $lote->carpeta = $data['cod_log'];
+        // Se nombra sola al registrar, como ruta (no solo el código), en vez
+        // de quedar en blanco hasta que Logística Lima la escriba a mano.
+        $lote->carpeta = 'ROP 2026/' . $data['cod_log'];
         $lote->asunto = $data['asunto'] ?? null;
         $lote->observacion = $data['observacion'] ?? null;
         $lote->numero_carta = $carta->codigo;
