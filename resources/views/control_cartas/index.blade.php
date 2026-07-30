@@ -914,7 +914,7 @@ textarea:focus {
                     </button>
                   </div>
 
-                  <form action="{{ route('control_cartas.update', $carta->id) }}" method="POST" enctype="multipart/form-data">
+                  <form action="{{ route('control_cartas.update', $carta->id) }}" method="POST">
                     @csrf
                     @method('PUT')
 
@@ -1012,42 +1012,6 @@ textarea:focus {
                           <label>Fecha de Pago</label>
                           <input type="date" name="fecha_pago" value="{{ old('fecha_pago', $carta->fecha_pago ? \Carbon\Carbon::parse($carta->fecha_pago)->format('Y-m-d') : '') }}" class="form-control">
                         </div>
-                      </div>
-
-                      <hr>
-                      <h6 class="text-primary font-weight-bold mb-2">
-                        <i class="fas fa-folder-open mr-1"></i> Documentos (no es necesario que estén firmados aún)
-                      </h6>
-                      <div class="form-row">
-                        <div class="form-group col-md-4">
-                          <label>Carta</label>
-                          <input type="file" name="archivo_carta" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-                          @if($carta->archivo_carta)
-                            <small class="text-muted d-block mt-1">Actual: {{ basename($carta->archivo_carta) }} (subir uno nuevo lo reemplaza)</small>
-                          @endif
-                        </div>
-                        <div class="form-group col-md-4">
-                          <label>Cotización</label>
-                          <input type="file" name="archivo_cotizacion" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-                          @if($carta->archivo_cotizacion)
-                            <small class="text-muted d-block mt-1">Actual: {{ basename($carta->archivo_cotizacion) }}</small>
-                          @endif
-                        </div>
-                        <div class="form-group col-md-4">
-                          <label>Requerimiento</label>
-                          <input type="file" name="archivo_requerimiento" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-                          @if($carta->archivo_requerimiento)
-                            <small class="text-muted d-block mt-1">Actual: {{ basename($carta->archivo_requerimiento) }}</small>
-                          @endif
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label>Carpeta ROP2026 destino</label>
-                        <input type="text" name="carpeta_rop" value="{{ old('carpeta_rop', $carta->carpeta_rop) }}"
-                               list="carpetasRopEditar{{ $carta->id }}" class="form-control js-carpetas-input"
-                               placeholder="Ej: ROP260298" autocomplete="off">
-                        <datalist id="carpetasRopEditar{{ $carta->id }}" class="js-carpetas-datalist"></datalist>
-                        <small class="text-muted js-carpetas-origen"></small>
                       </div>
 
                     </div>
@@ -1205,56 +1169,6 @@ textarea:focus {
                     </div>
                     @endif
 
-                    <!-- BLOQUE: DOCUMENTOS -->
-                    <div class="card shadow-sm border-0 mt-3">
-                      <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                          <h6 class="text-primary font-weight-bold mb-0">
-                            <i class="fas fa-folder-open mr-1"></i> Documentos
-                          </h6>
-                          @if($carta->firmado_verificado)
-                            <span class="badge badge-success">
-                              <i class="fas fa-check-circle mr-1"></i> Verificado por {{ $carta->verificadoPor->name ?? '—' }}
-                              @if($carta->verificado_en)
-                                ({{ \Carbon\Carbon::parse($carta->verificado_en)->format('d/m/Y H:i') }})
-                              @endif
-                            </span>
-                          @else
-                            <span class="badge badge-secondary">Pendiente de verificación</span>
-                          @endif
-                        </div>
-
-                        <div class="row text-center">
-                          @foreach(['carta' => 'Carta', 'cotizacion' => 'Cotización', 'requerimiento' => 'Requerimiento'] as $campo => $etiqueta)
-                            <div class="col-md-4 mb-2">
-                              <div class="border rounded p-2 h-100">
-                                <div class="mb-1">{{ $etiqueta }}</div>
-                                @if($carta->{"archivo_{$campo}"})
-                                  <span class="badge badge-light border text-success mb-1"><i class="fas fa-check"></i> Subido</span><br>
-                                  <a href="{{ route('control_cartas.documentos.preview', [$carta->id, $campo]) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-eye mr-1"></i> Previsualizar
-                                  </a>
-                                @else
-                                  <span class="badge badge-light border text-muted">No subido</span>
-                                @endif
-                              </div>
-                            </div>
-                          @endforeach
-                        </div>
-
-                        @if(Auth::user()->tieneAccesoCompleto() && $carta->archivo_carta && !$carta->firmado_verificado)
-                          <form action="{{ route('control_cartas.update_verificacion', $carta->id) }}" method="POST" class="mt-2"
-                                onsubmit="return confirm('¿Confirma que revisó el documento y está correctamente firmado?');">
-                            @csrf
-                            @method('PATCH')
-                            <button type="submit" class="btn btn-success btn-sm">
-                              <i class="fas fa-stamp mr-1"></i> Marcar como firmado y verificado
-                            </button>
-                          </form>
-                        @endif
-                      </div>
-                    </div>
-
                     <!-- BLOQUE: AUDITORÍA -->
                     <div class="card shadow-sm border-0 mt-3">
                       <div class="card-body">
@@ -1336,7 +1250,7 @@ textarea:focus {
         </button>
       </div>
 
-      <form action="{{ route('control_cartas.store') }}" method="POST" enctype="multipart/form-data">
+      <form action="{{ route('control_cartas.store') }}" method="POST">
         @csrf
 
         <div class="modal-body">
@@ -1493,36 +1407,6 @@ textarea:focus {
             </div>
           </div>
 
-          <!-- ================= DOCUMENTOS ================= -->
-          <div class="card border-0 shadow-sm mt-3">
-            <div class="card-header bg-light font-weight-bold text-success">
-              <i class="fas fa-folder-open mr-1"></i> Documentos (no es necesario que estén firmados aún)
-            </div>
-            <div class="card-body">
-              <div class="form-row">
-                <div class="form-group col-md-4">
-                  <label>Carta</label>
-                  <input type="file" name="archivo_carta" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-                </div>
-                <div class="form-group col-md-4">
-                  <label>Cotización</label>
-                  <input type="file" name="archivo_cotizacion" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-                </div>
-                <div class="form-group col-md-4">
-                  <label>Requerimiento</label>
-                  <input type="file" name="archivo_requerimiento" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-                </div>
-              </div>
-              <div class="form-group mb-0">
-                <label>Carpeta ROP2026 destino</label>
-                <input type="text" name="carpeta_rop" list="carpetasRopAgregar" class="form-control js-carpetas-input"
-                       placeholder="Ej: ROP260298" autocomplete="off">
-                <datalist id="carpetasRopAgregar" class="js-carpetas-datalist"></datalist>
-                <small class="text-muted js-carpetas-origen"></small>
-              </div>
-            </div>
-          </div>
-
         </div>
 
         <!-- FOOTER -->
@@ -1653,35 +1537,6 @@ textarea:focus {
                     $cuerpo.html('<tr><td colspan="4" class="text-center text-danger">No se pudo cargar el historial.</td></tr>');
                 });
         });
-    });
-</script>
-
-<script>
-    // Carga perezosa (al abrir cada modal) del listado de carpetas ROP2026
-    // para el <datalist> del selector de destino de documentos.
-    document.addEventListener('shown.bs.modal', function (e) {
-        var datalist = e.target.querySelector('.js-carpetas-datalist');
-        if (!datalist || datalist.dataset.loaded === '1') return;
-
-        fetch('{{ route("control_cartas.documentos.carpetas") }}', { headers: { 'Accept': 'application/json' } })
-            .then(function (r) { return r.json(); })
-            .then(function (data) {
-                datalist.innerHTML = '';
-                (data.carpetas || []).forEach(function (carpeta) {
-                    var opt = document.createElement('option');
-                    opt.value = carpeta;
-                    datalist.appendChild(opt);
-                });
-                datalist.dataset.loaded = '1';
-
-                var origenEl = e.target.querySelector('.js-carpetas-origen');
-                if (origenEl) {
-                    origenEl.textContent = data.origen === 'red'
-                        ? 'Carpetas del servidor de archivos ROP2026 (en vivo).'
-                        : 'Servidor de archivos no disponible: mostrando ROP ya registrados en el sistema.';
-                }
-            })
-            .catch(function () {});
     });
 </script>
 

@@ -110,13 +110,6 @@ Route::get(
     [ControlCartaController::class, 'historial']
 )->name('control_cartas.historial');
 
-Route::get('/control_cartas/documentos/carpetas', [ControlCartaController::class, 'carpetasDisponibles'])
-    ->name('control_cartas.documentos.carpetas');
-Route::get('/control_cartas/{id}/documentos/{campo}', [ControlCartaController::class, 'previsualizarDocumento'])
-    ->name('control_cartas.documentos.preview');
-Route::patch('/control_cartas/{id}/verificacion', [ControlCartaController::class, 'updateVerificacion'])
-    ->name('control_cartas.update_verificacion');
-
 Route::resource('cartas_fis', \App\Http\Controllers\CartaFisController::class)
     ->only(['index','store','update','destroy']);
 
@@ -127,13 +120,6 @@ Route::get('/cartas-fis/backup', [CartaFisController::class, 'backup'])->name('c
 
 // Ruta de recursos (index, store, update, etc.)
 Route::resource('cartas_fis', CartaFisController::class);
-
-Route::get('/cartas_fis/documentos/carpetas', [CartaFisController::class, 'carpetasDisponibles'])
-    ->name('cartas_fis.documentos.carpetas');
-Route::get('/cartas_fis/{id}/documentos/{campo}', [CartaFisController::class, 'previsualizarDocumento'])
-    ->name('cartas_fis.documentos.preview');
-Route::patch('/cartas_fis/{id}/verificacion', [CartaFisController::class, 'updateVerificacion'])
-    ->name('cartas_fis.update_verificacion');
 
 
 // ===== Cartas SO-IPF (Ingeniería de Producción y Facilidades) =====
@@ -159,13 +145,6 @@ Route::get(
     [CartaIpfController::class, 'historial']
 )->name('cartas_ipf.historial');
 
-Route::get('/cartas_ipf/documentos/carpetas', [CartaIpfController::class, 'carpetasDisponibles'])
-    ->name('cartas_ipf.documentos.carpetas');
-Route::get('/cartas_ipf/{id}/documentos/{campo}', [CartaIpfController::class, 'previsualizarDocumento'])
-    ->name('cartas_ipf.documentos.preview');
-Route::patch('/cartas_ipf/{id}/verificacion', [CartaIpfController::class, 'updateVerificacion'])
-    ->name('cartas_ipf.update_verificacion');
-
 // ===== Cartas SO-MAN (Mantenimiento) =====
 Route::get('/cartas_man', [CartaManController::class, 'index'])->name('cartas_man.index');
 Route::resource('cartas_man', CartaManController::class);
@@ -188,13 +167,6 @@ Route::get(
     '/cartas_man/{id}/historial',
     [CartaManController::class, 'historial']
 )->name('cartas_man.historial');
-
-Route::get('/cartas_man/documentos/carpetas', [CartaManController::class, 'carpetasDisponibles'])
-    ->name('cartas_man.documentos.carpetas');
-Route::get('/cartas_man/{id}/documentos/{campo}', [CartaManController::class, 'previsualizarDocumento'])
-    ->name('cartas_man.documentos.preview');
-Route::patch('/cartas_man/{id}/verificacion', [CartaManController::class, 'updateVerificacion'])
-    ->name('cartas_man.update_verificacion');
 
 // ===== Cartas SO-LOG (Logística Almacenes Lote IX) =====
 Route::get('/cartas_log', [CartaLogController::class, 'index'])->name('cartas_log.index');
@@ -219,13 +191,6 @@ Route::get(
     [CartaLogController::class, 'historial']
 )->name('cartas_log.historial');
 
-Route::get('/cartas_log/documentos/carpetas', [CartaLogController::class, 'carpetasDisponibles'])
-    ->name('cartas_log.documentos.carpetas');
-Route::get('/cartas_log/{id}/documentos/{campo}', [CartaLogController::class, 'previsualizarDocumento'])
-    ->name('cartas_log.documentos.preview');
-Route::patch('/cartas_log/{id}/verificacion', [CartaLogController::class, 'updateVerificacion'])
-    ->name('cartas_log.update_verificacion');
-
 // ===== Cartas SO-HSE (Área de HSE) =====
 Route::get('/cartas_hse', [CartaHseController::class, 'index'])->name('cartas_hse.index');
 Route::resource('cartas_hse', CartaHseController::class);
@@ -249,13 +214,6 @@ Route::get(
     [CartaHseController::class, 'historial']
 )->name('cartas_hse.historial');
 
-Route::get('/cartas_hse/documentos/carpetas', [CartaHseController::class, 'carpetasDisponibles'])
-    ->name('cartas_hse.documentos.carpetas');
-Route::get('/cartas_hse/{id}/documentos/{campo}', [CartaHseController::class, 'previsualizarDocumento'])
-    ->name('cartas_hse.documentos.preview');
-Route::patch('/cartas_hse/{id}/verificacion', [CartaHseController::class, 'updateVerificacion'])
-    ->name('cartas_hse.update_verificacion');
-
 
 Route::resource('logistica_lotes', LogisticaLoteController::class);
 
@@ -266,6 +224,12 @@ Route::post('logistica_lotes/{id}/actualizar-estado', [LogisticaLoteController::
 
 Route::get('/logistica_lotes/{id}/historial', [LogisticaLoteController::class, 'historial'])
     ->name('logistica_lotes.historial');
+
+Route::get('/logistica_lotes/{id}/documentos/{campo}', [LogisticaLoteController::class, 'previsualizarDocumento'])
+    ->name('logistica_lotes.documentos.preview');
+
+Route::patch('/logistica_lotes/{id}/verificacion', [LogisticaLoteController::class, 'updateVerificacion'])
+    ->name('logistica_lotes.update_verificacion');
 
 Route::get('logistica-export', [LogisticaLoteController::class, 'exportExcel'])
     ->name('logistica_lotes.export.excel');

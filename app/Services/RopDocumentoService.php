@@ -3,19 +3,19 @@
 namespace App\Services;
 
 use App\Exceptions\RopDiskNoDisponibleException;
-use App\Models\LogisticaLote;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 
 /**
  * Sube/reemplaza/sirve los documentos (carta, cotización, requerimiento) de
- * cualquiera de los 6 tipos de Carta, guardándolos en el disco de red
- * 'rop2026' (\\Hp-server\Operaciones\LOGISTICA\ROP 2026). Reutilizado por los
- * 6 controladores de carta para no repetir esta lógica 6 veces.
+ * un expediente ROP2026, guardándolos en el disco de red 'rop2026'
+ * (\\Hp-server\Operaciones\LOGISTICA\ROP 2026), dentro de la carpeta que ya
+ * corresponde a ese ROP (cod_log, ej. "ROP260298") — no hay selector de
+ * carpeta aparte, el cod_log que Admin ya escribe al crear el registro ES el
+ * nombre de la carpeta real en el share.
  */
 class RopDocumentoService
 {
@@ -38,37 +38,10 @@ class RopDocumentoService
     }
 
     /**
-     * @return array{origen: 'red'|'bd', carpetas: array<int, string>}
-     */
-    public function listarCarpetas(): array
-    {
-        if ($this->mountDisponible()) {
-            try {
-                $carpetas = Cache::remember('rop2026_carpetas', 45, function () {
-                    return Storage::disk(self::DISK)->directories();
-                });
-
-                return ['origen' => 'red', 'carpetas' => $carpetas];
-            } catch (\Throwable $e) {
-                // Cae al fallback de abajo.
-            }
-        }
-
-        $carpetas = LogisticaLote::whereNotNull('cod_log')
-            ->distinct()
-            ->orderBy('cod_log')
-            ->pluck('cod_log')
-            ->all();
-
-        return ['origen' => 'bd', 'carpetas' => $carpetas];
-    }
-
-    /**
      * Sube los archivos presentes en $archivos (claves: carta, cotizacion,
-     * requerimiento) a la carpeta indicada, y arma el array de columnas a
-     * mezclar en $data antes de create()/update() de la carta. Los campos
-     * ausentes o null en $archivos no se tocan (permite reemplazar solo uno
-     * de los 3 documentos, o solo cambiar la carpeta sin resubir nada).
+     * requerimiento) a la carpeta $carpeta (el cod_log del ROP), y arma el
+     * array de columnas a mezclar en $data antes de create()/update() del
+     * registro. Los campos ausentes o null en $archivos no se tocan.
      *
      * @param array<string, UploadedFile|null> $archivos
      * @return array<string, mixed>
@@ -76,39 +49,24 @@ class RopDocumentoService
      * @throws RopDiskNoDisponibleException
      * @throws InvalidArgumentException
      */
-    public function guardarDocumentos(Model $carta, array $archivos, ?string $carpeta): array
+    public function guardarDocumentos(Model $modelo, array $archivos, string $carpeta): array
     {
         $archivos = array_filter(
             array_intersect_key($archivos, array_flip(self::CAMPOS)),
             fn ($file) => $file instanceof UploadedFile
         );
 
-        $carpeta = ($carpeta !== null && trim($carpeta) !== '') ? $this->sanitizarCarpeta($carpeta) : null;
-
-        if (empty($archivos) && $carpeta === null) {
-            return [];
-        }
-
-        $resultado = [];
-
-        if ($carpeta !== null) {
-            $resultado['carpeta_rop'] = $carpeta;
-        }
-
         if (empty($archivos)) {
-            return $resultado;
+            return [];
         }
 
         if (!$this->mountDisponible()) {
             throw new RopDiskNoDisponibleException();
         }
 
-        $carpetaDestino = $carpeta ?? $carta->carpeta_rop;
+        $carpeta = $this->sanitizarCarpeta($carpeta);
 
-        if (!$carpetaDestino) {
-            throw new InvalidArgumentException('Debe indicar la carpeta ROP de destino antes de subir documentos.');
-        }
-
+        $resultado = [];
         $rutasAnteriores = [];
 
         foreach ($archivos as $campo => $file) {
@@ -121,7 +79,7 @@ class RopDocumentoService
                 strtolower($file->getClientOriginalExtension())
             );
 
-            $path = $file->storeAs($carpetaDestino, $nombre, self::DISK);
+            $path = $file->storeAs($carpeta, $nombre, self::DISK);
 
             if (!$path || Storage::disk(self::DISK)->size($path) !== $file->getSize()) {
                 if ($path) {
@@ -131,7 +89,7 @@ class RopDocumentoService
                 throw new RopDiskNoDisponibleException();
             }
 
-            $rutasAnteriores[$columna] = $carta->getOriginal($columna);
+            $rutasAnteriores[$columna] = $modelo->getOriginal($columna);
             $resultado[$columna] = $path;
         }
 
@@ -145,12 +103,11 @@ class RopDocumentoService
         // Reemplazar el documento de la carta invalida cualquier verificación
         // previa: no puede seguir figurando "verificado" un documento distinto
         // al que el admin realmente revisó. Se aplica con forceFill() directo
-        // sobre el modelo (no vía el array $resultado) porque estos 3 campos
-        // están deliberadamente fuera de $fillable — si viajaran en $resultado,
-        // el update($data) del controlador los descartaría en silencio por la
-        // protección de asignación masiva.
-        if (isset($resultado['archivo_carta']) && $carta->firmado_verificado) {
-            $carta->forceFill([
+        // sobre el modelo (no vía $resultado) porque estos 3 campos están
+        // deliberadamente fuera de $fillable — si viajaran en $resultado, el
+        // update($data) del controlador los descartaría en silencio.
+        if (isset($resultado['archivo_carta']) && $modelo->firmado_verificado) {
+            $modelo->forceFill([
                 'firmado_verificado' => false,
                 'verificado_por' => null,
                 'verificado_en' => null,
@@ -172,7 +129,7 @@ class RopDocumentoService
         $carpeta = trim($carpeta);
 
         if ($carpeta === '' || !preg_match('/^[A-Za-z0-9 _\-]+$/', $carpeta)) {
-            throw new InvalidArgumentException('Nombre de carpeta inválido.');
+            throw new InvalidArgumentException('Nombre de carpeta (cod_log) inválido para el disco de red.');
         }
 
         return $carpeta;

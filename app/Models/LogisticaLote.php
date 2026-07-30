@@ -22,6 +22,7 @@ class LogisticaLote extends Model
         'ruc', 'empresa_ganadora', 'centro_costo', 'moneda', 'monto_igv', 'forma_pago',
         'fecha_entrega', 'orden_firmada', 'ejecucion', 'porcentaje_ejecucion', 'monto_factura',
         'fecha_vencimiento', 'fecha_pago',
+        'archivo_carta', 'archivo_cotizacion', 'archivo_requerimiento',
     ];
 
     protected $casts = [
@@ -81,6 +82,11 @@ class LogisticaLote extends Model
     public function responsableFirma()
     {
         return $this->belongsTo(User::class, 'responsable_id');
+    }
+
+    public function verificadoPor()
+    {
+        return $this->belongsTo(User::class, 'verificado_por');
     }
 
     /**

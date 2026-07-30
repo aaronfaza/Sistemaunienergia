@@ -20,14 +20,8 @@ class CartaFis extends Model
         'nro_orden','autorizado_por',
         'factura_nro','fecha_recepcion','fecha_vencimiento','fecha_pago',
         'estado',
-        'created_by','updated_by',
-        'archivo_carta','archivo_cotizacion','archivo_requerimiento','carpeta_rop',
+        'created_by','updated_by'
     ];
-
-    public function verificadoPor()
-    {
-        return $this->belongsTo(User::class, 'verificado_por');
-    }
 
     public function ropLote()
     {

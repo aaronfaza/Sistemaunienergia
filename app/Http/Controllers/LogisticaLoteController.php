@@ -11,8 +11,11 @@ use App\Models\ControlCarta;
 use App\Models\LogisticaLote;
 use App\Models\User;
 use App\Exports\LogisticaBackupExport;
+use App\Exceptions\RopDiskNoDisponibleException;
+use App\Services\RopDocumentoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
@@ -69,15 +72,13 @@ class LogisticaLoteController extends Controller
 
         $cartasDisponibles = [];
         if (Auth::user()->tieneAccesoCompleto()) {
-            // Solo cartas con documentos ya verificados como firmados por Admin
-            // pueden usarse como origen de un ROP nuevo (ver RopDocumentoService).
             $cartasDisponibles = [
-                'control_carta' => ControlCarta::whereDoesntHave('ropLote')->where('firmado_verificado', true)->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
-                'carta_fis' => CartaFis::whereDoesntHave('ropLote')->where('firmado_verificado', true)->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
-                'carta_ipf' => CartaIpf::whereDoesntHave('ropLote')->where('firmado_verificado', true)->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
-                'carta_man' => CartaMan::whereDoesntHave('ropLote')->where('firmado_verificado', true)->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
-                'carta_log' => CartaLog::whereDoesntHave('ropLote')->where('firmado_verificado', true)->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
-                'carta_hse' => CartaHse::whereDoesntHave('ropLote')->where('firmado_verificado', true)->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
+                'control_carta' => ControlCarta::whereDoesntHave('ropLote')->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
+                'carta_fis' => CartaFis::whereDoesntHave('ropLote')->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
+                'carta_ipf' => CartaIpf::whereDoesntHave('ropLote')->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
+                'carta_man' => CartaMan::whereDoesntHave('ropLote')->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
+                'carta_log' => CartaLog::whereDoesntHave('ropLote')->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
+                'carta_hse' => CartaHse::whereDoesntHave('ropLote')->orderByDesc('id')->get(['id', 'codigo', 'descripcion']),
             ];
         }
 
@@ -108,10 +109,14 @@ class LogisticaLoteController extends Controller
 
     /**
      * Crea el registro ROP inicial. Solo administración: cod_log, la carta de
-     * origen (Control de Cartas o Cartas FIS) y la observación. El resto lo
-     * completa Logística Lima en update().
+     * origen (Control de Cartas o Cartas FIS), la observación, y — nuevo —
+     * los documentos (carta, cotización, requerimiento) firmados o no, que se
+     * guardan directamente en la carpeta de red que coincide con cod_log
+     * (ej. cod_log="ROP260298" → carpeta "ROP260298" dentro de ROP2026). El
+     * resto lo completa Logística Lima en update(), pero solo una vez que
+     * Admin haya verificado los documentos (ver updateVerificacion()).
      */
-    public function store(Request $request)
+    public function store(Request $request, RopDocumentoService $rop)
     {
         abort_if(!Auth::user()->tieneAccesoCompleto(), 403);
 
@@ -121,6 +126,9 @@ class LogisticaLoteController extends Controller
             'origen_id' => 'required|integer',
             'asunto' => 'nullable|string',
             'observacion' => 'nullable|string',
+            'archivo_carta' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'archivo_cotizacion' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'archivo_requerimiento' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ]);
 
         $cartaClass = self::ORIGENES_CARTA[$data['origen_tipo']];
@@ -140,9 +148,21 @@ class LogisticaLoteController extends Controller
         $lote->carta_type = $cartaClass;
         $lote->carta_id = $carta->id;
         $lote->estado = LogisticaLote::ESTADOS[0]; // 'PENDIENTE'
+
+        try {
+            $documentos = $rop->guardarDocumentos($lote, [
+                'carta' => $data['archivo_carta'] ?? null,
+                'cotizacion' => $data['archivo_cotizacion'] ?? null,
+                'requerimiento' => $data['archivo_requerimiento'] ?? null,
+            ], $data['cod_log']);
+        } catch (RopDiskNoDisponibleException|\InvalidArgumentException $e) {
+            return back()->withInput()->with('error', $e->getMessage());
+        }
+
+        $lote->fill($documentos);
         $lote->save();
 
-        return redirect()->route('logistica_lotes.index')->with('success', 'Registro ROP creado. Logística Lima ya puede completarlo.');
+        return redirect()->route('logistica_lotes.index')->with('success', 'Registro ROP creado. Logística Lima ya puede completarlo una vez verificado.');
     }
 
     /**
@@ -154,6 +174,8 @@ class LogisticaLoteController extends Controller
         abort_if(!Auth::user()->esLogistica(), 403);
 
         $lote = LogisticaLote::findOrFail($id);
+
+        abort_if(!$lote->firmado_verificado, 403, 'Este expediente aún no ha sido verificado como firmado por administración.');
 
         $nombresLogistica = User::where('rol', 'logistica')->pluck('name')->all();
 
@@ -227,15 +249,59 @@ class LogisticaLoteController extends Controller
     {
         abort_if(!Auth::user()->esLogistica(), 403);
 
+        $lote = LogisticaLote::findOrFail($id);
+
+        abort_if(!$lote->firmado_verificado, 403, 'Este expediente aún no ha sido verificado como firmado por administración.');
+
         $request->validate([
             'estado' => ['required', Rule::in(LogisticaLote::ESTADOS)],
         ]);
 
-        $lote = LogisticaLote::findOrFail($id);
         $lote->estado = $request->estado;
         $lote->save();
 
         return response()->json(['success' => true]);
+    }
+
+    /**
+     * Sirve un documento (carta/cotizacion/requerimiento) del expediente para
+     * previsualizar en el navegador y verificar visualmente que está firmado.
+     */
+    public function previsualizarDocumento($id, string $campo)
+    {
+        abort_unless(in_array($campo, RopDocumentoService::CAMPOS, true), 404);
+
+        $lote = LogisticaLote::findOrFail($id);
+        $path = $lote->{"archivo_{$campo}"};
+
+        abort_if(
+            !$path || !Storage::disk(RopDocumentoService::DISK)->exists($path),
+            404,
+            'Documento no disponible. Verifique la conexión con el servidor de archivos ROP2026.'
+        );
+
+        return Storage::disk(RopDocumentoService::DISK)->response($path);
+    }
+
+    /**
+     * Marca el expediente como firmado y verificado. Solo Admin, y solo
+     * después de confirmar (en la previsualización) que el documento
+     * realmente está firmado. Desbloquea el expediente para Logística Lima.
+     */
+    public function updateVerificacion($id)
+    {
+        abort_if(!Auth::user()->tieneAccesoCompleto(), 403);
+
+        $lote = LogisticaLote::findOrFail($id);
+
+        abort_if(!$lote->archivo_carta, 422, 'No se puede verificar un expediente sin el documento de la carta cargado.');
+
+        $lote->firmado_verificado = true;
+        $lote->verificado_por = Auth::id();
+        $lote->verificado_en = now();
+        $lote->save();
+
+        return back()->with('success', 'Expediente marcado como firmado y verificado.');
     }
 
     /**

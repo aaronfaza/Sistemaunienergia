@@ -6,10 +6,6 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use App\Models\ControlCarta;
 use App\Exports\ControlCartasExport;
-use App\Exceptions\RopDiskNoDisponibleException;
-use App\Services\RopDocumentoService;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ControlCartaController extends Controller
@@ -39,7 +35,7 @@ class ControlCartaController extends Controller
     }
 
    
-    public function store(Request $request, RopDocumentoService $rop)
+    public function store(Request $request)
     {
         $data = $request->validate([
             'codigo' => 'required|unique:control_cartas,codigo',
@@ -61,21 +57,9 @@ class ControlCartaController extends Controller
             'fecha_pago' => 'nullable|date',
             'area' => 'nullable|string',
             'estado' => 'nullable|in:Pendiente,Rechazado,Ejecutado',
-            'archivo_carta' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
-            'archivo_cotizacion' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
-            'archivo_requerimiento' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
-            'carpeta_rop' => 'nullable|string|max:255',
         ]);
 
         $data['estado'] = $data['estado'] ?? 'Pendiente';
-
-        [$data, $documentos] = $this->extraerDocumentos($data);
-
-        try {
-            $data = array_merge($data, $rop->guardarDocumentos(new ControlCarta(), $documentos['archivos'], $documentos['carpeta']));
-        } catch (RopDiskNoDisponibleException|\InvalidArgumentException $e) {
-            return back()->withInput()->with('error', $e->getMessage());
-        }
 
         ControlCarta::create($data);
 
@@ -87,7 +71,7 @@ class ControlCartaController extends Controller
     /**
      * Actualizar carta
      */
-    public function update(Request $request, $id, RopDocumentoService $rop)
+    public function update(Request $request, $id)
     {
         $carta = ControlCarta::findOrFail($id);
 
@@ -111,44 +95,13 @@ class ControlCartaController extends Controller
             'fecha_pago' => 'nullable|date',
             'area' => 'nullable|string',
             'estado' => 'nullable|in:Pendiente,Rechazado,Ejecutado',
-            'archivo_carta' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
-            'archivo_cotizacion' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
-            'archivo_requerimiento' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
-            'carpeta_rop' => 'nullable|string|max:255',
         ]);
-
-        [$data, $documentos] = $this->extraerDocumentos($data);
-
-        try {
-            $data = array_merge($data, $rop->guardarDocumentos($carta, $documentos['archivos'], $documentos['carpeta']));
-        } catch (RopDiskNoDisponibleException|\InvalidArgumentException $e) {
-            return back()->withInput()->with('error', $e->getMessage());
-        }
 
         $carta->update($data);
 
         return redirect()
             ->route('control_cartas.index')
             ->with('success', 'Carta actualizada correctamente.');
-    }
-
-    /**
-     * Separa del array validado los 3 archivos y la carpeta destino, para
-     * pasarlos a RopDocumentoService sin que create()/update() intente
-     * asignarlos como columnas crudas.
-     */
-    private function extraerDocumentos(array $data): array
-    {
-        $archivos = [
-            'carta' => $data['archivo_carta'] ?? null,
-            'cotizacion' => $data['archivo_cotizacion'] ?? null,
-            'requerimiento' => $data['archivo_requerimiento'] ?? null,
-        ];
-        $carpeta = $data['carpeta_rop'] ?? null;
-
-        unset($data['archivo_carta'], $data['archivo_cotizacion'], $data['archivo_requerimiento'], $data['carpeta_rop']);
-
-        return [$data, ['archivos' => $archivos, 'carpeta' => $carpeta]];
     }
 
     /**
@@ -224,56 +177,7 @@ class ControlCartaController extends Controller
             ]);
         }
 
-        /**
-         * Carpetas ROP disponibles para el selector del modal de subida
-         * (listado en vivo del disco de red, con fallback a los ROP ya
-         * registrados en BD).
-         */
-        public function carpetasDisponibles(RopDocumentoService $rop)
-        {
-            return response()->json($rop->listarCarpetas());
-        }
 
-        /**
-         * Sirve un documento (carta/cotizacion/requerimiento) para
-         * previsualizar en el navegador y verificar visualmente que está
-         * firmado.
-         */
-        public function previsualizarDocumento($id, string $campo)
-        {
-            abort_unless(in_array($campo, RopDocumentoService::CAMPOS, true), 404);
 
-            $carta = ControlCarta::findOrFail($id);
-            $path = $carta->{"archivo_{$campo}"};
-
-            abort_if(
-                !$path || !Storage::disk(RopDocumentoService::DISK)->exists($path),
-                404,
-                'Documento no disponible. Verifique la conexión con el servidor de archivos ROP2026.'
-            );
-
-            return Storage::disk(RopDocumentoService::DISK)->response($path);
-        }
-
-        /**
-         * Marca la carta como firmada y verificada. Solo Admin, y solo
-         * después de confirmar (en la previsualización) que el documento
-         * realmente está firmado.
-         */
-        public function updateVerificacion($id)
-        {
-            abort_if(!Auth::user()->tieneAccesoCompleto(), 403);
-
-            $carta = ControlCarta::findOrFail($id);
-
-            abort_if(!$carta->archivo_carta, 422, 'No se puede verificar una carta sin el documento cargado.');
-
-            $carta->firmado_verificado = true;
-            $carta->verificado_por = Auth::id();
-            $carta->verificado_en = now();
-            $carta->save();
-
-            return back()->with('success', 'Carta marcada como firmada y verificada.');
-        }
 
 }

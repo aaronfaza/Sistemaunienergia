@@ -891,7 +891,7 @@ textarea:focus {
         </button>
       </div>
 
-      <form action="{{ route('cartas_fis.store') }}" method="POST" enctype="multipart/form-data">
+      <form action="{{ route('cartas_fis.store') }}" method="POST">
         @csrf
         <div class="modal-body">
 
@@ -999,32 +999,6 @@ textarea:focus {
             </div>
           </div>
 
-          <hr>
-          <h6 class="text-primary font-weight-bold mb-2">
-            <i class="fas fa-folder-open mr-1"></i> Documentos (no es necesario que estén firmados aún)
-          </h6>
-          <div class="row">
-            <div class="col-md-4">
-              <label>Carta</label>
-              <input type="file" name="archivo_carta" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-            </div>
-            <div class="col-md-4">
-              <label>Cotización</label>
-              <input type="file" name="archivo_cotizacion" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-            </div>
-            <div class="col-md-4">
-              <label>Requerimiento</label>
-              <input type="file" name="archivo_requerimiento" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-            </div>
-          </div>
-          <div class="form-group mt-2 mb-0">
-            <label>Carpeta ROP2026 destino</label>
-            <input type="text" name="carpeta_rop" list="carpetasRopAgregarFis" class="form-control js-carpetas-input"
-                   placeholder="Ej: ROP260298" autocomplete="off">
-            <datalist id="carpetasRopAgregarFis" class="js-carpetas-datalist"></datalist>
-            <small class="text-muted js-carpetas-origen"></small>
-          </div>
-
         </div>
 
         <div class="modal-footer bg-light">
@@ -1050,7 +1024,7 @@ textarea:focus {
         </button>
       </div>
 
-      <form action="{{ route('cartas_fis.update', $carta->id) }}" method="POST" enctype="multipart/form-data">
+      <form action="{{ route('cartas_fis.update', $carta->id) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -1173,69 +1147,6 @@ textarea:focus {
             </div>
           </div>
 
-          <hr>
-          <h6 class="text-primary font-weight-bold mb-2">
-            <i class="fas fa-folder-open mr-1"></i> Documentos (no es necesario que estén firmados aún)
-          </h6>
-          <div class="form-row">
-            <div class="form-group col-md-4">
-              <label>Carta</label>
-              <input type="file" name="archivo_carta" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-              @if($carta->archivo_carta)
-                <small class="text-muted d-block mt-1">Actual: {{ basename($carta->archivo_carta) }} (subir uno nuevo lo reemplaza)</small>
-              @endif
-            </div>
-            <div class="form-group col-md-4">
-              <label>Cotización</label>
-              <input type="file" name="archivo_cotizacion" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-              @if($carta->archivo_cotizacion)
-                <small class="text-muted d-block mt-1">Actual: {{ basename($carta->archivo_cotizacion) }}</small>
-              @endif
-            </div>
-            <div class="form-group col-md-4">
-              <label>Requerimiento</label>
-              <input type="file" name="archivo_requerimiento" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-              @if($carta->archivo_requerimiento)
-                <small class="text-muted d-block mt-1">Actual: {{ basename($carta->archivo_requerimiento) }}</small>
-              @endif
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Carpeta ROP2026 destino</label>
-            <input type="text" name="carpeta_rop" value="{{ old('carpeta_rop', $carta->carpeta_rop) }}"
-                   list="carpetasRopEditarFis{{ $carta->id }}" class="form-control js-carpetas-input"
-                   placeholder="Ej: ROP260298" autocomplete="off">
-            <datalist id="carpetasRopEditarFis{{ $carta->id }}" class="js-carpetas-datalist"></datalist>
-            <small class="text-muted js-carpetas-origen"></small>
-          </div>
-
-          <div class="d-flex justify-content-between align-items-center border rounded p-2 mt-2">
-            <div>
-              @if($carta->firmado_verificado)
-                <span class="badge badge-success">
-                  <i class="fas fa-check-circle mr-1"></i> Verificado
-                  @if($carta->verificado_en)
-                    ({{ \Carbon\Carbon::parse($carta->verificado_en)->format('d/m/Y H:i') }})
-                  @endif
-                </span>
-              @else
-                <span class="badge badge-secondary">Pendiente de verificación</span>
-              @endif
-              @foreach(['carta' => 'Carta', 'cotizacion' => 'Cotización', 'requerimiento' => 'Requerimiento'] as $campo => $etiqueta)
-                @if($carta->{"archivo_{$campo}"})
-                  <a href="{{ route('cartas_fis.documentos.preview', [$carta->id, $campo]) }}" target="_blank" class="btn btn-sm btn-outline-primary ml-1">
-                    <i class="fas fa-eye mr-1"></i> {{ $etiqueta }}
-                  </a>
-                @endif
-              @endforeach
-            </div>
-            @if(Auth::user()->tieneAccesoCompleto() && $carta->archivo_carta && !$carta->firmado_verificado)
-              <button type="submit" form="formVerificarFis{{ $carta->id }}" class="btn btn-success btn-sm">
-                <i class="fas fa-stamp mr-1"></i> Marcar como firmado
-              </button>
-            @endif
-          </div>
-
         </div>
 
         <div class="modal-footer bg-light">
@@ -1244,14 +1155,6 @@ textarea:focus {
         </div>
 
       </form>
-
-      @if(Auth::user()->tieneAccesoCompleto() && $carta->archivo_carta && !$carta->firmado_verificado)
-        <form id="formVerificarFis{{ $carta->id }}" action="{{ route('cartas_fis.update_verificacion', $carta->id) }}" method="POST"
-              onsubmit="return confirm('¿Confirma que revisó el documento y está correctamente firmado?');">
-          @csrf
-          @method('PATCH')
-        </form>
-      @endif
     </div>
 
   </div>
@@ -1272,36 +1175,6 @@ textarea:focus {
 
 <script>
   $(function(){ $('#notificacionesDropdown').on('click', function(){ $('#notiBadge').hide(); }); });
-</script>
-
-<script>
-    // Carga perezosa (al abrir cada modal) del listado de carpetas ROP2026
-    // para el <datalist> del selector de destino de documentos. Bootstrap 4
-    // dispara 'shown.bs.modal' como evento jQuery, no un CustomEvent nativo.
-    $(document).on('shown.bs.modal', function (e) {
-        var datalist = $(e.target).find('.js-carpetas-datalist').get(0);
-        if (!datalist || datalist.dataset.loaded === '1') return;
-
-        fetch('{{ route("cartas_fis.documentos.carpetas") }}', { headers: { 'Accept': 'application/json' } })
-            .then(function (r) { return r.json(); })
-            .then(function (data) {
-                datalist.innerHTML = '';
-                (data.carpetas || []).forEach(function (carpeta) {
-                    var opt = document.createElement('option');
-                    opt.value = carpeta;
-                    datalist.appendChild(opt);
-                });
-                datalist.dataset.loaded = '1';
-
-                var origenEl = $(e.target).find('.js-carpetas-origen').get(0);
-                if (origenEl) {
-                    origenEl.textContent = data.origen === 'red'
-                        ? 'Carpetas del servidor de archivos ROP2026 (en vivo).'
-                        : 'Servidor de archivos no disponible: mostrando ROP ya registrados en el sistema.';
-                }
-            })
-            .catch(function () {});
-    });
 </script>
 
 </body>

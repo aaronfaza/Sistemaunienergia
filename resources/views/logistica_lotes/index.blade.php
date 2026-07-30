@@ -975,9 +975,15 @@
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                             @if(Auth::user()->esLogistica())
-                                            <button class="btn btn-sm btn-warning mr-1" data-toggle="modal" data-target="#modalEditarLote{{ $lote->id }}" title="Editar">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
+                                                @if($lote->firmado_verificado)
+                                                <button class="btn btn-sm btn-warning mr-1" data-toggle="modal" data-target="#modalEditarLote{{ $lote->id }}" title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                @else
+                                                <button class="btn btn-sm btn-secondary mr-1" disabled title="Pendiente de verificación por administración">
+                                                    <i class="fas fa-lock"></i>
+                                                </button>
+                                                @endif
                                             @endif
                                             <button type="button" class="btn btn-sm btn-secondary mr-1 btn-historial"
                                                     data-toggle="modal" data-target="#modalHistorialLote"
@@ -1035,7 +1041,7 @@
                 <h5 class="modal-title"><i class="fas fa-boxes mr-2"></i> Nuevo Registro ROP</h5>
                 <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
             </div>
-            <form action="{{ route('logistica_lotes.store') }}" method="POST">
+            <form action="{{ route('logistica_lotes.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body p-4">
                     <p class="text-muted small">
@@ -1130,6 +1136,28 @@
                                 <option value="{{ $carta->id }}" data-descripcion="{{ $carta->descripcion }}">{{ $carta->codigo }}</option>
                             @endforeach
                         </select>
+                    </div>
+
+                    <hr>
+                    <h6 class="text-primary font-weight-bold mb-2">
+                        <i class="fas fa-folder-open mr-1"></i> Documentos (no es necesario que estén firmados aún)
+                    </h6>
+                    <p class="text-muted small">
+                        Se guardan directamente en la carpeta ROP2026 que coincide con el Cod. Logística de arriba.
+                    </p>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label>Carta</label>
+                            <input type="file" name="archivo_carta" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Cotización</label>
+                            <input type="file" name="archivo_cotizacion" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Requerimiento</label>
+                            <input type="file" name="archivo_requerimiento" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -1521,6 +1549,47 @@
                         </p>
                     </div>
                 </div>
+
+                <h6 class="text-primary font-weight-bold border-bottom pb-2 mb-3"><i class="fas fa-folder-open mr-2"></i> Documentos</h6>
+                <div class="d-flex justify-content-end align-items-center mb-2">
+                    @if($lote->firmado_verificado)
+                        <span class="badge badge-success">
+                            <i class="fas fa-check-circle mr-1"></i> Verificado por {{ $lote->verificadoPor->name ?? '—' }}
+                            @if($lote->verificado_en)
+                                ({{ \Carbon\Carbon::parse($lote->verificado_en)->format('d/m/Y H:i') }})
+                            @endif
+                        </span>
+                    @else
+                        <span class="badge badge-secondary">Pendiente de verificación</span>
+                    @endif
+                </div>
+                <div class="row text-center mb-3">
+                    @foreach(['carta' => 'Carta', 'cotizacion' => 'Cotización', 'requerimiento' => 'Requerimiento'] as $campo => $etiqueta)
+                        <div class="col-md-4 mb-2">
+                            <div class="border rounded p-2 h-100">
+                                <div class="mb-1">{{ $etiqueta }}</div>
+                                @if($lote->{"archivo_{$campo}"})
+                                    <span class="badge badge-light border text-success mb-1"><i class="fas fa-check"></i> Subido</span><br>
+                                    <a href="{{ route('logistica_lotes.documentos.preview', [$lote->id, $campo]) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye mr-1"></i> Previsualizar
+                                    </a>
+                                @else
+                                    <span class="badge badge-light border text-muted">No subido</span>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                @if(Auth::user()->tieneAccesoCompleto() && $lote->archivo_carta && !$lote->firmado_verificado)
+                    <form action="{{ route('logistica_lotes.update_verificacion', $lote->id) }}" method="POST" class="mb-3"
+                          onsubmit="return confirm('¿Confirma que revisó el documento y está correctamente firmado?');">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="btn btn-success btn-sm">
+                            <i class="fas fa-stamp mr-1"></i> Marcar como firmado y verificado
+                        </button>
+                    </form>
+                @endif
 
                 <div class="bg-light p-3 rounded mb-3" style="border-left: 4px solid #17a2b8;">
                     <label class="text-muted small mb-1">Observación (administración)</label>
